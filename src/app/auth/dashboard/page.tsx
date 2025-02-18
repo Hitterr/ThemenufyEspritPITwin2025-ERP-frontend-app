@@ -3,9 +3,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 import {
 	Breadcrumb,
 	BreadcrumbItem,
-	BreadcrumbLink,
 	BreadcrumbList,
-	BreadcrumbPage,
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
@@ -14,17 +12,16 @@ import {
 	SidebarProvider,
 	SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { DataTable } from "./users/data-table";
-import { usersColumns } from "./users/columns";
-import { useUsers } from "@/app/api/users/useUsers";
+import { Link, Outlet, useLocation } from "react-router";
 export default function DashboardPage() {
-	const { data: users, isLoading, isError, error } = useUsers();
-	if (isLoading) {
-		return <div>Loading...</div>;
-	}
-	if (isError) {
-		return <div>Error: {error.message}</div>;
-	}
+	const location = useLocation();
+	const pathnames = location.pathname
+		.split("/")
+		.filter((x) => x)
+		.map((x, index, arr) => {
+			if (index > 0) return { url: arr[index - 1] + "/" + x, name: x };
+			return { url: "/" + arr[index], name: x };
+		});
 	return (
 		<SidebarProvider>
 			<AppSidebar />
@@ -37,14 +34,38 @@ export default function DashboardPage() {
 							className="mr-2 data-[orientation=vertical]:h-4"
 						/>
 						<Breadcrumb>
-							<BreadcrumbList>
-								<BreadcrumbItem className="hidden md:block">
-									<BreadcrumbLink href="#">Building Your Application</BreadcrumbLink>
-								</BreadcrumbItem>
-								<BreadcrumbSeparator className="hidden md:block" />
-								<BreadcrumbItem>
-									<BreadcrumbPage>Data Fetching</BreadcrumbPage>
-								</BreadcrumbItem>
+							<BreadcrumbList className="flex items-center">
+								{pathnames.map(
+									(value: { url: string; name: string }, index: number) => {
+										if (index === pathnames.length - 1)
+											return (
+												<>
+													<BreadcrumbItem
+														className="hidden md:block capitalize font-bold text-primary"
+														key={"BreadcrumbItem" + index}
+													>
+														<Link to={""}>{value.name}</Link>
+													</BreadcrumbItem>
+												</>
+											);
+										else
+											return (
+												<>
+													<BreadcrumbItem
+														className="hidden md:block capitalize"
+														key={"BreadcrumbItem" + index}
+													>
+														<Link to={value.url}>{value.name}</Link>
+													</BreadcrumbItem>
+													<BreadcrumbSeparator
+														className="hidden md:block"
+														key={"BreadcrumbSeparator" + index}
+													/>
+												</>
+											);
+									},
+									""
+								)}
 							</BreadcrumbList>
 						</Breadcrumb>
 					</div>
@@ -52,10 +73,7 @@ export default function DashboardPage() {
 				</header>
 				<div className="flex flex-1 flex-col gap-4 p-4 pt-0">
 					<div className="bg-muted/50 p-4 flex flex-col gap-4 justify-center items-center min-h-[100vh] flex-1 rounded-xl md:min-h-min">
-						<h1 className="text-3xl">Dashboard</h1>
-						{!isLoading && !isError && (
-							<DataTable columns={usersColumns} data={users} />
-						)}
+						<Outlet />
 					</div>
 				</div>
 			</SidebarInset>
