@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar";
+import { ModeToggle } from "@/components/mode-toggle";
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -13,12 +14,22 @@ import {
 	SidebarProvider,
 	SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { DataTable } from "./users/data-table";
+import { usersColumns } from "./users/columns";
+import { useUsers } from "@/app/api/users/useUsers";
 export default function DashboardPage() {
+	const { data: users, isLoading, isError, error } = useUsers();
+	if (isLoading) {
+		return <div>Loading...</div>;
+	}
+	if (isError) {
+		return <div>Error: {error.message}</div>;
+	}
 	return (
 		<SidebarProvider>
 			<AppSidebar />
 			<SidebarInset>
-				<header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+				<header className="flex h-16 shrink-0 items-center justify-between px-5 md:px-20 gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
 					<div className="flex items-center gap-2 px-4">
 						<SidebarTrigger className="-ml-1" />
 						<Separator
@@ -37,10 +48,14 @@ export default function DashboardPage() {
 							</BreadcrumbList>
 						</Breadcrumb>
 					</div>
+					<ModeToggle />
 				</header>
 				<div className="flex flex-1 flex-col gap-4 p-4 pt-0">
 					<div className="bg-muted/50 p-4 flex flex-col gap-4 justify-center items-center min-h-[100vh] flex-1 rounded-xl md:min-h-min">
 						<h1 className="text-3xl">Dashboard</h1>
+						{!isLoading && !isError && (
+							<DataTable columns={usersColumns} data={users} />
+						)}
 					</div>
 				</div>
 			</SidebarInset>

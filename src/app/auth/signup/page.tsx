@@ -1,16 +1,12 @@
 import { LoginForm } from "@/components/login-form";
 import { Link } from "react-router";
-export default function LoginPage() {
+export default function SignUpPage() {
 	return (
 		<div className="grid min-h-svh lg:grid-cols-2">
 			<div className="flex flex-col gap-4 p-6 md:p-10">
 				<div className="flex justify-center gap-2 md:justify-start">
 					<Link to="/" className="flex items-center gap-2 font-medium ">
-						<img
-							src="https://www.themenufy.com/static/media/logo11.b5acd83c16e795e56e25.png"
-							alt="Image"
-							className="w-50 h-8 mb-5 aspect-video object-fit  dark:brightness-[0.2] dark:grayscale "
-						/>
+						Acme Inc.
 					</Link>
 				</div>
 				<div className="flex flex-1 items-center justify-center">

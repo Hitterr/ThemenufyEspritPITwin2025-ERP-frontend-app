@@ -8,15 +8,15 @@
 	--card-foreground: hsl(0 0% 3.9%);
 	--popover: hsl(0 0% 100%);
 	--popover-foreground: hsl(0 0% 3.9%);
-	--primary: hsl(0 0% 9%);
+	--primary: #f48579;
 	--primary-foreground: hsl(0 0% 98%);
-	--secondary: hsl(0 0% 96.1%);
+	--secondary: #ff937e;
 	--secondary-foreground: hsl(0 0% 9%);
 	--muted: hsl(0 0% 96.1%);
 	--muted-foreground: hsl(0 0% 45.1%);
-	--accent: hsl(0 0% 96.1%);
+	--accent: #ff937e86;
 	--accent-foreground: hsl(0 0% 9%);
-	--destructive: hsl(0 84.2% 60.2%);
+	--destructive: #ff937e86;
 	--destructive-foreground: hsl(0 0% 98%);
 	--border: hsl(0 0% 89.8%);
 	--input: hsl(0 0% 89.8%);
@@ -29,10 +29,10 @@
 	--radius: 0.6rem;
 	--sidebar: hsl(0 0% 98%);
 	--sidebar-foreground: hsl(240 5.3% 26.1%);
-	--sidebar-primary: hsl(240 5.9% 10%);
+	--sidebar-primary: #f48579;
 	--sidebar-primary-foreground: hsl(0 0% 98%);
-	--sidebar-accent: hsl(240 4.8% 95.9%);
-	--sidebar-accent-foreground: hsl(240 5.9% 10%);
+	--sidebar-accent: #ff937e86;
+	--sidebar-accent-foreground: #fff;
 	--sidebar-border: hsl(220 13% 91%);
 	--sidebar-ring: hsl(217.2 91.2% 59.8%);
 }

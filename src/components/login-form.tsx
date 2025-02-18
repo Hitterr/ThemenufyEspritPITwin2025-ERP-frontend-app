@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { useNavigate } from "react-router";
 // Define the validation schema using Yup
 const schema = yup.object().shape({
 	email: yup
@@ -27,8 +28,10 @@ export function LoginForm({
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
-	const onSubmit = (data) => {
+	const navigate = useNavigate();
+	const onSubmit = (data: { email: string; password: string }) => {
 		console.log(data); // Handle form submission
+		navigate("/dashboard");
 	};
 	return (
 		<form
