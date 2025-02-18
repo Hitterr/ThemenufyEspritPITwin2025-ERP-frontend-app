@@ -1,12 +1,11 @@
-// src/hooks/useUsers.ts
+import { apiRequest } from "@/lib/apiRequest";
 import { useQuery } from "@tanstack/react-query";
-const api = import.meta.env.VITE_API_URI + "/users";
 const fetchUsers = async () => {
-	const response = await fetch(api);
-	if (!response.ok) {
+	const response = await apiRequest.get("/users");
+	if (response.status != 200) {
 		throw new Error("Network response was not ok");
 	}
-	return response.json();
+	return response.data;
 };
 export const useUsers = () => {
 	return useQuery({

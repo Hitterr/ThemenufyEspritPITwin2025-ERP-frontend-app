@@ -1,7 +1,8 @@
 // tailwind.config.js
+const flowbite = require("flowbite-react/tailwind");
 module.exports = {
 	darkMode: ["class"],
-	content: ["./src/**/*.{js,ts,jsx,tsx}"],
+	content: ["./src/**/*.{js,ts,jsx,tsx}", flowbite.content()],
 	theme: {
 		extend: {
 			colors: {
@@ -46,5 +47,5 @@ module.exports = {
 			},
 		},
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [require("tailwindcss-animate"), flowbite.plugin()],
 };

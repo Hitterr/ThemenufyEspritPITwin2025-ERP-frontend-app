@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useNavigate } from "react-router";
+import { useLoginMutation } from "@/app/api/auth/authMutations";
+import { Spinner } from "flowbite-react";
 // Define the validation schema using Yup
 const schema = yup.object().shape({
 	email: yup
@@ -28,11 +30,15 @@ export function LoginForm({
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
+	const loginMutation = useLoginMutation();
 	const navigate = useNavigate();
 	const onSubmit = (data: { email: string; password: string }) => {
 		console.log(data); // Handle form submission
-		navigate("/dashboard");
+		loginMutation.mutate(data);
 	};
+	if (loginMutation.isSuccess) {
+		navigate("/dashboard");
+	}
 	return (
 		<form
 			onSubmit={handleSubmit(onSubmit)}
@@ -76,8 +82,9 @@ export function LoginForm({
 					)}
 				</div>
 				{/* Submit Button */}
-				<Button type="submit" className="w-full">
+				<Button type="submit" className="w-full" disabled={loginMutation.isPending}>
 					Login
+					{loginMutation.isPending && <Spinner size="md" />}
 				</Button>
 				{/* Divider */}
 				<div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
