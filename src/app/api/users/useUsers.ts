@@ -1,7 +1,7 @@
 import { apiRequest } from "@/lib/apiRequest";
 import { useQuery } from "@tanstack/react-query";
 const fetchUsers = async () => {
-	const response = await apiRequest.get("/users");
+	const response = await apiRequest.get(import.meta.env.VITE_API_URI + "/users");
 	if (response.status != 200) {
 		throw new Error("Network response was not ok");
 	}

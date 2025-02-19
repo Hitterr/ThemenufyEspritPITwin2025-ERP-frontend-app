@@ -34,11 +34,10 @@ export function LoginForm({
 	const navigate = useNavigate();
 	const onSubmit = (data: { email: string; password: string }) => {
 		console.log(data); // Handle form submission
-		loginMutation.mutate(data);
+		loginMutation.mutateAsync(data);
 	};
-	if (loginMutation.isSuccess) {
-		navigate("/dashboard");
-	}
+	console.log("📢 [login-form.tsx:39]", loginMutation);
+	if (loginMutation.isSuccess) navigate("/dashboard/users");
 	return (
 		<form
 			onSubmit={handleSubmit(onSubmit)}
