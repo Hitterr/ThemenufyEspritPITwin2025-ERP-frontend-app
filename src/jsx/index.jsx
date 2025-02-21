@@ -91,6 +91,8 @@ import Error503 from "./pages/Error503";
 import Todo from "./pages/Todo";
 //Scroll To Top
 import ScrollToTop from "./layouts/ScrollToTop";
+import AuthRouting from "./pages/auth/AuthRouting";
+import Test from "./pages/auth/Test";
 const Markup = () => {
 	const allroutes = [
 		/// Dashboard
@@ -171,9 +173,11 @@ const Markup = () => {
 		{ url: "table-sorting", component: <SortingTable /> },
 		/// pages
 		{ url: "todo", component: <Todo /> },
+		{ url: "test", component: <Test /> },
 	];
 	return (
 		<>
+			<AuthRouting />
 			<Routes>
 				<Route path="page-lock-screen" element={<LockScreen />} />
 				<Route path="page-error-400" element={<Error400 />} />
