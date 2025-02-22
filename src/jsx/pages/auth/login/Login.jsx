@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../../../assets/images/logo.png";
 import logotext from "../../../../assets/images/logo-text.png";
+import { Stack } from "react-bootstrap";
+import GoogleAuth from "./GoogleAuth";
+import ReCAPTCHA from "react-google-recaptcha";
 function Login(props) {
 	const [email, setEmail] = useState("demo@example.com");
 	let errorsObj = { email: "", password: "" };
@@ -68,23 +71,32 @@ function Login(props) {
 								</div>
 								<div className="form-row d-flex justify-content-between mt-4 mb-2">
 									<div className="form-group mb-3">
-										<div className="custom-control custom-checkbox ms-1 ">
-											<input
-												type="checkbox"
-												className="form-check-input"
-												id="basic_checkbox_1"
+										<Stack gap={2}>
+											<ReCAPTCHA
+												sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+												onChange={(value) => {
+													console.log("Captcha value:", value);
+												}}
 											/>
-											<label className="form-check-label" htmlFor="basic_checkbox_1">
-												Remember my preference
-											</label>
-										</div>
+											<div className="custom-control custom-checkbox ms-1 ">
+												<input
+													type="checkbox"
+													className="form-check-input"
+													id="basic_checkbox_1"
+												/>
+												<label className="form-check-label" htmlFor="basic_checkbox_1">
+													Remember my preference
+												</label>
+											</div>
+										</Stack>
 									</div>
 								</div>
-								<div className="text-center">
+								<Stack className="text-center" gap={2}>
 									<button type="submit" className="btn btn-primary btn-block">
 										Sign In
 									</button>
-								</div>
+									<GoogleAuth />
+								</Stack>
 							</form>
 							<div className="new-account mt-2">
 								<p className="mb-0">
