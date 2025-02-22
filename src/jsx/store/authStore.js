@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 export const authStore = create(
 	devtools((set) => ({
-		currentUser: { name: "Oussema" },
+		currentUser: null,
 		updateCurrentUser: (userName) => {
 			set(
 				produce((state) => {
