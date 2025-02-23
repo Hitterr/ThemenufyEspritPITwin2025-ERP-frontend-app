@@ -5,12 +5,12 @@ import backgroundImage from "@assets/images/backgroundRestaurant.jpg";
 const Profile = () => {
   const [user, setUser] = useState({
     role: "Admin",
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
+    firstName: "Hadil",
+    lastName: "Bouhachem",
+    email: "hadil.bouhachem@esprit.tn",
     phone: "12345678",
-    address: "123 Main Street",
-    salary: 5000,
+    address: "2036 soukra",
+    salary: 2000,
     image: "",
   });
 
@@ -31,27 +31,29 @@ const Profile = () => {
       case "firstName":
       case "lastName":
         if (value.length < 3) {
-          error = "Doit contenir plus de 3 caractères.";
+          error = "Must be more than 3 characters.";
         } else if (/\d/.test(value)) {
-          error = "Ne doit pas contenir de chiffres.";
+          error = "Should not contain numbers.";
         }
         break;
       case "email":
         if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|tn)$/.test(value))
-          error = "Email invalide.";
+          error = "Invalid email.";
         break;
       case "phone":
         if (!/^\d{8}$/.test(value)) {
-          error = "Le numéro de téléphone doit avoir 8 chiffres.";
+          error = "Phone number must be 8 digits.";
         }
         break;
       case "address":
         if (!/^[a-zA-Z0-9\s]+$/.test(value)) {
-          error = "L'adresse doit être alphanumérique.";
+          error = "Address must be alphanumeric.";
         }
         break;
       case "salary":
-        if (isNaN(value) || value < 0) error = "Doit être un nombre positif.";
+        if (!/^\d+$/.test(value)) {
+          error = "Must be a positive integer.";
+        }
         break;
       default:
         break;
@@ -69,7 +71,16 @@ const Profile = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+  
     if (file) {
+      const allowedFormats = ["image/jpeg", "image/png"];
+  
+      if (!allowedFormats.includes(file.type)) {
+        alert("Please choose an image in .jpg or .png format!");
+
+        return;
+      }
+  
       const reader = new FileReader();
       reader.onload = () => {
         setFormData({ ...formData, image: reader.result });
@@ -89,21 +100,28 @@ const Profile = () => {
         newErrors[key] = error;
       }
     });
+
+    // Check if image is empty
+    if (!formData.image) {
+      newErrors.image = "Please choose an image.";
+    }
+
     setErrors(newErrors);
+
     if (Object.keys(newErrors).length > 0) {
-      alert("Corrigez les erreurs avant de soumettre.");
+      alert("Please fix the errors before submitting.");
       return;
     }
     setUser(formData);
-    alert("Profil mis à jour !");
+    alert("Profile updated!");
     setActiveTab("About");
   };
 
   return (
     <div className="container mt-4">
-      <Card className=" profile card-body px-3 pt-3 pb-0"style={{ border: "3px solid #ed869e", boxShadow: "0 5px 6px rgba(237, 134, 158, 0.3)" }}>
+      <Card className="profile card-body px-3 pt-3 pb-0" style={{ border: "3px solid #ed869e", boxShadow: "0 5px 6px rgba(237, 134, 158, 0.3)" }}>
         <div className="profile-head">
-        <div className="photo-content" style={{ backgroundImage:`url(${backgroundImage})`, backgroundSize: "cover", height: "400px" }}>
+          <div className="photo-content" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: "cover", height: "400px" }}>
           </div>
           <div className="profile-info">
             <div className="profile-photo">
@@ -114,17 +132,17 @@ const Profile = () => {
               />
             </div>
             <div className="profile-details">
-          <div className="profile-name px-3 pt-2">
-            <h4 className="text-primary mb-0">{user.firstName} {user.lastName}</h4>
-            <p>{user.role}</p>
-          </div>
-          <div className="profile-email px-2 pt-2">
-            <h4 className="text-muted mb-0">{user.email}</h4>
+              <div className="profile-name px-3 pt-2">
+                <h4 className="text-primary mb-0">{user.firstName} {user.lastName}</h4>
+                <p>{user.role}</p>
+              </div>
+              <div className="profile-email px-2 pt-2">
+                <h4 className="text-muted mb-0">{user.email}</h4>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </Card>
+      </Card>
 
       <Card className="mt-4" style={{ border: "3px solid #ed869e", boxShadow: "0 4px 6px rgba(237, 134, 158, 0.3)" }}>
         <div className="card-body">
@@ -150,9 +168,13 @@ const Profile = () => {
               </Tab.Pane>
               <Tab.Pane eventKey="Edit">
                 <form onSubmit={handleUpdate}>
-                  <input type="file" accept="image/*" className="form-control mb-3" onChange={handleImageChange} />
+                  <div className="mb-3">
+                    <label className="form-label">Image</label>
+                    <input type="file" accept="image/jpeg, image/png" className="form-control" onChange={handleImageChange} />
+                    {errors.image && <div className="text-danger">{errors.image}</div>}
+                  </div>
                   {Object.keys(formData).map((field) => (
-                    field !== "image" &&
+                    field !== "image" && field !== "role" &&
                     <div className="mb-3" key={field}>
                       <label>{field.charAt(0).toUpperCase() + field.slice(1)}</label>
                       <input
