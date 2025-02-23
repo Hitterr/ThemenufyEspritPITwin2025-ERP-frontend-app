@@ -227,6 +227,7 @@ const Profile = () => {
                         type="text"
                         name={field}
                         className={`form-control ${errors[field] ? "border-danger" : modifiedFields[field] ? "border-warning" : ""}`}
+                        style={{ borderWidth: "3px" }}
                         value={formData[field]}
                         onChange={handleChange}
                       />
