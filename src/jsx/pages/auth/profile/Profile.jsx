@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Tab, Nav, Card } from "react-bootstrap";
-
+import backgroundImage from "@assets/images/backgroundRestaurant.jpg";
 
 const Profile = () => {
   const [user, setUser] = useState({
@@ -101,9 +101,9 @@ const Profile = () => {
 
   return (
     <div className="container mt-4">
-      <Card className="profile card-body px-3 pt-3 pb-0"style={{ border: "3px solid #ed869e", boxShadow: "0 4px 6px rgba(237, 134, 158, 0.3)" }}>
+      <Card className=" profile card-body px-3 pt-3 pb-0"style={{ border: "3px solid #ed869e", boxShadow: "0 5px 6px rgba(237, 134, 158, 0.3)" }}>
         <div className="profile-head">
-        <div className="photo-content" style={{ backgroundImage:"/profile/images/backgroundRestaurant.jpg", backgroundSize: "cover", height: "150px" }}>
+        <div className="photo-content" style={{ backgroundImage:`url(${backgroundImage})`, backgroundSize: "cover", height: "400px" }}>
           </div>
           <div className="profile-info">
             <div className="profile-photo">
@@ -141,11 +141,11 @@ const Profile = () => {
             <Tab.Content>
               <Tab.Pane eventKey="About">
                 <h4 className="text-primary">Informations du Profil</h4>
-                <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
-                <p><strong>Email :</strong> {user.email}</p>
-                <p><strong>Phone :</strong> {user.phone}</p>
-                <p><strong>Address :</strong> {user.address}</p>
-                <p><strong>Rôle :</strong> {user.role}</p>
+                <p><strong className="text-primary">Name:</strong> {user.firstName} {user.lastName}</p>
+                <p><strong className="text-primary">Email :</strong> {user.email}</p>
+                <p><strong className="text-primary">Phone :</strong> {user.phone}</p>
+                <p><strong className="text-primary">Address :</strong> {user.address}</p>
+                <p><strong className="text-primary">Rôle :</strong> {user.role}</p>
                 {user.role === "Employee" && <p><strong>Salary :</strong> {user.salary}TND</p>}
               </Tab.Pane>
               <Tab.Pane eventKey="Edit">
