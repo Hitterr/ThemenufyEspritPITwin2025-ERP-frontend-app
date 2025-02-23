@@ -37,6 +37,11 @@ export const MenuList = [
 				title: "Task",
 				to: "task",
 			},
+
+			{
+				title: "Profile",
+				to: "profile",
+			},
 		],
 	},
 	//Apps
