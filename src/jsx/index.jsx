@@ -93,6 +93,7 @@ import Todo from "./pages/Todo";
 import ScrollToTop from "./layouts/ScrollToTop";
 import AuthRouting from "./pages/auth/AuthRouting";
 import Test from "./pages/auth/Test";
+import DashAdmin from "./pages/Dashbord/AdminDash";
 const Markup = () => {
 	const allroutes = [
 		/// Dashboard
@@ -104,6 +105,7 @@ const Markup = () => {
 		{ url: "analytics", component: <Analytics /> },
 		{ url: "review", component: <Reviews /> },
 		{ url: "task", component: <Task /> },
+
 		//Cms
 		{ url: "content", component: <Content /> },
 		{ url: "menu", component: <Menu /> },
@@ -173,7 +175,11 @@ const Markup = () => {
 		{ url: "table-sorting", component: <SortingTable /> },
 		/// pages
 		{ url: "todo", component: <Todo /> },
-		{ url: "test", component: <Test /> },
+		{ url: "test", component: <Test /> },		
+		{ url: "DashAdmin", component: <DashAdmin /> },
+
+		
+
 	];
 	return (
 		<>
