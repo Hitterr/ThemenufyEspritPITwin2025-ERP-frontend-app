@@ -24,6 +24,14 @@ const Signup = () => {
         telephone: "",  
         password: "",
         confirmPassword: "",
+        nomRestaurant:"",
+        adresseRestaurant:"",
+        cuisineType:"",
+        payCashMethod:"",
+        promotion:""
+
+
+
     });
     const [errors, setErrors] = useState({});
     const [recaptchaValue, setRecaptchaValue] = useState(null);
@@ -36,7 +44,7 @@ const Signup = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
         setErrors({ ...errors, [e.target.name]: "" });
     };
-
+  
     const validateStep = (step) => {
         let newErrors = {};
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -60,7 +68,15 @@ const Signup = () => {
                 if (!formData.confirmPassword) newErrors.confirmPassword = "Veuillez confirmer votre mot de passe.";
                 else if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = "Les mots de passe ne correspondent pas.";
                 break;
+
             case 3:
+                if (!formData.nomRestaurant) newErrors.nomRestaurant = "Le nom est requis.";
+                if (!formData.adresseRestaurant) newErrors.adresseRestaurant = "L'adresse est requise.";
+                if (!formData.cuisineType) newErrors.cuisineType = "Le type de cuisine est requise.";
+                if (!formData.payCashMethod) newErrors.payCashMethod = "Veuillez sélectionner la méthode de paiment .";
+                if (!formData.promotion) newErrors.promotion = "la promotion est requise .";
+                  break;
+            case 4:
                 if (!recaptchaValue) newErrors.recaptcha = "Veuillez vérifier que vous n'êtes pas un robot.";
                 break;
             default:
@@ -82,15 +98,21 @@ const Signup = () => {
     };
 
     const handleSubmit = () => {
-        if (validateStep(0) && validateStep(1) && validateStep(2) && validateStep(3)) {
+        if (validateStep(0) && validateStep(1) && validateStep(2) && validateStep(3) && validateStep(4))  {
             alert(
-                "Formulaire soumis avec succès !\n\n" +
-                "🏷️ Nom : " + formData.nom + "\n" +
-                "🏷️ Prénom : " + formData.prenom + "\n" +
-                "📅 Date de naissance : " + formData.datedenaissance + "\n" +
-                "✉️ Email : " + formData.email + "\n" +
-                "📞 Téléphone : " + formData.telephone + "\n" +
-                "🌍 Pays : " + formData.pays
+         "Formulaire soumis avec succès !\n\n" +
+         "🏷️ Nom : " + formData.nom + "\n" +
+         "🏷️ Prénom : " + formData.prenom + "\n" +
+         "📅 Date de naissance : " + formData.datedenaissance + "\n" +
+         "✉️ Email : " + formData.email + "\n" +
+         "📞 Téléphone : " + formData.telephone + "\n" +
+        "🌍 Pays : " + formData.pays + "\n" +
+        "🏢 Nom du Restaurant : " + formData.nomRestaurant + "\n" +
+        "📍 Adresse du Restaurant : " + formData.adresseRestaurant + "\n" +
+        "🍽️ Type de Cuisine : " + formData.cuisineType + "\n" +
+       "💰 Méthode de Paiement : " + formData.payCashMethod + "\n" +
+"🎉 Promotion : " + formData.promotion + "\n"
+
             );
         } else {
             alert("❌ Veuillez remplir tous les champs correctement.");
@@ -101,21 +123,7 @@ const Signup = () => {
         setRecaptchaValue(value);
     };
 
-    // Détermine la couleur de fond en fonction de l'étape actuelle
-    const getBackgroundColor = () => {
-        switch (goSteps) {
-            case 0:
-                return "#ee7ba3"; // Rose pour l'étape 0
-            case 1:
-                return "#f9c9e4"; // Rose clair pour l'étape 1
-            case 2:
-                return "#f2d1e1"; // Rose doux pour l'étape 2
-            case 3:
-                return "#fce4ec"; // Très léger rose pour l'étape 3
-            default:
-                return "#ffffff"; // Couleur par défaut
-        }
-    };
+
 
     return (
         <div className="login-form-bx">
@@ -124,7 +132,7 @@ const Signup = () => {
                 <div className="col-lg-6 col-md-7 box-skew d-flex">
                     <div className="authincation-content">
                         <div className="mb-4">
-                            <h3 className="mb-1 font-w600">Welcome to Menufy</h3>
+                            <h3 className="mb-1 font-w300">Welcome to Menufy</h3>
                             <p className="">SignUp by entering information below</p>
                         </div>
                  
@@ -135,19 +143,23 @@ const Signup = () => {
                              transition={{ duration: 0.5 }}
                             className="d-flex justify-content-center align-items-center"
             style={{
-                minHeight: "85vh",
-                backgroundColor: getBackgroundColor(), 
+                minHeight: "80vh",
+               
             }}
         >
-            <div className="card shadow-lg p-4" style={{ width: "97%", maxWidth: "600px" }}>
+              <div className="card shadow-lg p-4" style={{ width: "100%", maxWidth: "600px" }}>
+           
                 
                 <h2 className="text-center text-primary">S'inscrire</h2>
+                <div className="d-flex justify-content-center my-4" >
                 <Stepper activeStep={goSteps} alternativeLabel>
-                    <Step icon={<FaUser size={24} />} label="Informations Personnelles" />
-                    <Step icon={<FaEnvelope size={24} />} label="Contact" />
-                    <Step icon={<FaLock size={24} />} label="Sécurité" />
-                    <Step icon={<FaCheckCircle size={24} />} label="Confirmation" />
-                </Stepper>
+                     <Step icon={<FaUser sx={{ fontSize: "2rem" }} />} label="Informations Personnelles" />
+                     <Step icon={<FaEnvelope sx={{ fontSize: "2rem" }} />} label="Contact" />
+          <Step icon={<FaLock sx={{ fontSize: "2rem" }} />} label="Sécurité" />
+    <Step icon={<FaLock sx={{ fontSize: "2rem" }} />} label="Restaurant" />
+    <Step icon={<FaCheckCircle sx={{ fontSize: "2rem" }} />} label="Confirmation" />
+</Stepper>
+</div>
 
                 {goSteps === 0 && (
                     <motion.div
@@ -264,7 +276,84 @@ const Signup = () => {
                     </motion.div>
                 )}
 
-                {goSteps === 3 && (
+
+{goSteps === 3 && (
+    <motion.div
+        initial={{ x: "-100vw" }}
+        animate={{ x: 0 }}
+        transition={{ type: "spring", stiffness: 120 }}
+    >
+       
+        <input
+            type="text"
+            name="nomRestaurant"
+            className="form-control mb-3"
+            value={formData.nomRestaurant}
+            onChange={handleChange}
+            placeholder="Nom du Restaurant"
+        />
+
+        <input
+            type="text"
+            name="adresseRestaurant"
+            className="form-control mb-3"
+            value={formData.adresseRestaurant}
+            onChange={handleChange}
+            placeholder="Adresse"
+        />
+
+      
+        <select
+            name="cuisineType"
+            className="form-control mb-3"
+            value={formData.cuisineType}
+            onChange={handleChange}
+        >
+            <option value="">Sélectionnez un type de cuisine</option>
+            <option value="Italienne">🍕 Italienne</option>
+            <option value="Japonaise">🍣 Japonaise</option>
+            <option value="Française">🥖 Française</option>
+        </select>
+        {errors.cuisineType && <p className="text-danger">{errors.cuisineType}</p>}
+
+        <select
+            name="payCashMethod"
+            className="form-control mb-3"
+            value={formData.payCashMethod}
+            onChange={handleChange}
+        >
+            <option value="">Sélectionnez une méthode</option>
+            <option value="Cash">💰 Cash</option>
+            <option value="Carte">💳 Carte</option>
+            <option value="En ligne">🌐 Paiement en ligne</option>
+        </select>
+        {errors.payCashMethod && <p className="text-danger">{errors.payCashMethod}</p>}
+
+       
+        <select
+            name="promotion"
+            className="form-control mb-3"
+            value={formData.promotion}
+            onChange={handleChange}
+        >
+            <option value="">Sélectionnez une promotion</option>
+            <option value="10%">10% de réduction</option>
+            <option value="20%">20% de réduction</option>
+            <option value="Aucune">Aucune promotion</option>
+        </select>
+        {errors.promotion && <p className="text-danger">{errors.promotion}</p>}
+
+        <button className="btn btn-secondary mt-3" onClick={handlePrev}>
+            Précédent
+        </button>
+        <button className="btn btn-primary mt-3" onClick={handleNext}>
+            Suivant
+        </button>
+    </motion.div>
+)}
+
+
+                {goSteps === 4 && (
                     <motion.div
                         initial={{ x: "-100vw" }}
                         animate={{ x: 0 }}
