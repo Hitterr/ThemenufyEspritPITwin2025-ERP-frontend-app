@@ -3,11 +3,12 @@ import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { authStore } from "../../../store/authStore";
 import { useNavigate } from "react-router-dom";
+import { Col } from "react-bootstrap";
 const GoogleAuth = () => {
 	const { login } = authStore();
 	const navigate = useNavigate();
 	return (
-		<div className="">
+		<Col>
 			<GoogleOAuthProvider clientId={clientId}>
 				<GoogleLogin
 					onSuccess={(credentialResponse) => {
@@ -15,14 +16,18 @@ const GoogleAuth = () => {
 						login(user);
 						navigate("/");
 					}}
+					size="large"
 					shape="rectangular"
+					type="standard"
+					text=" sign_in_with_google"
+					theme="outline"
 					onError={() => {
 						console.log("Login Failed");
 					}}
 				/>
 				;
 			</GoogleOAuthProvider>
-		</div>
+		</Col>
 	);
 };
 export default GoogleAuth;

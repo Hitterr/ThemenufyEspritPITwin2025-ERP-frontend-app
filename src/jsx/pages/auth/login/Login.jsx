@@ -4,11 +4,13 @@ import * as yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../../../assets/images/logo.png";
 import logotext from "../../../../assets/images/logo-text.png";
-import { Stack } from "react-bootstrap";
+import { Row, Stack } from "react-bootstrap";
 import GoogleAuth from "./GoogleAuth";
 import ReCAPTCHA from "react-google-recaptcha";
 import { authStore } from "../../../store/authStore";
 import { useState } from "react";
+import FacebookAuth from "./FacebookAuth";
+import Swal from "sweetalert2";
 // Define the validation schema using Yup
 const schema = yup.object({
 	email: yup.string().email("Invalid email").required("Email is required"),
@@ -35,7 +37,11 @@ function Login() {
 	const { login } = authStore();
 	const onSubmit = (data) => {
 		if (!recaptcha) {
-			alert("Please complete the reCAPTCHA!");
+			Swal.fire({
+				icon: "error",
+				title: "Oops...",
+				text: "Please verify you are not a robot",
+			});
 			return;
 		}
 		login(data);
@@ -121,7 +127,10 @@ function Login() {
 									<button type="submit" className="btn btn-primary btn-block">
 										Sign In
 									</button>
-									<GoogleAuth />
+									<Row xs={2} className="justify-content-center ">
+										<FacebookAuth />
+										<GoogleAuth />
+									</Row>
 								</Stack>
 							</form>
 							<div className="new-account mt-2">
