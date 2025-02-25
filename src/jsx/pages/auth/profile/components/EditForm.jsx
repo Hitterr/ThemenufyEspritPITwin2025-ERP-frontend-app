@@ -1,13 +1,13 @@
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { Col, Row, Stack } from "react-bootstrap";
 import { authStore } from "../../../../store/authStore";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import * as yup from "yup";
 
 const schema = yup.object().shape({
   firstName: yup
@@ -57,7 +57,7 @@ const schema = yup.object().shape({
     salary: yup
       .number()
       .typeError("Salary must be a number")
-      .positive("Salary must be positive")
+      .min(1, "Salary must be greater than 0")
       .integer("Salary must be an integer")
       .required("Salary is required"),
   }),
@@ -71,25 +71,18 @@ const schema = yup.object().shape({
       .min(5, "Restaurant name must be more than 4 characters")
       .required("Restaurant name is required"),
   }),
-
-  image: yup
-    .string()
-    .strict()
-    .trim()
-    .url("Image must be a valid URL")
-    .required("Image URL is required"),
 });
 
 const EditForm = () => {
   const { currentUser, setActiveTab, updateProfile } = authStore();
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     control,
     getValues,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -99,6 +92,16 @@ const EditForm = () => {
   });
 
   const onSubmit = (values) => {
+    console.log("Valeurs soumises :", values);
+    const hasEmptyFields = Object.values(values).some((value) => !value);
+    if (hasEmptyFields) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Please fill in all the fields.",
+      });
+      return;
+    }
     const updatedProfile = {
       ...values,
       image: currentUser.image, // Preserve the current image
@@ -216,9 +219,6 @@ const EditForm = () => {
 
       <button
         type="submit"
-        onClick={() => {
-          onSubmit(getValues());
-        }}
         className=" btn btn-primary mt-4 px-4 py-2 rounded-pill shadow"
       >
         update
