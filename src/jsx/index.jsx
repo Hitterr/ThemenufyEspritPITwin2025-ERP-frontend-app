@@ -93,6 +93,7 @@ import Todo from "./pages/Todo";
 import ScrollToTop from "./layouts/ScrollToTop";
 import AuthRouting from "./pages/auth/AuthRouting";
 import Test from "./pages/auth/Test";
+import Profile from "./pages/auth/profile/Profile";
 const Markup = () => {
 	const allroutes = [
 		/// Dashboard
@@ -174,6 +175,8 @@ const Markup = () => {
 		/// pages
 		{ url: "todo", component: <Todo /> },
 		{ url: "test", component: <Test /> },
+		{ url: "profile", component: <Profile /> },
+
 	];
 	return (
 		<>
