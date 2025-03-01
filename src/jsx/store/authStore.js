@@ -7,7 +7,7 @@ export const authStore = create(
       currentUser: {
         firstName: "Hadil",
         lastName: "Bouhachem",
-        // role: "admin",
+        role: "Admin",
         email: "hadil.bouhachem@example.com",
         phone: "12345678",
         address: "2036 Soukra",

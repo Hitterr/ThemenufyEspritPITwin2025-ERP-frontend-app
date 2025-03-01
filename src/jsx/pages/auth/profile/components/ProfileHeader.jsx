@@ -5,6 +5,7 @@ import { authStore } from "../../../../store/authStore";
 import { BiCamera } from "react-icons/bi"; // Import de l'icône de caméra
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
 const ProfileHeader = () => {
   const { currentUser, updateProfile } = authStore();
 
@@ -28,7 +29,9 @@ const ProfileHeader = () => {
   const handleButtonClick = () => {
     document.getElementById("imageInput").click();
   };
-
+  /*useEffect(() => {
+    console.log(currentUser);
+  }, [currentUser]);*/
   return (
     <div className="mt-4">
       <Card className="profile card-body px-3 pt-3 pb-0 shadow">
@@ -85,7 +88,7 @@ const ProfileHeader = () => {
                 <h4 className="text-primary mb-0">
                   {currentUser.firstName} {currentUser.lastName}
                 </h4>
-                <p>{currentUser.role}</p>
+                <p>{currentUser.role || "No role assigned"}</p>
               </div>
               <div className="profile-email px-2 pt-2">
                 <h4 className="text-muted mb-0">{currentUser.email}</h4>
