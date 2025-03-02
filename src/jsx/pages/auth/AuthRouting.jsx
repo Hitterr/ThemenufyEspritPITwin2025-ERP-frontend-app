@@ -13,7 +13,7 @@ export default function AuthRouting() {
 		if (currentUser == null && !availableRoutes.includes(location.pathname)) {
 			navigate("/login");
 		}
-	}, [currentUser, navigate]);
+	}, [currentUser, navigate, availableRoutes, location.pathname]);
 	return (
 		<Routes>
 			<Route path="login" element={<Login />}></Route>

@@ -27,15 +27,15 @@ function Login() {
 	} = useForm({
 		resolver: yupResolver(schema),
 		defaultValues: {
-			email: "demo@example.com",
-			password: "123456",
+			email: "john.doe@example.com",
+			password: "Test@123",
 		},
 	});
 	const [recaptcha, setRecaptcha] = useState(null);
 	const [showPassword, setShowPassword] = useState(false);
 	const navigate = useNavigate();
 	const { login } = authStore();
-	const onSubmit = (data) => {
+	const onSubmit = async (data) => {
 		if (!recaptcha) {
 			Swal.fire({
 				icon: "error",
@@ -44,7 +44,7 @@ function Login() {
 			});
 			return;
 		}
-		login(data);
+		await login(data);
 		navigate("/");
 	};
 	return (
@@ -135,7 +135,7 @@ function Login() {
 							</form>
 							<div className="new-account mt-2">
 								<p className="mb-0">
-									Don't have an account?{" "}
+									Don&apos;t have an account?{" "}
 									<Link className="text-primary" to="/signup">
 										Sign up
 									</Link>

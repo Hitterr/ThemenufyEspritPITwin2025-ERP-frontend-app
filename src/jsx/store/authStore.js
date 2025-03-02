@@ -1,6 +1,10 @@
+import axios from "axios";
 import { produce } from "immer";
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
+const apiRequest = axios.create({
+	baseURL: import.meta.env.VITE_BACKEND_URL,
+});
 export const authStore = create(
 	devtools(
 		devtools(
@@ -49,9 +53,10 @@ export const authStore = create(
 					);
 				},
 				login: async (userdata) => {
+					const res = await apiRequest.post("/auth/login/email", userdata);
 					set(
 						produce((state) => {
-							state.currentUser = userdata;
+							if (res.data.data) state.currentUser = res.data.data;
 						})
 					);
 				},
@@ -62,6 +67,9 @@ export const authStore = create(
 							state.currentUser = null;
 						})
 					);
+				},
+				googleLogin: async (token_id) => {
+					console.log("📢 [authStore.js:72]", token_id);
 				},
 			}))
 		)
