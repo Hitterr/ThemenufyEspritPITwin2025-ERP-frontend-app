@@ -177,7 +177,7 @@ const Markup = () => {
 		{ url: "todo", component: <Todo /> },
 		{ url: "test", component: <Test /> },
 		{ url: "profile", component: <Profile /> },
-		{ url: "DashAdmin", component: <DashAdmin /> },
+		{ url: "restaurants", component: <DashAdmin /> },
 	];
 	return (
 		<>
