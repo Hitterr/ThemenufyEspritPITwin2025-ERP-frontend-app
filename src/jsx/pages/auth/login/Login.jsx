@@ -136,7 +136,7 @@ function Login() {
 							<div className="new-account mt-2">
 								<p className="mb-0">
 									Don't have an account?{" "}
-									<Link className="text-primary" to="/page-register">
+									<Link className="text-primary" to="/signup">
 										Sign up
 									</Link>
 								</p>
