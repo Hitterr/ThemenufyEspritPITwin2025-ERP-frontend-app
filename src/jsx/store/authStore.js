@@ -68,8 +68,15 @@ export const authStore = create(
 						})
 					);
 				},
-				googleLogin: async (token_id) => {
-					console.log("📢 [authStore.js:72]", token_id);
+				googleLogin: async (tokenId) => {
+					console.log("📢 [authStore.js:72]", tokenId);
+					const res = await apiRequest.post("/auth/login/google", { tokenId });
+					console.log("📢 [authStore.js:74]", res);
+					set(
+						produce((state) => {
+							state.currentUser = res.data.data;
+						})
+					);
 				},
 			}))
 		)

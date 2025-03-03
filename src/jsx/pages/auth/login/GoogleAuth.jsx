@@ -1,11 +1,9 @@
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID; // Replace with your Google OAuth client ID
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { authStore } from "../../../store/authStore";
-import { useNavigate } from "react-router-dom";
 import { Col } from "react-bootstrap";
 const GoogleAuth = () => {
 	const { googleLogin } = authStore();
-	const navigate = useNavigate();
 	return (
 		<Col>
 			<GoogleOAuthProvider clientId={clientId}>
@@ -15,7 +13,7 @@ const GoogleAuth = () => {
 						// login(user);
 						// navigate("/");
 						console.log("📢 [GoogleAuth.jsx:18]", credentialResponse);
-						await googleLogin(credentialResponse.credential	);
+						await googleLogin(credentialResponse.credential);
 					}}
 					size="large"
 					shape="rectangular"
