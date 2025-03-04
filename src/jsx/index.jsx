@@ -94,6 +94,7 @@ import ScrollToTop from "./layouts/ScrollToTop";
 import AuthRouting from "./pages/auth/AuthRouting";
 import Test from "./pages/auth/Test";
 import Profile from "./pages/auth/profile/Profile";
+import DashAdmin from "./pages/Dashbord/AdminDash";
 const Markup = () => {
 	const allroutes = [
 		/// Dashboard
@@ -176,7 +177,7 @@ const Markup = () => {
 		{ url: "todo", component: <Todo /> },
 		{ url: "test", component: <Test /> },
 		{ url: "profile", component: <Profile /> },
-
+		{ url: "restaurants", component: <DashAdmin /> },
 	];
 	return (
 		<>

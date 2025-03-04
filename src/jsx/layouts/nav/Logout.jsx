@@ -1,7 +1,9 @@
+import { authStore } from "../../store/authStore";
 function LogoutPage(props) {
+	const { logout } = authStore();
 	return (
 		<>
-			<button className="dropdown-item ai-icon">
+			<button className="dropdown-item ai-icon" onClick={logout}>
 				<svg
 					id="icon-logout"
 					xmlns="http://www.w3.org/2000/svg"
