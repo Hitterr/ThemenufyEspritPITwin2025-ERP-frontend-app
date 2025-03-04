@@ -91,11 +91,18 @@ export const authStore = create(
             })
           );
         },
-        checkDevice: async (token) => {
+        getProfile: async (token) => {
           try {
-            const deviceId = getDeviceInfo();
-            const res = await apiRequest.get(`/auth/devices/${deviceId}`);
-            return res.data.data.isVerified;
+            const res = await apiRequest.get(`/auth/login/profile`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            console.log(
+              "🔍 ~ devtools() callback ~ src/jsx/store/authStore.js:101 ~ res:",
+              res.data
+            );
+            return res.data.data;
           } catch (error) {
             console.error("Device verification check failed:", error);
             return false;

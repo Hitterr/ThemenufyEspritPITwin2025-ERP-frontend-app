@@ -7,7 +7,7 @@ import Signup from "./signup/Signup";
 import DeviceVerification from "./login/DeviceVerification";
 
 export default function AuthRouting() {
-  const { currentUser, checkDevice, logout } = authStore();
+  const { currentUser, verifyDevice, getProfile, logout } = authStore();
   const location = useLocation();
   const availableRoutes = useMemo(
     () => ["/login", "/forgotPassword", "/signup"],
@@ -15,24 +15,23 @@ export default function AuthRouting() {
   );
   const navigate = useNavigate();
   useEffect(() => {
-    const verifyDevice = async () => {
+    const checkDevice = async () => {
       if (
         currentUser?.user &&
         currentUser?.token &&
         !location.pathname.includes("/verify-device")
       ) {
         localStorage.setItem("token", currentUser.token);
-        const isVerified = await checkDevice(currentUser.token);
-        if (!isVerified) {
+        const user = await getProfile(currentUser.token);
+        if (!user) {
           logout();
           navigate("/login");
+        } else {
+          verifyDevice(user);
         }
       }
     };
-
-    verifyDevice();
-  }, [currentUser, checkDevice, logout, location.pathname]);
-  useEffect(() => {
+    checkDevice();
     if (!currentUser?.user && !availableRoutes.includes(location.pathname)) {
       navigate("/login");
     } else if (
@@ -41,7 +40,8 @@ export default function AuthRouting() {
     ) {
       navigate("/");
     }
-  }, [currentUser, navigate, availableRoutes, location.pathname]);
+  }, [location.pathname]);
+
   return (
     <Routes>
       <Route path="login" element={<Login />}></Route>
