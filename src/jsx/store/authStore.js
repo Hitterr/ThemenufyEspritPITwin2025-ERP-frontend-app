@@ -91,6 +91,20 @@ export const authStore = create(
             })
           );
         },
+        loginFacebbok: async (accessToken) => {
+          const deviceId = getDeviceInfo();
+          console.log("📢 [authStore.js:72]", accessToken);
+          const res = await apiRequest.post("/auth/login/facebook", {
+            accessToken,
+            deviceId,
+          });
+          console.log("📢 [authStore.js:74]", res);
+          set(
+            produce((state) => {
+              state.currentUser = res.data.data;
+            })
+          );
+        },
         getProfile: async (token) => {
           try {
             const res = await apiRequest.get(`/auth/login/profile`, {
