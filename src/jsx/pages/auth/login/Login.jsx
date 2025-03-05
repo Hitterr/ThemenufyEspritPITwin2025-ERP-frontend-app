@@ -47,16 +47,21 @@ function Login() {
   const navigate = useNavigate();
   const { login, currentUser } = authStore();
   const onSubmit = async (data) => {
-    if (!recaptcha) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Please verify you are not a robot",
-      });
-      return;
-    }
-    // Include deviceId in login data
-    await login(data);
+    try {
+      if (!recaptcha) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please verify you are not a robot",
+        });
+        return;
+      }
+      // Include deviceId in login data
+      await login(data);
+      if (currentUser?.user) {
+        navigate("/");
+      }
+    } catch (error) {}
   };
 
   return (

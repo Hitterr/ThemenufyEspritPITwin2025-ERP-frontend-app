@@ -25,7 +25,6 @@ export default function AuthRouting() {
         const user = await getProfile(currentUser.token);
         if (!user) {
           logout();
-          navigate("/login");
         } else {
           verifyDevice(user);
         }

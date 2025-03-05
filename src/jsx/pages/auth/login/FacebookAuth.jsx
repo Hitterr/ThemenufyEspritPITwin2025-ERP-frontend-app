@@ -2,10 +2,15 @@ const clientId = import.meta.env.VITE_FACEBOOK_APP_ID; // Replace with your Goog
 import FacebookLogin from "react-facebook-login";
 import { FaFacebook } from "react-icons/fa";
 import { authStore } from "../../../store/authStore";
+import { useNavigate } from "react-router-dom";
 const FacebookAuth = () => {
-  const { loginFacebbok } = authStore();
+  const { loginFacebook } = authStore();
+  const navigate = useNavigate();
   const responseFacebook = async (response) => {
-    await loginFacebbok(response.accessToken);
+    try {
+      await loginFacebook(response.accessToken);
+      navigate("/");
+    } catch (error) {}
   };
   return (
     <FacebookLogin
