@@ -17,9 +17,14 @@ const Profile = () => {
     "createdAt",
     "updatedAt",
     "verifiedDevices",
+    "isVerified",
     "__t",
     "_id",
     "authProvider",
+    "color",
+    "logo",
+    "payCashMethod",
+    "images",
   ];
   return (
     <div className="container mt-4">

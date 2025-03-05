@@ -37,20 +37,32 @@ const EditForm = () => {
       register,
       handleSubmit,
       control,
-      getValues,
-
       formState: { errors },
     } = useForm({
       resolver: yupResolver(editFormSchema),
       defaultValues: {
         ...currentUser.user,
-        birthday: format(currentUser.user.birthday, "MM/dd/yyyy"),
+        birthday: new Date(currentUser.user.birthday).toISOString().split('T')[0],
+        restaurant: currentUser.user.restaurant || {}
       },
     });
-    console.log(errors);
+
     const onSubmit = async (values) => {
       try {
-        await updateProfile(currentUser.token, values);
+        // Separate user and restaurant data
+        const { restaurant, ...userData } = values;
+        
+        const updatedData = {
+          ...currentUser.user,
+          ...userData,
+          restaurant: {
+            _id: currentUser.user.restaurant?._id,
+            ...currentUser.user.restaurant,
+            ...restaurant
+          }
+        };
+
+        await updateProfile(currentUser.token, updatedData);
         Swal.fire({
           icon: "success",
           title: "Success!",
@@ -60,6 +72,7 @@ const EditForm = () => {
           setActiveTab("About");
         }, 500);
       } catch (error) {
+        console.error("Update error:", error);
         Swal.fire({
           icon: "error",
           title: "Error!",

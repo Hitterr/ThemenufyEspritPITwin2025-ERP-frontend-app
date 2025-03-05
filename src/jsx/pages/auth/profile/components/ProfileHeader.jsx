@@ -6,21 +6,32 @@ import { BiCamera } from "react-icons/bi"; // Import de l'icône de caméra
 import { toast } from "react-toastify";
 const ProfileHeader = () => {
   const { currentUser, updateProfile } = authStore();
+  const [previewImage, setPreviewImage] = useState(currentUser.user.image || "favicon.ico");
 
-  const handleImageChange = (event) => {
+  const handleImageChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
       const newImageUrl = URL.createObjectURL(file);
-      console.log("New Image URL:", newImageUrl);
-      toast.success("Image Updated  !", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-      });
-      updateProfile({ ...currentUser, image: newImageUrl });
+      setPreviewImage(newImageUrl);
+      
+      try {
+        await updateProfile(currentUser.token, { 
+          ...currentUser.user, 
+          image: newImageUrl 
+        });
+        
+        toast.success("Image Updated!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      } catch (error) {
+        toast.error("Failed to update image");
+        setPreviewImage(currentUser.user.image || "favicon.ico");
+      }
     }
   };
 
@@ -46,7 +57,7 @@ const ProfileHeader = () => {
             <div className="profile-photo">
               <Stack className="justify-content-around align-items-center position-relative">
                 <img
-                  src={currentUser.user.image || "favicon.ico"}
+                  src={previewImage}
                   className="rounded-circle"
                   width={140}
                   height={140}
