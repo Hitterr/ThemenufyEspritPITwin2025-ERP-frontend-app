@@ -1,4 +1,3 @@
-import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Col, Row, Stack } from "react-bootstrap";
@@ -37,32 +36,20 @@ const EditForm = () => {
       register,
       handleSubmit,
       control,
+      getValues,
+
       formState: { errors },
     } = useForm({
       resolver: yupResolver(editFormSchema),
       defaultValues: {
         ...currentUser.user,
-        birthday: new Date(currentUser.user.birthday).toISOString().split('T')[0],
-        restaurant: currentUser.user.restaurant || {}
+        birthday: format(currentUser.user.birthday, "MM/dd/yyyy"),
       },
     });
-
+    console.log(errors);
     const onSubmit = async (values) => {
       try {
-        // Separate user and restaurant data
-        const { restaurant, ...userData } = values;
-        
-        const updatedData = {
-          ...currentUser.user,
-          ...userData,
-          restaurant: {
-            _id: currentUser.user.restaurant?._id,
-            ...currentUser.user.restaurant,
-            ...restaurant
-          }
-        };
-
-        await updateProfile(currentUser.token, updatedData);
+        await updateProfile(currentUser.token, values);
         Swal.fire({
           icon: "success",
           title: "Success!",
@@ -72,7 +59,6 @@ const EditForm = () => {
           setActiveTab("About");
         }, 500);
       } catch (error) {
-        console.error("Update error:", error);
         Swal.fire({
           icon: "error",
           title: "Error!",
