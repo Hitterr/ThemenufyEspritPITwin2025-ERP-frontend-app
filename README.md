@@ -1,8 +1,25 @@
-# React + Vite
+# the-menufy-back-office
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## How to run
 
-Currently, two official plugins are available:
+1. Clone this repository
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```shell
+git clone https://github.com/Hitterr/the-menufy-backoffice-20.git
+```
+
+2. Run
+
+```shell
+npm i -f
+```
+
+3. Run
+
+```shell
+npm run dev
+```
+
+## Notes
+
+- Don't forget to run the backend first
