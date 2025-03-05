@@ -8,21 +8,7 @@ export const authStore = create(
   persist(
     devtools(
       (set) => ({
-        currentUser: {
-          firstName: "Hadil",
-          lastName: "Bouhachem",
-          // role: "admin",
-          email: "hadil.bouhachem@example.com",
-          phone: "12345678",
-          address: "2036 Soukra",
-          employee: {
-            salary: 2500,
-          },
-          restaurant: {
-            name: "Restaurant #1",
-          },
-          image: "images/avatar/1.jpg",
-        },
+        currentUser: {},
         profile: {
           tab: "About",
         },
@@ -33,23 +19,21 @@ export const authStore = create(
             })
           );
         },
-        updateProfile: (userData) => {
-          set(
-            produce((state) => {
-              state.currentUser = {
-                ...state.currentUser,
-                ...userData,
-                employee: {
-                  ...state.currentUser.employee,
-                  ...userData.employee,
-                },
-                restaurant: {
-                  ...state.currentUser.restaurant,
-                  ...userData.restaurant,
-                },
-              };
-            })
-          );
+        updateProfile: async (token, userData) => {
+          try {
+            const { data } = await apiRequest.put("/auth/profile", userData, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            set(
+              produce((state) => {
+                state.currentUser.user = data.data;
+              })
+            );
+          } catch (error) {
+            console.error(error.message);
+          }
         },
         login: async (userdata) => {
           userdata.deviceId = getDeviceInfo();

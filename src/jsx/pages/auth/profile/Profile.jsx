@@ -8,7 +8,19 @@ import { BsPersonCircle, BsBriefcaseFill, BsShop } from "react-icons/bs"; // Ic�
 
 const Profile = () => {
   const { currentUser, profile, setActiveTab } = authStore();
-
+  const hiddenFields = [
+    "restaurant",
+    "isEmailVerified",
+    "employee",
+    "image",
+    "__v",
+    "createdAt",
+    "updatedAt",
+    "verifiedDevices",
+    "__t",
+    "_id",
+    "authProvider",
+  ];
   return (
     <div className="container mt-4">
       <ToastContainer />
@@ -49,16 +61,15 @@ const Profile = () => {
                     </Col>
                     <Col>
                       <h5 style={{ color: "#EA7B9B" }}>🧑 User Info</h5>
-                      {Object.keys(currentUser).map((field) => {
-                        if (["restaurant", "employee", "image"].includes(field))
-                          return null;
+                      {Object.keys(currentUser.user).map((field) => {
+                        if (hiddenFields.includes(field)) return null;
 
                         return (
                           <p key={field} className="mb-1">
                             <strong className="text-capitalize text-black">
                               {field}:
                             </strong>{" "}
-                            {field === "phone" && "+"} {currentUser[field]}
+                            {field === "phone" && "+"} {currentUser.user[field]}
                           </p>
                         );
                       })}
@@ -66,37 +77,8 @@ const Profile = () => {
                   </Row>
                 </Card>
 
-                {/* 💼 Employee Info */}
-                {currentUser.employee && (
-                  <Card
-                    className="mb-4 border-0 shadow-sm p-3 rounded"
-                    style={{ backgroundColor: "#FAE9EE", opacity: 0.9 }}
-                  >
-                    <Row className="align-items-center">
-                      <Col xs={3} className="text-center">
-                        <BsBriefcaseFill
-                          size={60}
-                          style={{ color: "#EA7B9B" }}
-                        />
-                      </Col>
-                      <Col>
-                        <h5 style={{ color: "#EA7B9B" }}>💼 Employee Info</h5>
-                        {Object.keys(currentUser.employee).map((field) => (
-                          <p key={field} className="mb-1">
-                            <strong className="text-capitalize text-black">
-                              {field}:
-                            </strong>{" "}
-                            {currentUser.employee[field]}{" "}
-                            {field === "salary" && "TND"}
-                          </p>
-                        ))}
-                      </Col>
-                    </Row>
-                  </Card>
-                )}
-
                 {/* 🍽️ Restaurant Info */}
-                {currentUser.restaurant && (
+                {currentUser?.user?.restaurant && (
                   <Card
                     className="mb-4 border-0 shadow-sm p-3 rounded"
                     style={{ backgroundColor: "#FAE9EE", opacity: 0.9 }}
@@ -107,14 +89,19 @@ const Profile = () => {
                       </Col>
                       <Col>
                         <h5 style={{ color: "#EA7B9B" }}>🍽️ Restaurant Info</h5>
-                        {Object.keys(currentUser.restaurant).map((field) => (
-                          <p key={field} className="mb-1">
-                            <strong className="text-capitalize text-black">
-                              {field}:
-                            </strong>{" "}
-                            {currentUser.restaurant[field]}
-                          </p>
-                        ))}
+                        {Object.keys(currentUser.user.restaurant).map(
+                          (field) => {
+                            if (hiddenFields.includes(field)) return null;
+                            return (
+                              <p key={field} className="mb-1">
+                                <strong className="text-capitalize text-black">
+                                  {field}:
+                                </strong>{" "}
+                                {currentUser.user.restaurant[field]}
+                              </p>
+                            );
+                          }
+                        )}
                       </Col>
                     </Row>
                   </Card>

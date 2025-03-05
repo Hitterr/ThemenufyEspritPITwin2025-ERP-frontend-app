@@ -30,8 +30,8 @@ function Login() {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      email: "john.doe@example.com",
-      password: "Test@123",
+      email: "admin@menufy.com",
+      password: "Admin@123",
     },
   });
 
