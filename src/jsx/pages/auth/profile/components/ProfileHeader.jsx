@@ -3,7 +3,6 @@ import { Button, Card, Stack } from "react-bootstrap";
 import backgroundImage from "@assets/images/backgroundRestaurant.jpg";
 import { authStore } from "../../../../store/authStore";
 import { BiCamera } from "react-icons/bi"; // Import de l'icône de caméra
-import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 const ProfileHeader = () => {
   const { currentUser, updateProfile } = authStore();
@@ -47,7 +46,7 @@ const ProfileHeader = () => {
             <div className="profile-photo">
               <Stack className="justify-content-around align-items-center position-relative">
                 <img
-                  src={currentUser.image || "favicon.ico"}
+                  src={currentUser.user.image || "favicon.ico"}
                   className="rounded-circle"
                   width={140}
                   height={140}
@@ -83,12 +82,12 @@ const ProfileHeader = () => {
             <div className="profile-details">
               <div className="profile-name px-3 pt-2">
                 <h4 className="text-primary mb-0">
-                  {currentUser.firstName} {currentUser.lastName}
+                  {currentUser.user.firstName} {currentUser.user.lastName}
                 </h4>
-                <p>{currentUser.role}</p>
+                <p>{currentUser.user.role}</p>
               </div>
               <div className="profile-email px-2 pt-2">
-                <h4 className="text-muted mb-0">{currentUser.email}</h4>
+                <h4 className="text-muted mb-0">{currentUser.user.email}</h4>
               </div>
             </div>
           </div>
