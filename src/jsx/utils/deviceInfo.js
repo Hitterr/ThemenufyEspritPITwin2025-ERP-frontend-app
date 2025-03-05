@@ -5,6 +5,7 @@ export const getDeviceInfo = () => {
     try {
       const userAgent = navigator.userAgent;
       const platform = navigator.platform.split(" ")[0];
+      const currentDate = new Date().toISOString().split("T")[0];
 
       // Detect browser
       let browser = "Unknown";
@@ -22,9 +23,12 @@ export const getDeviceInfo = () => {
         browser = "Safari";
       }
 
-      deviceName = `${platform}-${browser}`;
+      deviceName = `${platform}-${browser}-${currentDate}`;
     } catch (error) {
-      deviceName = `Device-${Math.random().toString(36).substr(2, 9)}`;
+      const currentDate = new Date().toISOString().split("T")[0];
+      deviceName = `Device-${Math.random()
+        .toString(36)
+        .substr(2, 9)}-${currentDate}`;
     }
 
     localStorage.setItem("deviceId", deviceName);

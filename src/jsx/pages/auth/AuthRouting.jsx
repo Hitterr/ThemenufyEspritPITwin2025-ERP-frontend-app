@@ -14,6 +14,7 @@ export default function AuthRouting() {
     []
   );
   const navigate = useNavigate();
+
   useEffect(() => {
     const checkDevice = async () => {
       if (
@@ -21,16 +22,25 @@ export default function AuthRouting() {
         currentUser?.token &&
         !location.pathname.includes("/verify-device")
       ) {
-        localStorage.setItem("token", currentUser.token);
-        const user = await getProfile(currentUser.token);
-        if (!user) {
+        try {
+          const user = await getProfile(currentUser.token);
+          if (!user) {
+            logout();
+          } else {
+            verifyDevice(user);
+          }
+        } catch (error) {
+          console.error("Device check failed:", error);
           logout();
-        } else {
-          verifyDevice(user);
         }
       }
     };
-    checkDevice();
+    // Only check device when token or location changes
+    if (currentUser?.token) {
+      checkDevice();
+    }
+
+    // Handle navigation
     if (!currentUser?.user && !availableRoutes.includes(location.pathname)) {
       navigate("/login");
     } else if (
@@ -39,7 +49,7 @@ export default function AuthRouting() {
     ) {
       navigate("/");
     }
-  }, [location.pathname]);
+  }, [currentUser?.token, location.pathname, availableRoutes]);
 
   return (
     <Routes>

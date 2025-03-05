@@ -70,12 +70,34 @@ export const authStore = create(
         },
         signup: async () => {},
         logout: async () => {
-          localStorage.removeItem("token");
-          set(
-            produce((state) => {
-              state.currentUser = null;
-            })
-          );
+          try {
+            const deviceId = localStorage.getItem("deviceId");
+            if (deviceId) {
+              await apiRequest.delete("/auth/devices", {
+                data: { devices: [deviceId] },
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              });
+              localStorage.removeItem("deviceId");
+            }
+            localStorage.removeItem("token");
+            set(
+              produce((state) => {
+                state.currentUser = null;
+              })
+            );
+          } catch (error) {
+            console.error("Error during logout:", error);
+            // Still clear the state even if device deletion fails
+            localStorage.removeItem("deviceId");
+            localStorage.removeItem("token");
+            set(
+              produce((state) => {
+                state.currentUser = null;
+              })
+            );
+          }
         },
         googleLogin: async (tokenId) => {
           const deviceId = getDeviceInfo();
