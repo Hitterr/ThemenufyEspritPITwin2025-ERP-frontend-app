@@ -21,18 +21,49 @@ export const authStore = create(
         },
         updateProfile: async (token, userData) => {
           try {
+            console.log(userData);
+            const { data: dataResto } = await apiRequest.put(
+              "/restaurant/" + userData.restaurant._id,
+              userData.restaurant,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
             const { data } = await apiRequest.put("/auth/profile", userData, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             });
+
             set(
               produce((state) => {
                 state.currentUser.user = data.data;
               })
             );
           } catch (error) {
-            console.error(error.message);
+            console.error(error);
+          }
+        },
+        updatePassword: async (token, passwordData) => {
+          try {
+            const { data: dataPassword } = await apiRequest.put(
+              "/auth/profile/password",
+              passwordData,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            return { success: true, message: "Password updated successfully" };
+          } catch (error) {
+            console.error("Password update error:", error);
+            return {
+              success: false,
+              error: error.response?.data?.message || error.message,
+            };
           }
         },
         login: async (userdata) => {

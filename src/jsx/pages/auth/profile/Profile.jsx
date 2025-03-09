@@ -5,7 +5,7 @@ import ProfileHeader from "./components/ProfileHeader";
 import EditForm from "./components/EditForm";
 import { ToastContainer } from "react-toastify";
 import { BsPersonCircle, BsBriefcaseFill, BsShop } from "react-icons/bs"; // Icônes Bootstrap
-
+import UpdatePassword from "./components/UpdatePassword";
 const Profile = () => {
   const { currentUser, profile, setActiveTab } = authStore();
   const hiddenFields = [
@@ -46,6 +46,14 @@ const Profile = () => {
               <Nav.Item>
                 <Nav.Link eventKey="Edit" onClick={() => setActiveTab("Edit")}>
                   Edit
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link
+                  eventKey="Password"
+                  onClick={() => setActiveTab("Password")}
+                >
+                  Password
                 </Nav.Link>
               </Nav.Item>
             </Nav>
@@ -116,6 +124,11 @@ const Profile = () => {
               {/* Section Edit */}
               <Tab.Pane eventKey="Edit">
                 <EditForm />
+              </Tab.Pane>
+
+              {/* Section Password */}
+              <Tab.Pane eventKey="Password">
+                <UpdatePassword />
               </Tab.Pane>
             </Tab.Content>
           </Tab.Container>
