@@ -310,14 +310,14 @@ const Header = ({ onNote }) => {
 									variant=""
 									className="nav-link  i-false p-0c-pointer pointr"
 								>
-									<img src={profile} width={20} alt="profile" />
+									<img src={currentUser?.user?.image || profile} width={20} style={{objectFit:"cover"}} alt="profile" />
 									<div className="header-info">
 										<span className="text-black">
 											<strong>
-												{currentUser && currentUser.email ? currentUser.email : "Admin "}
+												{ currentUser?.user?.email || "Admin "}
 											</strong>
 										</span>
-										<p className="fs-12 mb-0">Admin</p>
+										<p className="fs-12 mb-0">{currentUser?.user?.__t || "User"}</p>
 									</div>
 								</Dropdown.Toggle>
 								<Dropdown.Menu align="end" className="mt-2">

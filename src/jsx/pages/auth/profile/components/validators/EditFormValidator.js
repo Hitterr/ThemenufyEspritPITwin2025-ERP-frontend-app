@@ -38,10 +38,7 @@ export const editFormSchema = yup.object().shape({
     .string()
     .strict()
     .trim()
-    .matches(
-      /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d\s]{5,}$/,
-      "Address must contain at least one letter, one number, and be at least 5 characters long"
-    )
+    .min(5,"address must be at least 5 caracters long")
     .optional(),
 
   birthday: yup
