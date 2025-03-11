@@ -118,7 +118,7 @@ const UpdatePassword = () => {
                 />
                 <Button
                   variant="outline-primary"
-                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="border-0"
                 >
                   {showConfirmPassword ? <BsEyeSlash /> : <BsEye />}
