@@ -38,7 +38,7 @@ export const editFormSchema = yup.object().shape({
     .string()
     .strict()
     .trim()
-    .min(5,"address must be at least 5 caracters long")
+    .min(5, "address must be at least 5 caracters long")
     .optional(),
 
   birthday: yup

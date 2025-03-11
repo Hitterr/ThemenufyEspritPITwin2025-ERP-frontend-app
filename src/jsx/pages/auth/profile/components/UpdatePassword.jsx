@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { Form, Button, Card, Row, Col } from "react-bootstrap";
+import { Form, Button, Card, Row, Col, InputGroup } from "react-bootstrap";
 import { authStore } from "../../../../store/authStore";
 import Swal from "sweetalert2";
+import { updatePasswordFormSchema } from "./validators/UpdatePasswordFormValidator";
+import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 const UpdatePassword = () => {
   const { currentUser, updatePassword } = authStore();
@@ -10,22 +12,16 @@ const UpdatePassword = () => {
     newPassword: "",
     confirmPassword: "",
   });
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      Swal.fire({
-        icon: "error",
-        title: "Error!",
-        text: "New passwords do not match",
-      });
-      return;
-    }
-
     try {
+      e.preventDefault();
+
+      updatePasswordFormSchema.validateSync(passwordData);
       const result = await updatePassword(currentUser.token, {
-        oldPassword: passwordData.currentPassword,
+        currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword,
       });
 
@@ -41,7 +37,11 @@ const UpdatePassword = () => {
           confirmPassword: "",
         });
       } else {
-        throw new Error(result.error);
+        Swal.fire({
+          icon: "error",
+          title: "Error!",
+          text: result.error || "Failed to update password",
+        });
       }
     } catch (error) {
       Swal.fire({
@@ -77,35 +77,53 @@ const UpdatePassword = () => {
           <Col md={4}>
             <Form.Group>
               <Form.Label>New Password</Form.Label>
-              <Form.Control
-                type="password"
-                value={passwordData.newPassword}
-                onChange={(e) =>
-                  setPasswordData({
-                    ...passwordData,
-                    newPassword: e.target.value,
-                  })
-                }
-                required
-                className="border-primary rounded-3"
-              />
+              <InputGroup>
+                <Form.Control
+                  type={showNewPassword ? "text" : "password"}
+                  value={passwordData.newPassword}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      newPassword: e.target.value,
+                    })
+                  }
+                  required
+                  className="border-primary rounded-3"
+                />
+                <Button
+                  variant="outline-primary"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="border-0"
+                >
+                  {showNewPassword ? <BsEyeSlash /> : <BsEye />}
+                </Button>
+              </InputGroup>
             </Form.Group>
           </Col>
           <Col md={4}>
             <Form.Group>
               <Form.Label>Confirm New Password</Form.Label>
-              <Form.Control
-                type="password"
-                value={passwordData.confirmPassword}
-                onChange={(e) =>
-                  setPasswordData({
-                    ...passwordData,
-                    confirmPassword: e.target.value,
-                  })
-                }
-                required
-                className="border-primary rounded-3"
-              />
+              <InputGroup>
+                <Form.Control
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={passwordData.confirmPassword}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
+                  required
+                  className="border-primary rounded-3"
+                />
+                <Button
+                  variant="outline-primary"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="border-0"
+                >
+                  {showConfirmPassword ? <BsEyeSlash /> : <BsEye />}
+                </Button>
+              </InputGroup>
             </Form.Group>
           </Col>
         </Row>

@@ -48,6 +48,7 @@ export const authStore = create(
         },
         updatePassword: async (token, passwordData) => {
           try {
+            console.log("Sending password update request:", passwordData);
             const { data: dataPassword } = await apiRequest.put(
               "/auth/profile/password",
               passwordData,
@@ -60,6 +61,7 @@ export const authStore = create(
             return { success: true, message: "Password updated successfully" };
           } catch (error) {
             console.error("Password update error:", error);
+            console.error("Error response:", error.response?.data); // Ajout pour voir l'erreur du serveur
             return {
               success: false,
               error: error.response?.data?.message || error.message,
