@@ -7,11 +7,11 @@ function Logout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    logout(); 
+    logout();
     navigate("/login");
   }, [logout, navigate]);
 
-  return null; 
+  return null;
 }
 
 export default Logout;

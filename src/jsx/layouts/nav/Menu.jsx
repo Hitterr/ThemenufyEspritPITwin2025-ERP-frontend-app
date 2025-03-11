@@ -10,6 +10,10 @@ export const MenuList = [
 				to: "dashboard",
 			},
 			{
+				title: "Restaurants",
+				to: "restaurants",
+			},
+			{
 				title: "Zustand Example",
 				to: "test",
 			},
@@ -36,6 +40,10 @@ export const MenuList = [
 			{
 				title: "Task",
 				to: "task",
+			},
+			{
+				title: "Profile",
+				to: "profile",
 			},
 		],
 	},

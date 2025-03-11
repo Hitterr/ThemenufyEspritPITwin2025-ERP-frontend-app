@@ -1,7 +1,17 @@
-function LogoutPage(props) {
+import { useNavigate } from "react-router-dom";
+import { authStore } from "../../store/authStore";
+function LogoutPage() {
+	const { logout } = authStore();
+	const navigate = useNavigate();
 	return (
 		<>
-			<button className="dropdown-item ai-icon">
+			<button
+				className="dropdown-item ai-icon"
+				onClick={() => {
+					logout();
+					navigate("/login");
+				}}
+			>
 				<svg
 					id="icon-logout"
 					xmlns="http://www.w3.org/2000/svg"
