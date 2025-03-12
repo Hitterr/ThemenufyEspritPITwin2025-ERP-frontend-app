@@ -3,7 +3,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../../../assets/images/logo.png";
-import logotext from "../../../../assets/images/logo-text.png";
+import loginBg from "../../../../assets/images/login/bg-1.jpeg";
 import { Alert, Row, Stack } from "react-bootstrap";
 import GoogleAuth from "./GoogleAuth";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -12,7 +12,8 @@ import { useState } from "react";
 import FacebookAuth from "./FacebookAuth";
 import Swal from "sweetalert2";
 import { getDeviceInfo } from "../../../utils/deviceInfo";
-// Define the validation schema using Yup
+import "./css/login.css";
+// Validation Schema
 const schema = yup.object({
 	email: yup.string().email("Invalid email").required("Email is required"),
 	password: yup
@@ -32,162 +33,176 @@ function Login() {
 			password: "Admin@123",
 		},
 	});
-	// Add deviceId state
-	const [deviceId, setDeviceId] = useState(() => {
-		// Check if deviceId exists in localStorage, if not create and store a new one
-		const newDeviceId = getDeviceInfo();
-		return newDeviceId;
-	});
+	const [deviceId] = useState(getDeviceInfo());
 	const [recaptcha, setRecaptcha] = useState(null);
 	const [showPassword, setShowPassword] = useState(false);
 	const navigate = useNavigate();
 	const { login, currentUser } = authStore();
 	const onSubmit = async (data) => {
+		if (!recaptcha) {
+			Swal.fire({
+				icon: "error",
+				title: "Oops...",
+				text: "Please verify you are not a robot",
+			});
+			return;
+		}
 		try {
-			if (!recaptcha) {
-				Swal.fire({
-					icon: "error",
-					title: "Oops...",
-					text: "Please verify you are not a robot",
-				});
-				return;
-			}
-			// Include deviceId in login data
 			await login(data);
-			if (currentUser?.user) {
-				navigate("/");
-			}
-		} catch (error) {}
+			if (currentUser?.user) navigate("/");
+		} catch (error) {
+			console.error("Login failed:", error);
+		}
 	};
 	return (
-		<div className="login-form-bx">
-			<div className="container-fluid">
-				<div className="row">
-					<div className="col-lg-6 col-md-7 box-skew d-flex">
-						<div className="authincation-content">
-							<div className="mb-4">
-								<h3 className="mb-1 font-w600">Welcome to Sego</h3>
-								<p className="">Sign in by entering information below</p>
-							</div>
+		<div className="d-flex flex-column justify-content-center align-items-center min-vh-100 p-2 lg-p-4">
+			<div className="container w-100 md-m-auto mx-2">
+				<div className="row g-0 align-items-center rounded-3 shadow-lg">
+					<img
+						src={loginBg}
+						alt="Background"
+						className="d-md-none d-block col-12 rounded-top "
+						style={{
+							objectPosition: "bottom",
+							maxHeight: "200px",
+							objectFit: "cover",
+						}}
+					/>
+					{/* Left Column: Form */}
+					<div className="col-lg-6 col-md-7 d-flex align-items-center p-4">
+						<div className="w-100">
+							{/* Logo */}
+							<img
+								src={logo}
+								alt="Menufy Logo"
+								className="mb-3 w-50 mx-auto d-block"
+							/>
+							{/* Sign Up Prompt */}
+							<p className="text-center text-muted mb-4">
+								Don't have an account?{" "}
+								<Link className="text-primary" to="/signup">
+									Sign up
+								</Link>
+							</p>
+							{/* Error Alert */}
+							{currentUser?.status === false && currentUser.message && (
+								<Alert variant="info">{currentUser.message}</Alert>
+							)}
+							{/* Login Form */}
 							<form onSubmit={handleSubmit(onSubmit)}>
-								{currentUser && currentUser.status == false && currentUser.message && (
-									<Alert variant="info"> {currentUser.message}</Alert>
-								)}
-								<div className="form-group mb-3">
-									<label className="mb-2 form-label">
-										Email <span className="required">*</span>
-									</label>
-									<Controller
-										name="email"
-										control={control}
-										render={({ field }) => (
-											<input {...field} type="email" className="form-control" />
-										)}
-									/>
-									{errors.email && (
-										<div className="text-danger fs-12 my-2">{errors.email.message}</div>
-									)}
-								</div>
-								<div className="form-group mb-3">
-									<label className="mb-2 form-label">
-										Password <span className="required">*</span>
-									</label>
-									<div className="position-relative">
+								<Stack gap={3}>
+									{/* Email Field */}
+									<div>
+										<label className="form-label">
+											Email <span className="text-danger">*</span>
+										</label>
 										<Controller
-											name="password"
+											name="email"
 											control={control}
 											render={({ field }) => (
-												<input
-													{...field}
-													type={showPassword ? "text" : "password"}
-													className="form-control"
-												/>
+												<input {...field} type="email" className="form-control" />
 											)}
 										/>
-										<span
-											className={`show-pass eye ${showPassword ? "active" : ""}`}
-											onClick={() => setShowPassword(!showPassword)}
-										>
-											<i className="fa fa-eye-slash" />
-											<i className="fa fa-eye" />
-										</span>
+										{errors.email && (
+											<small className="text-danger">{errors.email.message}</small>
+										)}
 									</div>
-									{errors.password && (
-										<div className="text-danger fs-12 my-2">
-											{errors.password.message}
-										</div>
-									)}
-								</div>
-								<div className="form-row d-flex justify-content-between mt-4 mb-2">
-									<div className="form-group mb-3">
-										<Stack gap={2}>
-											<ReCAPTCHA
-												sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-												onChange={(value) => setRecaptcha(value)}
+									{/* Password Field */}
+									<div>
+										<label className="form-label">
+											Password <span className="text-danger">*</span>
+										</label>
+										<div className="position-relative">
+											<Controller
+												name="password"
+												control={control}
+												render={({ field }) => (
+													<input
+														{...field}
+														type={showPassword ? "text" : "password"}
+														className="form-control"
+													/>
+												)}
 											/>
-											<div className="custom-control custom-checkbox ms-1 ">
-												<input
-													type="checkbox"
-													className="form-check-input"
-													id="basic_checkbox_1"
-												/>
-												<label className="form-check-label" htmlFor="basic_checkbox_1">
-													I agree to the <Link to="/terms">Terms</Link> and{" "}
-													<Link to="/terms">Privacy Policy</Link>
-												</label>
-											</div>
-										</Stack>
+											<span
+												className={`show-pass eye ${showPassword ? "active" : ""}`}
+												onClick={() => setShowPassword(!showPassword)}
+												style={{
+													cursor: "pointer",
+													position: "absolute",
+													right: "10px",
+													top: "50%",
+													transform: "translateY(-50%)",
+												}}
+											>
+												{showPassword ? (
+													<i className="fa fa-eye-slash"></i>
+												) : (
+													<i className="fa fa-eye"></i>
+												)}
+											</span>
+										</div>
+										{errors.password && (
+											<small className="text-danger">{errors.password.message}</small>
+										)}
+										<p className="text-muted mt-2 mb-0 ">
+											Forgot Password?{" "}
+											<Link className="text-primary" to="/forgot-password">
+												Reset
+											</Link>
+										</p>
 									</div>
-								</div>
-								<Stack className="text-center" gap={2}>
-									<button type="submit" className="btn btn-primary btn-block">
+									{/* Captcha and Terms */}
+									<Stack gap={2}>
+										<ReCAPTCHA
+											sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+											onChange={(value) => setRecaptcha(value)}
+											size="normal"
+										/>
+										<div className="form-check">
+											<input
+												type="checkbox"
+												className="form-check-input"
+												id="terms-checkbox"
+												required
+											/>
+											<label
+												className="form-check-label text-muted pt-2"
+												htmlFor="terms-checkbox"
+											>
+												I agree to the{" "}
+												<Link className="text-primary" to="/terms">
+													Terms
+												</Link>{" "}
+												and{" "}
+												<Link className="text-primary" to="/privacy-policy">
+													Privacy Policy
+												</Link>
+											</label>
+										</div>
+									</Stack>
+									{/* Submit Button */}
+									<button type="submit" className="btn btn-primary w-100">
 										Sign In
 									</button>
-									<Row xs={2} className="justify-content-center ">
+									{/* Social Logins */}
+									<Row xs={1} sm={2} className="g-2 justify-content-center">
 										<FacebookAuth />
 										<GoogleAuth />
 									</Row>
 								</Stack>
 							</form>
-							<div className="new-account mt-2">
-								<p className="mb-0">
-									Don&apos;t have an account?{" "}
-									<Link className="text-primary" to="/signup">
-										Sign up
-									</Link>
-								</p>
-							</div>
 						</div>
 					</div>
-					<div className="col-lg-6 col-md-5 d-flex box-skew1">
-						<div className="inner-content align-self-center">
-							<Link to="/dashboard" className="login-logo">
-								<img src={logo} alt="" className="logo-icon me-2" />
-								<img src={logotext} alt="" className="logo-text ms-1" />
-							</Link>
-							<h2 className="m-b10 ">Login To You Now</h2>
-							<p className="m-b40">
-								User Experience & Interface Design Strategy SaaS Solutions
-							</p>
-							<ul className="social-icons mt-4">
-								<li>
-									<Link to={"#"}>
-										<i className="fab fa-facebook-f"></i>
-									</Link>
-								</li>
-								<li>
-									<Link to={"#"}>
-										<i className="fab fa-twitter"></i>
-									</Link>
-								</li>
-								<li>
-									<Link to={"#"}>
-										<i className="fab fa-linkedin-in"></i>
-									</Link>
-								</li>
-							</ul>
-						</div>
-					</div>
+					{/* Right Column: Background */}
+					<img
+						src={loginBg}
+						alt="Background"
+						style={{ minHeight: "580px", objectFit: "cover" }}
+						className="d-none d-md-block col-lg-6 col-md-5 rounded-end h-25 order-last md:h-100 object-cover aspect-16/9 object-bottom md:object-center"
+					/>
+					{/* <div className="col-lg-6 col-md-5 d-none d-md-block h-100">
+					</div> */}
 				</div>
 			</div>
 		</div>

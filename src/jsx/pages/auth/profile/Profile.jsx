@@ -158,7 +158,6 @@ const Profile = () => {
                   </Card>
                 )} */}
               </Tab.Pane>
-
               {/* Section Edit */}
               {/* Update the Tab.Pane eventKey as well */}
               <Tab.Pane eventKey="Settings">
