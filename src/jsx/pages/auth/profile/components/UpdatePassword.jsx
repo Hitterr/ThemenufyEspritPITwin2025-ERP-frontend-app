@@ -53,8 +53,21 @@ const UpdatePassword = () => {
   };
 
   return (
-    <Card className="p-4 border rounded shadow bg-white">
-      <h3 className="text-primary mb-4">Change Password</h3>
+    <Card
+      className="p-4  shadow-sm"
+      style={{ borderRadius: "10px", border: "1px solid #EA7B9B" }}
+    >
+      <h3
+        className="text-secondary mb-4"
+        style={{
+          borderBottom: "2px solid #EA7B9B",
+          paddingBottom: "10px",
+          display: "inline-block",
+          width: "fit-content",
+        }}
+      >
+        Change Password
+      </h3>
       <Form onSubmit={handleSubmit}>
         <Row className="g-3">
           <Col md={4}>

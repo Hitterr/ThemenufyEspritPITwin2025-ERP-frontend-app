@@ -139,7 +139,16 @@ const EditForm = () => {
 
       return (
         <>
-          <h3 className="text-primary mb-4">Personal Information</h3>
+          <h3
+            className="text-secondary mb-4"
+            style={{
+              borderBottom: "2px solid #EA7B9B",
+              paddingBottom: "10px",
+              display: "inline-block",
+            }}
+          >
+            Personal Information
+          </h3>
           <Row xs={1} sm={2} md={3} className="g-3">
             {userFields}
           </Row>
@@ -156,7 +165,17 @@ const EditForm = () => {
 
       return (
         <Stack className="mt-4">
-          <h3 className="text-primary mb-3">Restaurant Information</h3>
+          <h3
+            className="text-secondary mb-3"
+            style={{
+              borderBottom: "2px solid #EA7B9B",
+              paddingBottom: "10px",
+              display: "inline-block",
+              width: "fit-content",
+            }}
+          >
+            Restaurant Information
+          </h3>
           <Row xs={1} sm={2} md={3} className="g-3">
             {restaurantFields}
           </Row>
@@ -167,7 +186,11 @@ const EditForm = () => {
     return (
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="p-4 border rounded shadow bg-white"
+        className="p-4 rounded"
+        style={{
+          border: "2px solid #EA7B9B",
+          borderRadius: "10px",
+        }}
       >
         {renderUserInfo()}
         {renderRestaurantInfo()}

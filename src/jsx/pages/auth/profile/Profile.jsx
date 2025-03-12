@@ -39,12 +39,25 @@ const Profile = () => {
                 <Nav.Link
                   eventKey="About"
                   onClick={() => setActiveTab("About")}
+                  style={{
+                    color: profile.tab === "About" ? "#EA7B9B" : "#EA7B9B",
+                    borderBottom:
+                      profile.tab === "About" ? "2px solid #EA7B9B" : "none",
+                  }}
                 >
                   Profil
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link eventKey="Edit" onClick={() => setActiveTab("Edit")}>
+                <Nav.Link
+                  eventKey="Edit"
+                  onClick={() => setActiveTab("Edit")}
+                  style={{
+                    color: profile.tab === "Edit" ? "#EA7B9B" : "#EA7B9B",
+                    borderBottom:
+                      profile.tab === "Edit" ? "2px solid #EA7B9B" : "none",
+                  }}
+                >
                   Edit
                 </Nav.Link>
               </Nav.Item>
@@ -52,6 +65,11 @@ const Profile = () => {
                 <Nav.Link
                   eventKey="Password"
                   onClick={() => setActiveTab("Password")}
+                  style={{
+                    color: profile.tab === "Password" ? "#EA7B9B" : "#EA7B9B",
+                    borderBottom:
+                      profile.tab === "Password" ? "2px solid #EA7B9B" : "none",
+                  }}
                 >
                   Password
                 </Nav.Link>
@@ -61,7 +79,16 @@ const Profile = () => {
             <Tab.Content>
               {/* Section About */}
               <Tab.Pane eventKey="About">
-                <h4 className="text-primary mb-4">Mon Profil</h4>
+                <h3
+                  className="text-secondary mb-4"
+                  style={{
+                    borderBottom: "2px solid #EA7B9B",
+                    paddingBottom: "10px",
+                    display: "inline-block",
+                  }}
+                >
+                  My Profile
+                </h3>
 
                 {/* 🧑 User Info */}
                 <Card
