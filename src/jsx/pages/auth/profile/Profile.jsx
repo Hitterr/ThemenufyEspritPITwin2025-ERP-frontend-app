@@ -45,7 +45,7 @@ const Profile = () => {
                       profile.tab === "About" ? "2px solid #EA7B9B" : "none",
                   }}
                 >
-                  Profil
+                  Profile
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
@@ -79,41 +79,52 @@ const Profile = () => {
             <Tab.Content>
               {/* Section About */}
               <Tab.Pane eventKey="About">
-                <h3
-                  className="text-secondary mb-4"
-                  style={{
-                    borderBottom: "2px solid #EA7B9B",
-                    paddingBottom: "10px",
-                    display: "inline-block",
-                  }}
-                >
-                  My Profile
-                </h3>
-
                 {/* 🧑 User Info */}
                 <Card
                   className="mb-4 border-0 p-3 rounded"
-                  style={{ backgroundColor: "#FAE9EE", opacity: 0.9 }}
+                  style={{ borderRadius: "10px", border: "1px solid #EA7B9B" }}
                 >
+                  <h3
+                    className="text-secondary mb-4"
+                    style={{
+                      borderBottom: "2px solid #EA7B9B",
+                      paddingBottom: "10px",
+                      display: "inline-block",
+                      width: "fit-content",
+                    }}
+                  >
+                    Account Information
+                  </h3>
                   <Row className="align-items-center">
-                    <Col xs={3} className="text-center">
+                    {/* <Col xs={3} className="text-center">
                       <BsPersonCircle size={60} style={{ color: "#EA7B9B" }} />
-                    </Col>
-                    <Col>
-                      <h5 style={{ color: "#EA7B9B" }}> 🧑 User Info</h5>
+                    </Col> */}
+                    <Row
+                      xs={1}
+                      sm={2}
+                      lg={3}
+                      className="flex-wrap border-primary p-5"
+                    >
                       {Object.keys(currentUser.user).map((field) => {
                         if (hiddenFields.includes(field)) return null;
 
                         return (
-                          <p key={field} className="mb-1">
-                            <strong className="text-capitalize text-black">
+                          <Col key={field} className="my-2">
+                            <label className="text-capitalize text-primary">
                               {field}:
-                            </strong>{" "}
-                            {field === "phone" && "+"} {currentUser.user[field]}
-                          </p>
+                            </label>{" "}
+                            <input
+                              className="form-control border-primary rounded-3 text-black "
+                              style={{ height: "41px" }}
+                              type="text"
+                              readOnly
+                              defaultValue={currentUser.user[field]}
+                            />
+                            {/* {field === "phone" && "+"} {currentUser.user[field]} */}
+                          </Col>
                         );
                       })}
-                    </Col>
+                    </Row>
                   </Row>
                 </Card>
 
