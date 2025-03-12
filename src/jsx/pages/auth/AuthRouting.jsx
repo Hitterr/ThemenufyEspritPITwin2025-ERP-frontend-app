@@ -3,9 +3,9 @@ import Login from "./login/Login";
 import { authStore } from "../../store/authStore";
 import { useEffect, useMemo } from "react";
 import ForgotPassword from "./reset-password/ForgotPassword";
-import Signup from "./signup/Signup";
 import DeviceVerification from "./login/DeviceVerification";
 import Terms from "./login/components/Terms";
+import { Signup } from "./signup/Signup";
 export default function AuthRouting() {
 	const { currentUser, verifyDevice, getProfile, logout } = authStore();
 	const location = useLocation();

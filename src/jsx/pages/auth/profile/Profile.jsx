@@ -112,7 +112,6 @@ const Profile = () => {
                   </Card>
                 )}
               </Tab.Pane>
-
               {/* Section Edit */}
               <Tab.Pane eventKey="Edit">
                 <EditForm />
