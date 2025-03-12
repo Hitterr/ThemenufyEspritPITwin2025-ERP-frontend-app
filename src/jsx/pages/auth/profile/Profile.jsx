@@ -50,15 +50,15 @@ const Profile = () => {
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link
-                  eventKey="Edit"
-                  onClick={() => setActiveTab("Edit")}
+                  eventKey="Settings"
+                  onClick={() => setActiveTab("Settings")}
                   style={{
-                    color: profile.tab === "Edit" ? "#EA7B9B" : "#EA7B9B",
+                    color: profile.tab === "Settings" ? "#EA7B9B" : "#EA7B9B",
                     borderBottom:
-                      profile.tab === "Edit" ? "2px solid #EA7B9B" : "none",
+                      profile.tab === "Settings" ? "2px solid #EA7B9B" : "none",
                   }}
                 >
-                  Edit
+                  Settings
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
@@ -149,7 +149,8 @@ const Profile = () => {
               </Tab.Pane>
 
               {/* Section Edit */}
-              <Tab.Pane eventKey="Edit">
+              {/* Update the Tab.Pane eventKey as well */}
+              <Tab.Pane eventKey="Settings">
                 <EditForm />
               </Tab.Pane>
 
