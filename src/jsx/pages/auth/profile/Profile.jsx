@@ -81,7 +81,7 @@ const Profile = () => {
               <Tab.Pane eventKey="About">
                 {/* 🧑 User Info */}
                 <Card
-                  className="mb-4 border-0 p-3 rounded"
+                  className="mb-4  p-3 rounded"
                   style={{ borderRadius: "10px", border: "1px solid #EA7B9B" }}
                 >
                   <h3
@@ -110,11 +110,11 @@ const Profile = () => {
 
                         return (
                           <Col key={field} className="my-2">
-                            <label className="text-capitalize text-primary">
+                            <label className="text-capitalize text-primary mb-1">
                               {field}:
                             </label>{" "}
                             <input
-                              className="form-control border-primary rounded-3 text-black "
+                              className="form-control border-primary rounded-3 text-muted "
                               style={{ height: "41px" }}
                               type="text"
                               readOnly
