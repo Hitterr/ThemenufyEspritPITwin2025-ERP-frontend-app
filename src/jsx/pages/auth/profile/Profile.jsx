@@ -92,7 +92,7 @@ const Profile = () => {
 
                 {/* 🧑 User Info */}
                 <Card
-                  className="mb-4 border-0 shadow-sm p-3 rounded"
+                  className="mb-4 border-0 p-3 rounded"
                   style={{ backgroundColor: "#FAE9EE", opacity: 0.9 }}
                 >
                   <Row className="align-items-center">
