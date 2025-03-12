@@ -4,20 +4,26 @@ import { authStore } from "../../../../store/authStore";
 import Swal from "sweetalert2";
 import { updatePasswordFormSchema } from "./validators/UpdatePasswordFormValidator";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 const UpdatePassword = () => {
-  const { currentUser, updatePassword } = authStore();
+  const navigate = useNavigate();
+  const { currentUser, updatePassword, setActiveTab } = authStore();
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
+  const [error, setError] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+  const [success, setSuccess] = useState("");
+  
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
+      setError("");
+      setSuccess("");
 
       updatePasswordFormSchema.validateSync(passwordData);
       const result = await updatePassword(currentUser.token, {
@@ -26,35 +32,27 @@ const UpdatePassword = () => {
       });
 
       if (result.success) {
-        Swal.fire({
-          icon: "success",
-          title: "Success!",
-          text: result.message,
-        });
+        setSuccess("Password updated successfully!");
         setPasswordData({
           currentPassword: "",
           newPassword: "",
           confirmPassword: "",
         });
+        // Redirect to profile page after 1 second
+        setTimeout(() => {
+          setActiveTab("About");
+        }, 1000);
       } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error!",
-          text: result.error || "Failed to update password",
-        });
+        setError(result.error || "Failed to update password");
       }
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error!",
-        text: error.message || "Failed to update password",
-      });
+      setError(error.message || "Failed to update password");
     }
   };
 
   return (
     <Card
-      className="p-4  shadow-sm"
+      className="p-4 shadow-sm"
       style={{ borderRadius: "10px", border: "1px solid #EA7B9B" }}
     >
       <h3
@@ -68,6 +66,16 @@ const UpdatePassword = () => {
       >
         Change Password
       </h3>
+      {error && (
+        <div className="alert alert-danger mb-3" role="alert">
+          {error}
+        </div>
+      )}
+      {success && (
+        <div className="alert alert-success mb-3" role="alert">
+          {success}
+        </div>
+      )}
       <Form onSubmit={handleSubmit}>
         <Row className="g-3">
           <Col md={4}>
@@ -142,7 +150,12 @@ const UpdatePassword = () => {
         </Row>
         <Button
           type="submit"
-          className="btn btn-primary mt-4 px-4 py-2 rounded-pill shadow"
+          style={{ 
+            backgroundColor: "#EA7B9B",
+            border: "none",
+            color: "white"
+          }}
+          className="mt-4 px-4 py-2 rounded-pill shadow"
         >
           Update Password
         </Button>
