@@ -156,7 +156,8 @@ const EditForm = () => {
       );
     };
 
-    const renderRestaurantInfo = () => {
+    // Comment out renderRestaurantInfo function and its call
+    /* const renderRestaurantInfo = () => {
       if (!currentUser.user?.restaurant) return null;
 
       const restaurantFields = Object.entries(currentUser.user.restaurant)
@@ -165,15 +166,12 @@ const EditForm = () => {
 
       return (
         <Stack className="mt-4">
-          <h3
-            className="text-secondary mb-3"
-            style={{
-              borderBottom: "2px solid #EA7B9B",
-              paddingBottom: "10px",
-              display: "inline-block",
-              width: "fit-content",
-            }}
-          >
+          <h3 className="text-secondary mb-3" style={{
+            borderBottom: "2px solid #EA7B9B",
+            paddingBottom: "10px",
+            display: "inline-block",
+            width: "fit-content",
+          }}>
             Restaurant Information
           </h3>
           <Row xs={1} sm={2} md={3} className="g-3">
@@ -181,7 +179,7 @@ const EditForm = () => {
           </Row>
         </Stack>
       );
-    };
+    }; */
 
     return (
       <form
@@ -193,7 +191,7 @@ const EditForm = () => {
         }}
       >
         {renderUserInfo()}
-        {renderRestaurantInfo()}
+        {/* {renderRestaurantInfo()} */}
         <button
           type="submit"
           className="btn btn-primary mt-4 px-4 py-2 rounded-pill shadow"

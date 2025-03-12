@@ -100,7 +100,7 @@ const Profile = () => {
                       <BsPersonCircle size={60} style={{ color: "#EA7B9B" }} />
                     </Col>
                     <Col>
-                      <h5 style={{ color: "#EA7B9B" }}>🧑 User Info</h5>
+                      <h5 style={{ color: "#EA7B9B" }}> 🧑 User Info</h5>
                       {Object.keys(currentUser.user).map((field) => {
                         if (hiddenFields.includes(field)) return null;
 
@@ -118,34 +118,45 @@ const Profile = () => {
                 </Card>
 
                 {/* 🍽️ Restaurant Info */}
-                {currentUser?.user?.restaurant && (
-                  <Card
-                    className="mb-4 border-0 shadow-sm p-3 rounded"
-                    style={{ backgroundColor: "#FAE9EE", opacity: 0.9 }}
-                  >
-                    <Row className="align-items-center">
-                      <Col xs={3} className="text-center">
-                        <BsShop size={60} style={{ color: "#EA7B9B" }} />
-                      </Col>
-                      <Col>
-                        <h5 style={{ color: "#EA7B9B" }}>🍽️ Restaurant Info</h5>
-                        {Object.keys(currentUser.user.restaurant).map(
-                          (field) => {
-                            if (hiddenFields.includes(field)) return null;
-                            return (
-                              <p key={field} className="mb-1">
-                                <strong className="text-capitalize text-black">
-                                  {field}:
-                                </strong>{" "}
+                {/* Comment out Restaurant Info section */}
+                {/* {currentUser?.user?.restaurant && (
+                  <Card className="mb-4 border-0">
+                    <Card.Body className="p-4">
+                      <div className="section-header mb-4 d-flex justify-content-between align-items-center">
+                        <h4 style={{ 
+                          color: '#333', 
+                          fontWeight: '600',
+                          borderBottom: '2px solid #EA7B9B',
+                          paddingBottom: '8px'
+                        }}>
+                          <BsShop 
+                            size={24} 
+                            style={{ color: "#EA7B9B", marginRight: '10px' }} 
+                          />
+                          Restaurant Info
+                        </h4>
+                        <div style={{ color: '#EA7B9B', cursor: 'pointer' }}>
+                          <i className="fas fa-pencil-alt" />
+                        </div>
+                      </div>
+                      <div className="info-grid">
+                        {Object.keys(currentUser.user.restaurant).map((field) => {
+                          if (hiddenFields.includes(field)) return null;
+                          return (
+                            <div key={field} className="info-item d-flex align-items-center">
+                              <div className="info-label">
+                                {field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1')}
+                              </div>
+                              <div className="info-value">
                                 {currentUser.user.restaurant[field]}
-                              </p>
-                            );
-                          }
-                        )}
-                      </Col>
-                    </Row>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </Card.Body>
                   </Card>
-                )}
+                )} */}
               </Tab.Pane>
 
               {/* Section Edit */}
