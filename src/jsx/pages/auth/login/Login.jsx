@@ -167,7 +167,7 @@ function Login() {
 												required
 											/>
 											<label
-												className="form-check-label text-muted"
+												className="form-check-label text-muted pt-2"
 												htmlFor="terms-checkbox"
 											>
 												I agree to the{" "}

@@ -21,6 +21,7 @@ const FacebookAuth = () => {
 			cssClass="btn btn-outline-secondary w-100 my-1  m-0"
 			buttonStyle={{ height: "40px", textAlign: "center", padding: 0 }}
 			textButton=""
+			typeButton="button"
 			icon={<FaFacebook size={20} className="mx-2" />}
 		/>
 	);
