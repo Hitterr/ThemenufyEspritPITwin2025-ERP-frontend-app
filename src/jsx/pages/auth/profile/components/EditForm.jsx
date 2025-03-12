@@ -41,10 +41,7 @@ const EditForm = () => {
       formState: { errors },
     } = useForm({
       resolver: yupResolver(editFormSchema),
-      defaultValues: {
-        ...currentUser.user,
-        birthday: format(currentUser.user.birthday, "MM/dd/yyyy"),
-      },
+      defaultValues: currentUser.user,
     });
     console.log(errors);
     const onSubmit = async (values) => {
@@ -106,8 +103,8 @@ const EditForm = () => {
           <Col key={fieldName}>
             <label className="form-label">{label}</label>
             <input
-              {...register(fieldName)}
               type="date"
+              {...register(fieldName)}
               className="form-control border-primary rounded-3"
               style={{ height: "41px" }}
             />
