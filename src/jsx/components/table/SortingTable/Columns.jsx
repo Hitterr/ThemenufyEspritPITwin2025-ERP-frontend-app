@@ -15,6 +15,12 @@ export const COLUMNS = [
 		accessor: 'last_name'
 	},
 	{
+		Header: "Email",
+		Footer: "Email",
+		accessor: "email",
+		enableSorting: true, 
+	  },
+	{
 		Header : 'Date of  Birth',
 		Footer : 'Date of  Birth',
 		accessor: 'date_of_birth'

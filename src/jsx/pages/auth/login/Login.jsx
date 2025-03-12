@@ -49,6 +49,7 @@ function Login() {
 		}
 		try {
 			await login(data);
+			console.log("Login successful:", currentUser);
 			if (currentUser?.user) navigate("/");
 		} catch (error) {
 			console.error("Login failed:", error);

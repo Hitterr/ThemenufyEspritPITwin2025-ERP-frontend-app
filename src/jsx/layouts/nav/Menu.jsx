@@ -10,8 +10,12 @@ export const MenuList = [
 				to: "dashboard",
 			},
 			{
-				title: "Restaurants",
+				title: "Admin",
 				to: "restaurants",
+			},
+			{
+				title: "Super Admin",
+				to: "SuperAdmin",
 			},
 			{
 				title: "Zustand Example",
@@ -42,8 +46,8 @@ export const MenuList = [
 				to: "task",
 			},
 			{
-				title: "Profile",
-				to: "profile",
+				title: "Archive",
+				to: "Archived",
 			},
 		],
 	},

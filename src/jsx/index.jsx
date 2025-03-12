@@ -95,6 +95,8 @@ import AuthRouting from "./pages/auth/AuthRouting";
 import Test from "./pages/auth/Test";
 import Profile from "./pages/auth/profile/Profile";
 import DashAdmin from "./pages/Dashbord/AdminDash";
+import DashAdmins from "./pages/Dashbord/SuperAdminDash";
+import ArchivedSuperAdmin from "./pages/Dashbord/ArchiverSuperAdmine";
 const Markup = () => {
 	const allroutes = [
 		/// Dashboard
@@ -178,6 +180,9 @@ const Markup = () => {
 		{ url: "test", component: <Test /> },
 		{ url: "profile", component: <Profile /> },
 		{ url: "restaurants", component: <DashAdmin /> },
+		{ url: "SuperAdmin", component: <DashAdmins /> },
+		{ url: "Archived", component: <ArchivedSuperAdmin /> },
+
 	];
 	return (
 		<>
