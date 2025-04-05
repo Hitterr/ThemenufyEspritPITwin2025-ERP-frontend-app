@@ -18,6 +18,7 @@ const EditIngredient = () => {
 	} = useForm({
 		resolver: yupResolver(editIngredientSchema),
 		mode: "onChange",
+		valueAsNumber: true, // Add this to handle numbers properly
 	});
 	useEffect(() => {
 		loadIngredient();
@@ -25,13 +26,29 @@ const EditIngredient = () => {
 	const loadIngredient = async () => {
 		const ingredient = await getIngredientById(id);
 		if (ingredient) {
-			reset(ingredient); // Reset form with ingredient data
+			// Convert numeric strings to numbers
+			const formattedIngredient = {
+				...ingredient,
+				quantity: Number(ingredient.quantity),
+				price: Number(ingredient.price),
+				maxQty: Number(ingredient.maxQty),
+				minQty: Number(ingredient.minQty),
+			};
+			reset(formattedIngredient);
 		} else {
 			navigate("/ingredients");
 		}
 	};
 	const onSubmit = async (data) => {
-		const success = await updateIngredient(id, data);
+		// Ensure numeric values
+		const formData = {
+			...data,
+			quantity: Number(data.quantity),
+			price: Number(data.price),
+			maxQty: Number(data.maxQty),
+			minQty: Number(data.minQty),
+		};
+		const success = await updateIngredient(id, formData);
 		if (success) {
 			Swal.fire({
 				icon: "success",
@@ -79,8 +96,9 @@ const EditIngredient = () => {
 					<Form.Group className="mb-3">
 						<Form.Label>Quantity</Form.Label>
 						<Form.Control
-							type="number"
 							{...register("quantity")}
+							type="number"
+							step={1}
 							isInvalid={!!errors.quantity}
 						/>
 						<Form.Control.Feedback type="invalid">
@@ -115,6 +133,7 @@ const EditIngredient = () => {
 						<Form.Control
 							type="number"
 							{...register("maxQty")}
+							step={1}
 							isInvalid={!!errors.maxQty}
 						/>
 						<Form.Control.Feedback type="invalid">
@@ -126,6 +145,7 @@ const EditIngredient = () => {
 						<Form.Control
 							type="number"
 							{...register("minQty")}
+							step={1}
 							isInvalid={!!errors.minQty}
 						/>
 						<Form.Control.Feedback type="invalid">
