@@ -13,14 +13,12 @@ const useIngredientStore = create(
 			minPrice: "",
 			maxPrice: "",
 		},
-
 		setFilterCriteria: (criteria) => {
 			set((state) => ({
 				filterCriteria: { ...state.filterCriteria, ...criteria },
 			}));
 			get().applyFilters();
 		},
-
 		resetFilters: () => {
 			set((state) => ({
 				filterCriteria: {
@@ -33,11 +31,9 @@ const useIngredientStore = create(
 				filteredIngredients: state.ingredients,
 			}));
 		},
-
 		applyFilters: () => {
 			const { ingredients, filterCriteria } = get();
 			let filtered = [...ingredients];
-
 			// Search filter (name and type)
 			if (filterCriteria.search) {
 				const searchLower = filterCriteria.search.toLowerCase();
@@ -47,18 +43,17 @@ const useIngredientStore = create(
 						ing.type.toLowerCase().includes(searchLower)
 				);
 			}
-
 			// Type filter
 			if (filterCriteria.type) {
-				filtered = filtered.filter((ing) => ing.type === filterCriteria.type);
+				filtered = filtered.filter(
+					(ing) => ing.type.toLowerCase() === filterCriteria.type.toLowerCase()
+				);
 			}
-
 			// Availability filter
 			if (filterCriteria.availability !== "all") {
 				const isAvailable = filterCriteria.availability === "available";
 				filtered = filtered.filter((ing) => ing.disponibility === isAvailable);
 			}
-
 			// Price range filter
 			if (filterCriteria.minPrice !== "") {
 				filtered = filtered.filter(
@@ -70,17 +65,15 @@ const useIngredientStore = create(
 					(ing) => ing.price <= Number(filterCriteria.maxPrice)
 				);
 			}
-
 			set({ filteredIngredients: filtered });
 		},
-
 		// Modify fetchIngredients to initialize filteredIngredients
 		fetchIngredients: async () => {
 			try {
 				const { data } = await axios.get(API_URL);
-				set({ 
+				set({
 					ingredients: data.data,
-					filteredIngredients: data.data 
+					filteredIngredients: data.data,
 				});
 			} catch (error) {
 				console.error("Error fetching ingredients:", error.message);
@@ -98,9 +91,14 @@ const useIngredientStore = create(
 		addIngredient: async (ingredientData) => {
 			try {
 				const { data } = await axios.post(API_URL, ingredientData);
-				set((state) => ({
-					ingredients: [...state.ingredients, data.data],
-				}));
+				set((state) => {
+					const newIngredients = [...state.ingredients, data.data];
+					return {
+						ingredients: newIngredients,
+						filteredIngredients: newIngredients,
+					};
+				});
+				get().applyFilters(); // Reapply filters after adding
 				return true;
 			} catch (error) {
 				console.error("Error adding ingredient:", error.message);
@@ -110,11 +108,16 @@ const useIngredientStore = create(
 		updateIngredient: async (id, ingredientData) => {
 			try {
 				const { data } = await axios.put(`${API_URL}/${id}`, ingredientData);
-				set((state) => ({
-					ingredients: state.ingredients.map((ingredient) =>
+				set((state) => {
+					const updatedIngredients = state.ingredients.map((ingredient) =>
 						ingredient._id === id ? data.data : ingredient
-					),
-				}));
+					);
+					return {
+						ingredients: updatedIngredients,
+						filteredIngredients: updatedIngredients,
+					};
+				});
+				get().applyFilters(); // Reapply filters after updating
 				return true;
 			} catch (error) {
 				console.error("Error updating ingredient:", error.message);
@@ -124,11 +127,16 @@ const useIngredientStore = create(
 		deleteIngredient: async (id) => {
 			try {
 				await axios.delete(`${API_URL}/${id}`);
-				set((state) => ({
-					ingredients: state.ingredients.filter(
+				set((state) => {
+					const remainingIngredients = state.ingredients.filter(
 						(ingredient) => ingredient._id !== id
-					),
-				}));
+					);
+					return {
+						ingredients: remainingIngredients,
+						filteredIngredients: remainingIngredients,
+					};
+				});
+				get().applyFilters(); // Reapply filters after deleting
 				return true;
 			} catch (error) {
 				console.error("Error deleting ingredient:", error.message);
@@ -165,5 +173,4 @@ const useIngredientStore = create(
 		},
 	}))
 );
-
 export default useIngredientStore;
