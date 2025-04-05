@@ -26,6 +26,10 @@ export const MenuList = [
 				to: "test",
 			},
 			{
+				title: "ingredients",
+				to: "ingredients",
+			},
+			{
 				title: "Orders",
 				to: "orders",
 			},
