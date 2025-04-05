@@ -97,7 +97,10 @@ import Profile from "./pages/auth/profile/Profile";
 import SuperDb from "./pages/Dashbord/SuperAdmin/SuperAdminDash";
 import ArchivedSup from "./pages/Dashbord/SuperAdmin/ArchiverSuperAdmine";
 import RestoDb from "./pages/Dashbord/Restaurant/DashRestaurants";
-
+import Ingredients from "./pages/ingredients";
+import AddIngredient from "./pages/ingredients/AddIngredient";
+import EditIngredient from "./pages/ingredients/EditIngredient";
+import ShowIngredient from "./pages/ingredients/ShowIngredient";
 const Markup = () => {
 	const allroutes = [
 		/// Dashboard
@@ -183,7 +186,10 @@ const Markup = () => {
 		{ url: "SuperAdmin", component: <SuperDb /> },
 		{ url: "Archived", component: <ArchivedSup /> },
 		{ url: "Resto", component: <RestoDb /> },
-
+		{ url: "ingredients", component: <Ingredients /> },
+		{ url: "ingredients/add", component: <AddIngredient /> },
+		{ url: "ingredients/edit/:id", component: <EditIngredient /> },
+		{ url: "ingredients/:id", component: <ShowIngredient /> },
 	];
 	return (
 		<>
