@@ -107,7 +107,17 @@ const useIngredientStore = create(
 		},
 		updateIngredient: async (id, ingredientData) => {
 			try {
-				const { data } = await axios.put(`${API_URL}/${id}`, ingredientData);
+				// Ensure numeric values before sending to API
+				const dataToSend = {
+					...ingredientData,
+					quantity: parseInt(ingredientData.quantity),
+					price: parseFloat(ingredientData.price),
+					maxQty: parseInt(ingredientData.maxQty),
+					minQty: parseInt(ingredientData.minQty)
+				};
+				
+				const { data } = await axios.put(`${API_URL}/${id}`, dataToSend);
+				
 				set((state) => {
 					const updatedIngredients = state.ingredients.map((ingredient) =>
 						ingredient._id === id ? data.data : ingredient
@@ -117,7 +127,7 @@ const useIngredientStore = create(
 						filteredIngredients: updatedIngredients,
 					};
 				});
-				get().applyFilters(); // Reapply filters after updating
+				get().applyFilters();
 				return true;
 			} catch (error) {
 				console.error("Error updating ingredient:", error.message);

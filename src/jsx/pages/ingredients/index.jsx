@@ -25,6 +25,29 @@ const Ingredients = () => {
 		socket.on("disconnect", () => {
 			console.log("Socket disconnected");
 		});
+		// Listen for ingredient updates
+		socket.on("ingredient-update", (data) => {
+			console.log("Ingredient updated:", data);
+			loadIngredients(); // Refresh the ingredients list
+			Swal.fire({
+				icon: "info",
+				title: "Ingredient Updated",
+				html: `
+					<strong>${data.ingredient.libelle}</strong><br>
+					${data.message}<br>
+					Current Quantity: ${data.ingredient.quantity} ${data.ingredient.unit}
+				`,
+				toast: true,
+				position: "top-end",
+				showConfirmButton: false,
+				timer: 3000,
+				timerProgressBar: true,
+				didOpen: (toast) => {
+					toast.addEventListener("mouseenter", Swal.stopTimer);
+					toast.addEventListener("mouseleave", Swal.resumeTimer);
+				},
+			});
+		});
 		// Listen for ingredient alerts
 		socket.on("ingredient-alert", (data) => {
 			console.log("Ingredient alert received:", data);
