@@ -72,6 +72,8 @@ const Ingredients = () => {
 			if (result.isConfirmed) {
 				const success = await deleteIngredient(id);
 				if (success) {
+					await loadIngredients(); // Refresh the ingredients list
+					setCurrentPage(1); // Reset to first page
 					Swal.fire("Deleted!", "Ingredient has been deleted.", "success");
 				} else {
 					Swal.fire("Error!", "Failed to delete ingredient.", "error");
