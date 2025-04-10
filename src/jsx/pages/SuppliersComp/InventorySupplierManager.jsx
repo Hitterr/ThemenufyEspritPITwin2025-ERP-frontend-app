@@ -51,7 +51,7 @@ export default function InventorySupplierManager() {
     };
 
     try {
-      const response = await axios.put("http://localhost:5000/api/ingredient/bulk", payload);
+      const response = await axios.patch("http://localhost:5000/api/ingredient/bulk", payload);
       if (response.data.success) {
         setInventory((prev) =>
           prev.map((item) =>
@@ -62,12 +62,12 @@ export default function InventorySupplierManager() {
         );
         setSelectedItems([]);
         setBulkValue("");
-        alert("✅ Édition en masse réussie !");
+        alert("Édition en masse réussie !");
       } else {
         console.error("Erreur API:", response.data.message);
       }
     } catch (error) {
-      console.error("❌ Échec de l'édition en masse:", error);
+      console.error("Échec de l'édition en masse:", error);
       alert("Erreur lors de l'édition en masse.");
     }
   };
@@ -75,8 +75,7 @@ export default function InventorySupplierManager() {
   return (
     <div className="container mt-5">
       <h2 className="mb-4">Gestion des Stocks et Fournisseurs</h2>
-
-      {/* 🔍 Barre de recherche & filtres */}
+      {/*filtres */}
       <Row className="mb-4 align-items-center">
         <Col md={3}>
           <div className="position-relative">
@@ -102,7 +101,6 @@ export default function InventorySupplierManager() {
             <option value="critical">🔴 Critique</option>
           </Form.Select>
         </Col>
-
         <Col md={2}>
           <Form.Select
             value={bulkField}
@@ -114,7 +112,6 @@ export default function InventorySupplierManager() {
             <option value="price">Prix</option>
           </Form.Select>
         </Col>
-
         <Col md={2}>
           <Form.Control
             type="number"
@@ -136,8 +133,6 @@ export default function InventorySupplierManager() {
           </Button>
         </Col>
       </Row>
-
-      {/* 📦 Tableau */}
       <Table striped bordered hover responsive>
         <thead className="table-primary">
           <tr>
@@ -181,8 +176,6 @@ export default function InventorySupplierManager() {
           )}
         </tbody>
       </Table>
-
-      {/* 📊 Comparaison */}
       {showComparison && (
         <div className="mt-4">
           <h4>Comparaison des Fournisseurs</h4>

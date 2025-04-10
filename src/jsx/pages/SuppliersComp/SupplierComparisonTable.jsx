@@ -36,7 +36,6 @@ export default function SupplierComparisonTable({ ingredientId }) {
   if (loading) return <Spinner animation="border" />;
 
   if (error) return <Alert variant="danger">{error}</Alert>;
-
   return (
     <Table striped bordered hover className="text-center shadow-sm">
       <thead className="table-primary text-white">
@@ -54,7 +53,6 @@ export default function SupplierComparisonTable({ ingredientId }) {
         <i className="fas fa-sort ms-2 text-muted" />
       )}
     </th>
-
     <th onClick={() => handleSort("price")} style={{ cursor: "pointer" }}>
       <i className="fas fa-euro-sign me-2 text-success"></i>
       <span className="text-dark">Prix</span>
@@ -68,7 +66,6 @@ export default function SupplierComparisonTable({ ingredientId }) {
         <i className="fas fa-sort ms-2 text-muted" />
       )}
     </th>
-
     <th onClick={() => handleSort("deliveryTime")} style={{ cursor: "pointer" }}>
       <i className="fas fa-truck me-2 text-warning"></i>
       <span className="text-dark">Délai</span>
@@ -84,8 +81,6 @@ export default function SupplierComparisonTable({ ingredientId }) {
     </th>
   </tr>
 </thead>
-
-
       <tbody>
         {suppliers.length > 0 ? (
           suppliers.map((s) => (
