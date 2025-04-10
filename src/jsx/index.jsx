@@ -97,6 +97,7 @@ import Profile from "./pages/auth/profile/Profile";
 import SuperDb from "./pages/Dashbord/SuperAdmin/SuperAdminDash";
 import ArchivedSup from "./pages/Dashbord/SuperAdmin/ArchiverSuperAdmine";
 import RestoDb from "./pages/Dashbord/Restaurant/DashRestaurants";
+import InventorySupplierManager from "./pages/SuppliersComp/InventorySupplierManager";
 
 const Markup = () => {
 	const allroutes = [
@@ -183,6 +184,8 @@ const Markup = () => {
 		{ url: "SuperAdmin", component: <SuperDb /> },
 		{ url: "Archived", component: <ArchivedSup /> },
 		{ url: "Resto", component: <RestoDb /> },
+		{ url: "Supplier", component: <InventorySupplierManager /> },
+
 
 	];
 	return (

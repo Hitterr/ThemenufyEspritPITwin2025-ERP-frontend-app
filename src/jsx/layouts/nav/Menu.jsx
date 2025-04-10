@@ -10,8 +10,8 @@ export const MenuList = [
 				to: "dashboard",
 			},
 			{
-				title: "Admin",
-				to: "",
+				title: "Suppliers",
+				to: "Supplier",
 			},
 			{
 				title: "Super Admin",
