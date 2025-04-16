@@ -8,64 +8,81 @@ const useAdminStore = create((set) => ({
 
   fetchAdmins: async () => {
     try {
-      const response = await axios.get(API_URL);
-      set({ admins: response.data.data }); // Mise à jour des admins
+      const { data } = await axios.get(API_URL);
+      set({ admins: data.data.filter((admin) => !admin.archived) });
     } catch (error) {
-      console.error("Erreur lors de la récupération des administrateurs :", error);
+      console.error("Erreur fetchAdmins:", error.message);
     }
   },
-
-  // Add a new admin to the store
-  addAdmin: (admin) => set((state) => ({ admins: [...state.admins, admin] })),
-
-  // Edit an existing admin
-  editAdmin: (updatedAdmin) =>
-    set((state) => ({
-      admins: state.admins.map((admin) =>
-        admin._id === updatedAdmin._id ? updatedAdmin : admin
-      ),
-    })),
-    archiveAdmin: async (id) => {
-      try {
-        console.log(`🔄 Archiving admin with ID: ${id}`);
-    
-        const response = await axios.patch(`${API_URL}/${id}/archive`, {}, { withCredentials: true });
-    
-        console.log("✅ Archive response:", response.data);
-    
-        // 🔄 Récupérer l'état actuel avant de le modifier
-        set((state) => {
-          const updatedAdmins = state.admins.map((admin) =>
-            admin._id === id ? { ...admin, archived: true } : admin
-          );
-    
-          console.log("🆕 Nouvel état admins après update:", updatedAdmins);
-    
-          return { admins: updatedAdmins };
-        });
-    
-      } catch (error) {
-        console.error("❌ Erreur lors de l'archivage :", error.response?.data || error.message);
-      }
-    },
-    
-    deleteArchivedAdmin: async (id) => {
-      try {
-        console.log(`Suppression de l'admin ID: ${id}`);
-    
-        const response = await axios.delete(`${API_URL}/${id}/delete`);
-        console.log(" Delete Response:", response.data);
-    
-        // Mise à jour du state sans recharger tous les admins
-        set((state) => ({
-          admins: state.admins.filter(admin => admin._id !== id),
-        }));
-    
-      } catch (error) {
-        console.error(" Erreur lors de la suppression :", error.response?.data || error.message);
-      }
-    },
-    
+  fetchAdminsArchived: async () => {
+    try {
+      const { data } = await axios.get(API_URL);
+      set({ admins: data.data.filter((admin) => admin.archived) });
+    } catch (error) {
+      console.error("Erreur fetchAdmins:", error.message);
+    }
+  },
+  addAdmin: async (adminData) => {
+    try {
+      const { data } = await axios.post(API_URL, adminData);
+      set((state) => ({
+        admins: [...state.admins, data.data],
+      }));
+      return true;
+    } catch (error) {
+      console.error("Erreur addAdmin:", error.message);
+      return false;
+    }
+  },
+  updateAdmin: async (id, adminData) => {
+    try {
+      const { data } = await axios.put(`${API_URL}/${id}`, adminData);
+      set((state) => ({
+        admins: state.admins.map((admin) => (admin._id === id ? data.data : admin)),
+      }));
+      return true;
+    } catch (error) {
+      console.error("Erreur updateAdmin:", error.message);
+      return false;
+    }
+  },
+  archiveAdmin: async (id) => {
+    try {
+      await axios.patch(`${API_URL}/${id}/archive`);
+      set((state) => ({
+        admins: state.admins.filter((admin) => admin._id !== id), // 🔥 Supprimer directement l'admin de la liste
+      }));
+      return true;
+    } catch (error) {
+      console.error("Erreur archiveAdmin:", error.message);
+      return false;
+    }
+  },
+  
+  deleteAdmin: async (id) => {
+    try {
+      await axios.delete(`${API_URL}/${id}/delete`); // Updated endpoint
+      set((state) => ({
+        admins: state.admins.filter((admin) => admin._id !== id),
+      }));
+      return true;
+    } catch (error) {
+      console.error("Erreur deleteAdmin:", error.response?.data || error.message);
+      return false;
+    }
+  },
+  toggleBlock: async (id, currentBlocked) => {
+    try {
+      const { data } = await axios.put(`${API_URL}/${id}`, { blocked: !currentBlocked });
+      set((state) => ({
+        admins: state.admins.map((admin) => (admin._id === id ? data : admin)),
+      }));
+      return true;
+    } catch (error) {
+      console.error("Erreur toggleBlock:", error.message);
+      return false;
+    }
+  },
 }));
 
 export default useAdminStore;

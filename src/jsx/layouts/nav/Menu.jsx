@@ -11,15 +11,23 @@ export const MenuList = [
 			},
 			{
 				title: "Admin",
-				to: "restaurants",
+				to: "",
 			},
 			{
 				title: "Super Admin",
 				to: "SuperAdmin",
 			},
 			{
+				title: "Restaurant",
+				to: "Resto",
+			},
+			{
 				title: "Zustand Example",
 				to: "test",
+			},
+			{
+				title: "ingredients",
+				to: "ingredients",
 			},
 			{
 				title: "Orders",
