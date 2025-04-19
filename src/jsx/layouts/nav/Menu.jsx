@@ -30,6 +30,10 @@ export const MenuList = [
 				to: "ingredients",
 			},
 			{
+				title: "Storage",
+				to: "storage",
+			},
+			{
 				title: "Orders",
 				to: "orders",
 			},
