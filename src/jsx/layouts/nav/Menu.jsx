@@ -26,8 +26,12 @@ export const MenuList = [
 				to: "test",
 			},
 			{
-				title: "ingredients",
+				title: "Ingredients",
 				to: "ingredients",
+			},
+			{
+				title: "Suppliers",
+				to: "suppliers",
 			},
 			{
 				title: "Orders",

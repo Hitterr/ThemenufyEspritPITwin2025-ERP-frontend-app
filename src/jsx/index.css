@@ -664,3 +664,11 @@ button.react-calendar__tile.react-calendar__month-view__days__day:hover {
 .rating-stars ul > li.star.selected > i.fa {
 	color: #ff912c;
 }
+.btn-primary {
+	background-color: #FA8072;
+	border-color: #FA8072;
+  }
+  .btn-primary:hover {
+	background-color: #E86C5F;
+	border-color: #E86C5F;
+  }
