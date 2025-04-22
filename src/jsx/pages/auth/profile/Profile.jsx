@@ -45,7 +45,7 @@ const Profile = () => {
                       profile.tab === "About" ? "2px solid #EA7B9B" : "none",
                   }}
                 >
-                  Profile
+                  Profil
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
@@ -79,36 +79,34 @@ const Profile = () => {
             <Tab.Content>
               {/* Section About */}
               <Tab.Pane eventKey="About">
+                <h3
+                  className="text-secondary mb-4"
+                  style={{
+                    borderBottom: "2px solid #EA7B9B",
+                    paddingBottom: "10px",
+                    display: "inline-block",
+                  }}
+                >
+                  My Profile
+                </h3>
+
                 {/* 🧑 User Info */}
                 <Card
+
                   className="mb-4  p-3 rounded"
                   style={{ borderRadius: "10px", border: "1px solid #EA7B9B" }}
                 >
-                  <h3
-                    className="text-secondary mb-4"
-                    style={{
-                      borderBottom: "2px solid #EA7B9B",
-                      paddingBottom: "10px",
-                      display: "inline-block",
-                      width: "fit-content",
-                    }}
-                  >
-                    Account Information
-                  </h3>
                   <Row className="align-items-center">
-                    {/* <Col xs={3} className="text-center">
+                    <Col xs={3} className="text-center">
                       <BsPersonCircle size={60} style={{ color: "#EA7B9B" }} />
-                    </Col> */}
-                    <Row
-                      xs={1}
-                      sm={2}
-                      lg={3}
-                      className="flex-wrap border-primary p-5"
-                    >
+                    </Col>
+                    <Col>
+                      <h5 style={{ color: "#EA7B9B" }}> 🧑 User Info</h5>
                       {Object.keys(currentUser.user).map((field) => {
                         if (hiddenFields.includes(field)) return null;
 
                         return (
+
                           <Col key={field} className="my-2">
                             <label className="text-capitalize text-primary mb-1">
                               {field}:
@@ -124,7 +122,7 @@ const Profile = () => {
                           </Col>
                         );
                       })}
-                    </Row>
+                    </Col>
                   </Row>
                 </Card>
 
