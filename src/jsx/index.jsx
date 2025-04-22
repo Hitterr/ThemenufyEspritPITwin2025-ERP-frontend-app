@@ -97,6 +97,8 @@ import Profile from "./pages/auth/profile/Profile";
 import SuperDb from "./pages/Dashbord/SuperAdmin/SuperAdminDash";
 import ArchivedSup from "./pages/Dashbord/SuperAdmin/ArchiverSuperAdmine";
 import RestoDb from "./pages/Dashbord/Restaurant/DashRestaurants";
+import InventorySupplierManager from "./pages/SuppliersComp/InventorySupplierManager";
+
 import Ingredients from "./pages/ingredients";
 import AddIngredient from "./pages/ingredients/AddIngredient";
 import EditIngredient from "./pages/ingredients/EditIngredient";
@@ -186,6 +188,10 @@ const Markup = () => {
 		{ url: "SuperAdmin", component: <SuperDb /> },
 		{ url: "Archived", component: <ArchivedSup /> },
 		{ url: "Resto", component: <RestoDb /> },
+    { url: "Supplier", component: <InventorySupplierManager /> },
+
+
+
 		{ url: "ingredients", component: <Ingredients /> },
 		{ url: "ingredients/add", component: <AddIngredient /> },
 		{ url: "ingredients/edit/:id", component: <EditIngredient /> },
