@@ -18,7 +18,7 @@ const UpdatePassword = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [success, setSuccess] = useState("");
-  
+
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -150,10 +150,10 @@ const UpdatePassword = () => {
         </Row>
         <Button
           type="submit"
-          style={{ 
+          style={{
             backgroundColor: "#EA7B9B",
             border: "none",
-            color: "white"
+            color: "white",
           }}
           className="mt-4 px-4 py-2 rounded-pill shadow"
         >

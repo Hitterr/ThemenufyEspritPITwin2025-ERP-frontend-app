@@ -183,7 +183,7 @@ const EditForm = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="p-4 rounded"
         style={{
-          border: "2px solid #EA7B9B",
+          border: "1px solid #EA7B9B",
           borderRadius: "10px",
         }}
       >
