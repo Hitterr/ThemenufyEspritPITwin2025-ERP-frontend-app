@@ -92,8 +92,9 @@ const Profile = () => {
 
                 {/* 🧑 User Info */}
                 <Card
-                  className="mb-4 border-0 p-3 rounded"
-                  style={{ backgroundColor: "#FAE9EE", opacity: 0.9 }}
+
+                  className="mb-4  p-3 rounded"
+                  style={{ borderRadius: "10px", border: "1px solid #EA7B9B" }}
                 >
                   <Row className="align-items-center">
                     <Col xs={3} className="text-center">
@@ -105,12 +106,20 @@ const Profile = () => {
                         if (hiddenFields.includes(field)) return null;
 
                         return (
-                          <p key={field} className="mb-1">
-                            <strong className="text-capitalize text-black">
+
+                          <Col key={field} className="my-2">
+                            <label className="text-capitalize text-primary mb-1">
                               {field}:
-                            </strong>{" "}
-                            {field === "phone" && "+"} {currentUser.user[field]}
-                          </p>
+                            </label>{" "}
+                            <input
+                              className="form-control border-primary rounded-3 text-muted "
+                              style={{ height: "41px" }}
+                              type="text"
+                              readOnly
+                              defaultValue={currentUser.user[field]}
+                            />
+                            {/* {field === "phone" && "+"} {currentUser.user[field]} */}
+                          </Col>
                         );
                       })}
                     </Col>
