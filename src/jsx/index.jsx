@@ -103,139 +103,149 @@ import Ingredients from "./pages/ingredients";
 import AddIngredient from "./pages/ingredients/AddIngredient";
 import EditIngredient from "./pages/ingredients/EditIngredient";
 import ShowIngredient from "./pages/ingredients/ShowIngredient";
+import AddInvoice from "./pages/invoice/AddInvoice";
+import { InvoicesPage } from "./pages/invoice";
+import ShowInvoice from "./pages/invoice/ShowInvoice";
 const Markup = () => {
-	const allroutes = [
-		/// Dashboard
-		{ url: "", component: <Home /> },
-		{ url: "dashboard", component: <Home /> },
-		{ url: "orders", component: <Orders /> },
-		{ url: "Order-id", component: <OrderId /> },
-		{ url: "general-customers", component: <GeneralCustomers /> },
-		{ url: "analytics", component: <Analytics /> },
-		{ url: "review", component: <Reviews /> },
-		{ url: "task", component: <Task /> },
-		//Cms
-		{ url: "content", component: <Content /> },
-		{ url: "menu", component: <Menu /> },
-		{ url: "email-template", component: <EmailTemplate /> },
-		{ url: "blog", component: <Blog /> },
-		{ url: "add-content", component: <ContentAdd /> },
-		{ url: "add-email", component: <AddMail /> },
-		{ url: "add-blog", component: <AddBlog /> },
-		{ url: "blog-category", component: <BlogCategory /> },
-		/// Apps
-		{ url: "app-profile", component: <AppProfile /> },
-		{ url: "post-details", component: <PostDetails /> },
-		{ url: "email-compose", component: <Compose /> },
-		{ url: "email-inbox", component: <Inbox /> },
-		{ url: "email-read", component: <Read /> },
-		{ url: "app-calender", component: <Calendar /> },
-		/// Chart
-		{ url: "chart-sparkline", component: <SparklineChart /> },
-		{ url: "chart-chartjs", component: <ChartJs /> },
-		{ url: "chart-apexchart", component: <ApexChart /> },
-		{ url: "chart-rechart", component: <RechartJs /> },
-		/// Bootstrap
-		{ url: "ui-alert", component: <UiAlert /> },
-		{ url: "ui-badge", component: <UiBadge /> },
-		{ url: "ui-button", component: <UiButton /> },
-		{ url: "ui-modal", component: <UiModal /> },
-		{ url: "ui-button-group", component: <UiButtonGroup /> },
-		{ url: "ui-accordion", component: <UiAccordion /> },
-		{ url: "ui-list-group", component: <UiListGroup /> },
-		{ url: "ui-card", component: <UiCards /> },
-		{ url: "ui-carousel", component: <UiCarousel /> },
-		{ url: "ui-dropdown", component: <UiDropDown /> },
-		{ url: "ui-popover", component: <UiPopOver /> },
-		{ url: "ui-progressbar", component: <UiProgressBar /> },
-		{ url: "ui-tab", component: <UiTab /> },
-		{ url: "ui-pagination", component: <UiPagination /> },
-		{ url: "ui-typography", component: <UiTypography /> },
-		{ url: "ui-grid", component: <UiGrid /> },
-		/// Plugin
-		{ url: "uc-select2", component: <Select2 /> },
-		{ url: "uc-nestable", component: <Nestable /> },
-		{ url: "uc-sweetalert", component: <MainSweetAlert /> },
-		{ url: "uc-noui-slider", component: <MainNouiSlider /> },
-		{ url: "uc-toastr", component: <Toastr /> },
-		{ url: "uc-lightgallery", component: <Lightgallery /> },
-		/// Widget
-		{ url: "widget-basic", component: <Widget /> },
-		/// Shop
-		{ url: "ecom-product-grid", component: <ProductGrid /> },
-		{ url: "ecom-product-list", component: <ProductList /> },
-		{ url: "ecom-product-detail", component: <ProductDetail /> },
-		{ url: "ecom-product-order", component: <ProductOrder /> },
-		{ url: "ecom-checkout", component: <Checkout /> },
-		{ url: "ecom-invoice", component: <Invoice /> },
-		{ url: "ecom-product-detail", component: <ProductDetail /> },
-		{ url: "ecom-customers", component: <EcomCustomers /> },
-		/// Form
-		{ url: "form-element", component: <Element /> },
-		{ url: "form-wizard", component: <Wizard /> },
-		{ url: "form-ckeditor", component: <CkEditor /> },
-		{ url: "form-pickers", component: <Pickers /> },
-		{ url: "form-validation", component: <FormValidation /> },
-		/// table
-		{ url: "table-datatable-basic", component: <DataTable /> },
-		{ url: "table-bootstrap-basic", component: <BootstrapTable /> },
-		{ url: "table-filtering", component: <FilteringTable /> },
-		{ url: "table-sorting", component: <SortingTable /> },
-		/// pages
-		{ url: "todo", component: <Todo /> },
-		{ url: "test", component: <Test /> },
-		{ url: "profile", component: <Profile /> },
-		{ url: "SuperAdmin", component: <SuperDb /> },
-		{ url: "Archived", component: <ArchivedSup /> },
-		{ url: "Resto", component: <RestoDb /> },
+  const allroutes = [
+    /// Dashboard
+    { url: "", component: <Home /> },
+    { url: "dashboard", component: <Home /> },
+    { url: "orders", component: <Orders /> },
+    { url: "Order-id", component: <OrderId /> },
+    { url: "general-customers", component: <GeneralCustomers /> },
+    { url: "analytics", component: <Analytics /> },
+    { url: "review", component: <Reviews /> },
+    { url: "task", component: <Task /> },
+    //Cms
+    { url: "content", component: <Content /> },
+    { url: "menu", component: <Menu /> },
+    { url: "email-template", component: <EmailTemplate /> },
+    { url: "blog", component: <Blog /> },
+    { url: "add-content", component: <ContentAdd /> },
+    { url: "add-email", component: <AddMail /> },
+    { url: "add-blog", component: <AddBlog /> },
+    { url: "blog-category", component: <BlogCategory /> },
+    /// Apps
+    { url: "app-profile", component: <AppProfile /> },
+    { url: "post-details", component: <PostDetails /> },
+    { url: "email-compose", component: <Compose /> },
+    { url: "email-inbox", component: <Inbox /> },
+    { url: "email-read", component: <Read /> },
+    { url: "app-calender", component: <Calendar /> },
+    /// Chart
+    { url: "chart-sparkline", component: <SparklineChart /> },
+    { url: "chart-chartjs", component: <ChartJs /> },
+    { url: "chart-apexchart", component: <ApexChart /> },
+    { url: "chart-rechart", component: <RechartJs /> },
+    /// Bootstrap
+    { url: "ui-alert", component: <UiAlert /> },
+    { url: "ui-badge", component: <UiBadge /> },
+    { url: "ui-button", component: <UiButton /> },
+    { url: "ui-modal", component: <UiModal /> },
+    { url: "ui-button-group", component: <UiButtonGroup /> },
+    { url: "ui-accordion", component: <UiAccordion /> },
+    { url: "ui-list-group", component: <UiListGroup /> },
+    { url: "ui-card", component: <UiCards /> },
+    { url: "ui-carousel", component: <UiCarousel /> },
+    { url: "ui-dropdown", component: <UiDropDown /> },
+    { url: "ui-popover", component: <UiPopOver /> },
+    { url: "ui-progressbar", component: <UiProgressBar /> },
+    { url: "ui-tab", component: <UiTab /> },
+    { url: "ui-pagination", component: <UiPagination /> },
+    { url: "ui-typography", component: <UiTypography /> },
+    { url: "ui-grid", component: <UiGrid /> },
+    /// Plugin
+    { url: "uc-select2", component: <Select2 /> },
+    { url: "uc-nestable", component: <Nestable /> },
+    { url: "uc-sweetalert", component: <MainSweetAlert /> },
+    { url: "uc-noui-slider", component: <MainNouiSlider /> },
+    { url: "uc-toastr", component: <Toastr /> },
+    { url: "uc-lightgallery", component: <Lightgallery /> },
+    /// Widget
+    { url: "widget-basic", component: <Widget /> },
+    /// Shop
+    { url: "ecom-product-grid", component: <ProductGrid /> },
+    { url: "ecom-product-list", component: <ProductList /> },
+    { url: "ecom-product-detail", component: <ProductDetail /> },
+    { url: "ecom-product-order", component: <ProductOrder /> },
+    { url: "ecom-checkout", component: <Checkout /> },
+    { url: "ecom-invoice", component: <Invoice /> },
+    { url: "ecom-product-detail", component: <ProductDetail /> },
+    { url: "ecom-customers", component: <EcomCustomers /> },
+    /// Form
+    { url: "form-element", component: <Element /> },
+    { url: "form-wizard", component: <Wizard /> },
+    { url: "form-ckeditor", component: <CkEditor /> },
+    { url: "form-pickers", component: <Pickers /> },
+    { url: "form-validation", component: <FormValidation /> },
+    /// table
+    { url: "table-datatable-basic", component: <DataTable /> },
+    { url: "table-bootstrap-basic", component: <BootstrapTable /> },
+    { url: "table-filtering", component: <FilteringTable /> },
+    { url: "table-sorting", component: <SortingTable /> },
+    /// pages
+    { url: "todo", component: <Todo /> },
+    { url: "test", component: <Test /> },
+    { url: "profile", component: <Profile /> },
+    { url: "SuperAdmin", component: <SuperDb /> },
+    { url: "Archived", component: <ArchivedSup /> },
+    { url: "Resto", component: <RestoDb /> },
     { url: "Supplier", component: <InventorySupplierManager /> },
 
-
-
-		{ url: "ingredients", component: <Ingredients /> },
-		{ url: "ingredients/add", component: <AddIngredient /> },
-		{ url: "ingredients/edit/:id", component: <EditIngredient /> },
-		{ url: "ingredients/:id", component: <ShowIngredient /> },
-	];
-	return (
-		<>
-			<AuthRouting />
-			<Routes>
-				<Route path="page-lock-screen" element={<LockScreen />} />
-				<Route path="page-error-400" element={<Error400 />} />
-				<Route path="page-error-403" element={<Error403 />} />
-				<Route path="page-error-404" element={<Error404 />} />
-				<Route path="page-error-500" element={<Error500 />} />
-				<Route path="page-error-503" element={<Error503 />} />
-				<Route element={<MainLayout />}>
-					{allroutes.map((data, i) => (
-						<Route key={i} exact path={`${data.url}`} element={data.component} />
-					))}
-				</Route>
-			</Routes>
-			<ScrollToTop />
-		</>
-	);
+    { url: "ingredients", component: <Ingredients /> },
+    { url: "ingredients/add", component: <AddIngredient /> },
+    { url: "ingredients/edit/:id", component: <EditIngredient /> },
+    { url: "ingredients/:id", component: <ShowIngredient /> },
+    // ----------------------- invoice -----------------------------
+    { url: "invoices", component: <InvoicesPage /> },
+    { url: "invoices/add", component: <AddInvoice /> },
+    { url: "invoices/:id", component: <ShowInvoice /> },
+  ];
+  return (
+    <>
+      <AuthRouting />
+      <Routes>
+        <Route path="page-lock-screen" element={<LockScreen />} />
+        <Route path="page-error-400" element={<Error400 />} />
+        <Route path="page-error-403" element={<Error403 />} />
+        <Route path="page-error-404" element={<Error404 />} />
+        <Route path="page-error-500" element={<Error500 />} />
+        <Route path="page-error-503" element={<Error503 />} />
+        <Route element={<MainLayout />}>
+          {allroutes.map((data, i) => (
+            <Route
+              key={i}
+              exact
+              path={`${data.url}`}
+              element={data.component}
+            />
+          ))}
+        </Route>
+      </Routes>
+      <ScrollToTop />
+    </>
+  );
 };
 function MainLayout() {
-	// const { menuToggle } = useContext(ThemeContext);
-	return (
-		<div
-			id="main-wrapper"
-			// className={`show ${ menuToggle ? "menu-toggle" : ""}`}
-			className="show"
-		>
-			<Nav />
-			<div
-				className="content-body"
-				style={{ minHeight: window.screen.height - 45 }}
-			>
-				<div className="container-fluid">
-					<Outlet />
-				</div>
-			</div>
-			<Footer />
-		</div>
-	);
+  // const { menuToggle } = useContext(ThemeContext);
+  return (
+    <div
+      id="main-wrapper"
+      // className={`show ${ menuToggle ? "menu-toggle" : ""}`}
+      className="show"
+    >
+      <Nav />
+      <div
+        className="content-body"
+        style={{ minHeight: window.screen.height - 45 }}
+      >
+        <div className="container-fluid">
+          <Outlet />
+        </div>
+      </div>
+      <Footer />
+    </div>
+  );
 }
 export default Markup;
