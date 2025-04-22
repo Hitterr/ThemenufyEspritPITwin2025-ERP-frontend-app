@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, Form, Col, Row } from "react-bootstrap";
 import axios from "axios";
 import SupplierComparisonTable from "./SupplierComparisonTable";
+import Chatbot from "./Chatbot";
 
 export default function InventorySupplierManager() {
   const [inventory, setInventory] = useState([]);
@@ -11,6 +12,7 @@ export default function InventorySupplierManager() {
   const [showComparison, setShowComparison] = useState(null);
   const [bulkField, setBulkField] = useState("minQty");
   const [bulkValue, setBulkValue] = useState("");
+  const [showChatbot, setShowChatbot] = useState(false);
 
   useEffect(() => {
     const fetchInventory = async () => {
@@ -75,7 +77,20 @@ export default function InventorySupplierManager() {
   return (
     <div className="container mt-5">
       <h2 className="mb-4">Gestion des Stocks et Fournisseurs</h2>
-      {/*filtres */}
+      {/* Chatbot Toggle Button */}
+      <div className="mb-4 text-end">
+        <Button
+          variant="primary"
+          onClick={() => setShowChatbot(true)}
+          className="d-flex align-items-center gap-2 rounded-3"
+        >
+          <i className="fas fa-robot"></i> Chatbot
+        </Button>
+      </div>
+
+      {/* Composant chatbot modale */}
+      <Chatbot show={showChatbot} onHide={() => setShowChatbot(false)} />
+      {/* Filters */}
       <Row className="mb-4 align-items-center">
         <Col md={3}>
           <div className="position-relative">
@@ -89,7 +104,6 @@ export default function InventorySupplierManager() {
             />
           </div>
         </Col>
-
         <Col md={2}>
           <Form.Select
             value={filterStock}
@@ -121,7 +135,6 @@ export default function InventorySupplierManager() {
             className="rounded-3"
           />
         </Col>
-
         <Col md={3}>
           <Button
             variant="danger"
@@ -182,6 +195,8 @@ export default function InventorySupplierManager() {
           <SupplierComparisonTable ingredientId={showComparison} />
         </div>
       )}
-    </div>
+
+
+         </div>
   );
 }
