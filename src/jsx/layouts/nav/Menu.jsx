@@ -26,10 +26,6 @@ export const MenuList = [
 				to: "Resto",
 			},
 			{
-				title: "Zustand Example",
-				to: "test",
-			},
-			{
 				title: "ingredients",
 				to: "ingredients",
 			},
@@ -46,18 +42,6 @@ export const MenuList = [
 				to: "general-customers",
 			},
 			{
-				title: "Analytics",
-				to: "analytics",
-			},
-			{
-				title: "Reviews",
-				to: "review",
-			},
-			{
-				title: "Task",
-				to: "task",
-			},
-			{
 				title: "Archive",
 				to: "Archived",
 			},
@@ -69,6 +53,18 @@ export const MenuList = [
 		classsChange: "mm-collapse",
 		iconStyle: <i className="flaticon-381-television" />,
 		content: [
+			{
+				title: "Analytics",
+				to: "analytics",
+			},
+			{
+				title: "Reviews",
+				to: "review",
+			},
+			{
+				title: "Task",
+				to: "task",
+			},
 			{
 				title: "Profile",
 				to: "app-profile",
