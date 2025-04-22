@@ -10,9 +10,15 @@ const SupplierFilters = ({ onClose }) => {
     setFilterCriteria({ [name]: value });
   };
 
+  const handleKeyPress = async (e) => {
+    if (e.key === 'Enter') {
+      await fetchSuppliers(); // Trigger search when Enter is pressed
+    }
+  };
+
   const handleReset = async () => {
     resetFilters();
-    await fetchSuppliers(); // Refresh suppliers after resetting filters
+    await fetchSuppliers();
     onClose();
   };
 
@@ -36,25 +42,26 @@ const SupplierFilters = ({ onClose }) => {
           </div>
         </div>
         <Row>
-          <Col md={4}>
+          <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label>Search</Form.Label>
+              <Form.Label>Search Suppliers</Form.Label>
               <Form.Control
                 type="text"
                 name="search"
-                value={filterCriteria.search}
+                value={filterCriteria.search || ''}
                 onChange={handleFilterChange}
+                onKeyPress={handleKeyPress}
                 placeholder="Search by name or email..."
               />
             </Form.Group>
           </Col>
-          <Col md={4}>
+          <Col md={6}>
             <Form.Group className="mb-3">
               <Form.Label>Status</Form.Label>
               <Form.Control
                 as="select"
                 name="status"
-                value={filterCriteria.status}
+                value={filterCriteria.status || ''}
                 onChange={handleFilterChange}
               >
                 <option value="">All Statuses</option>
@@ -63,18 +70,6 @@ const SupplierFilters = ({ onClose }) => {
                 <option value="suspended">Suspended</option>
                 <option value="inactive">Inactive</option>
               </Form.Control>
-            </Form.Group>
-          </Col>
-          <Col md={4}>
-            <Form.Group className="mb-3">
-              <Form.Label>Restaurant ID</Form.Label>
-              <Form.Control
-                type="text"
-                name="restaurantId"
-                value={filterCriteria.restaurantId}
-                onChange={handleFilterChange}
-                placeholder="Enter Restaurant ID"
-              />
             </Form.Group>
           </Col>
         </Row>

@@ -5,6 +5,7 @@ import { FaEye, FaPencilAlt, FaPlus, FaTrash, FaFilter } from "react-icons/fa";
 import useSupplierStore from "../../store/supplierStore";
 import SupplierFilters from "./components/SupplierFilters";
 import SupplierPagination from "./components/SupplierPagination";
+import SupplierStats from "./components/SupplierStats";
 import Swal from "sweetalert2";
 
 const Suppliers = () => {
@@ -14,9 +15,12 @@ const Suppliers = () => {
     deleteSupplier,
     pagination,
     setFilterCriteria,
+    globalStats
   } = useSupplierStore();
+
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
+  const [showStats, setShowStats] = useState(false);
 
   useEffect(() => {
     loadSuppliers();
@@ -41,7 +45,7 @@ const Suppliers = () => {
         const success = await deleteSupplier(id);
         if (success) {
           await loadSuppliers();
-          setFilterCriteria({ page: 1 }); // Reset to page 1 after deletion
+          setFilterCriteria({ page: 1 });
           Swal.fire("Deleted!", "Supplier has been deleted.", "success");
         } else {
           Swal.fire("Error!", "Failed to delete supplier.", "error");
@@ -52,6 +56,10 @@ const Suppliers = () => {
 
   const handlePageChange = (pageNumber) => {
     setFilterCriteria({ page: pageNumber });
+  };
+
+  const toggleStats = () => {
+    setShowStats(!showStats);
   };
 
   if (loading) return <div>Loading...</div>;
@@ -68,11 +76,20 @@ const Suppliers = () => {
               <FaPlus /> Add Supplier
             </Button>
           </Link>
-          <Button variant="primary" onClick={() => setShowFilters(!showFilters)}>
-            <FaFilter className="me-1" /> Filters
-          </Button>
+          <div className="d-flex gap-2">
+            <Button variant="info" onClick={toggleStats}>
+              {showStats ? "Hide Stats" : "Show Stats"}
+            </Button>
+            <Button variant="primary" onClick={() => setShowFilters(!showFilters)}>
+              <FaFilter className="me-1" /> Filters
+            </Button>
+          </div>
         </div>
+
+        <SupplierStats showStats={showStats} />
+
         {showFilters && <SupplierFilters onClose={() => setShowFilters(false)} />}
+        
         <div className="table-responsive">
           <Table className="table-hover">
             <thead>
@@ -80,7 +97,7 @@ const Suppliers = () => {
                 <th>Name</th>
                 <th>Email</th>
                 <th>Status</th>
-                <th>Restaurant</th> {/* Updated header to reflect that we're showing the restaurant name */}
+                <th>Restaurant</th>
                 <th className="text-center" style={{ width: "150px" }}>
                   Actions
                 </th>
@@ -100,13 +117,15 @@ const Suppliers = () => {
                           ? "bg-warning"
                           : supplier.status === "suspended"
                           ? "bg-danger"
+                          : supplier.status === "inactive"
+                          ? "bg-secondary"
                           : "bg-secondary"
                       }`}
                     >
                       {supplier.status}
                     </span>
                   </td>
-                  <td>{supplier.restaurantId ? supplier.restaurantId.nameRes : "N/A"}</td> {/* Fixed rendering */}
+                  <td>{supplier.restaurantId ? supplier.restaurantId.nameRes : "N/A"}</td>
                   <td>
                     <div className="d-flex justify-content-center gap-2">
                       <Link
@@ -138,6 +157,7 @@ const Suppliers = () => {
             </tbody>
           </Table>
         </div>
+        
         {filteredSuppliers.length > 0 ? (
           <SupplierPagination
             currentPage={pagination.page}
