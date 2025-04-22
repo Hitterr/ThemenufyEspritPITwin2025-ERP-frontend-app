@@ -14,6 +14,10 @@ export const MenuList = [
 				to: "Supplier",
 			},
 			{
+				title: "Invoices",
+				to: "invoices",
+			},
+			{
 				title: "Super Admin",
 				to: "SuperAdmin",
 			},
