@@ -10,12 +10,6 @@ const SupplierFilters = ({ onClose }) => {
     setFilterCriteria({ [name]: value });
   };
 
-  const handleKeyPress = async (e) => {
-    if (e.key === 'Enter') {
-      await fetchSuppliers(); // Trigger search when Enter is pressed
-    }
-  };
-
   const handleReset = async () => {
     resetFilters();
     await fetchSuppliers();
@@ -44,13 +38,12 @@ const SupplierFilters = ({ onClose }) => {
         <Row>
           <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label>Search Suppliers</Form.Label>
+              <Form.Label>Search</Form.Label>
               <Form.Control
                 type="text"
                 name="search"
-                value={filterCriteria.search || ''}
+                value={filterCriteria.search}
                 onChange={handleFilterChange}
-                onKeyPress={handleKeyPress}
                 placeholder="Search by name or email..."
               />
             </Form.Group>
@@ -61,7 +54,7 @@ const SupplierFilters = ({ onClose }) => {
               <Form.Control
                 as="select"
                 name="status"
-                value={filterCriteria.status || ''}
+                value={filterCriteria.status}
                 onChange={handleFilterChange}
               >
                 <option value="">All Statuses</option>

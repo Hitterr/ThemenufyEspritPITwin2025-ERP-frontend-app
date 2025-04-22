@@ -1,10 +1,36 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"; // Added useState for loading state
 import { Row, Col } from "react-bootstrap";
 import ChartDonught2 from "../../../../jsx/components/Sego/Home/donught2";
 import useSupplierStore from "../../../store/supplierStore";
 
 const SupplierStats = ({ showStats }) => {
-  const { globalStats } = useSupplierStore();
+  const { globalStats, fetchGlobalStats } = useSupplierStore();
+  const [loading, setLoading] = useState(true); // Added loading state
+
+  useEffect(() => {
+    const loadStats = async () => {
+      setLoading(true);
+      try {
+        await fetchGlobalStats();
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadStats();
+  }, [fetchGlobalStats]);
+
+  // Helper to calculate percentage safely
+  const calcPercentage = (value, total) => {
+    return total ? Math.round((value / total) * 100) : 0;
+  };
+
+  // Calculate restaurants linked percentage (assuming max 50 restaurants = 100%)
+  const maxRestaurants = 50; // Explicit max for clarity
+  const restaurantsLinkedPercentage = calcPercentage(globalStats.totalRestaurantsLinked, maxRestaurants);
+
+  if (loading) {
+    return <div>Loading stats...</div>;
+  }
 
   return (
     <>
@@ -19,11 +45,9 @@ const SupplierStats = ({ showStats }) => {
                   backgroundColor2="#FAFAFA"
                   height="100"
                   width="100"
-                  value={Math.min((globalStats.total / 100) * 100, 100)}
+                  value={100} // Total Suppliers always 100% since it's the total
                 />
-                <small className="text-black">
-                  {globalStats.total}%
-                </small>
+                <small className="text-black">100%</small>
               </div>
               <div>
                 <h4 className="fs-28 font-w600 text-black mb-0">
@@ -43,10 +67,10 @@ const SupplierStats = ({ showStats }) => {
                   backgroundColor2="#FAFAFA"
                   height="100"
                   width="100"
-                  value={Math.min((globalStats.active / globalStats.total) * 100 || 0, 100)}
+                  value={calcPercentage(globalStats.active, globalStats.total)}
                 />
                 <small className="text-black">
-                  {Math.round((globalStats.active / globalStats.total) * 100) || 0}%
+                  {calcPercentage(globalStats.active, globalStats.total)}%
                 </small>
               </div>
               <div>
@@ -67,10 +91,10 @@ const SupplierStats = ({ showStats }) => {
                   backgroundColor2="#FAFAFA"
                   height="100"
                   width="100"
-                  value={Math.min((globalStats.pending / globalStats.total) * 100 || 0, 100)}
+                  value={calcPercentage(globalStats.pending, globalStats.total)}
                 />
                 <small className="text-black">
-                  {Math.round((globalStats.pending / globalStats.total) * 100) || 0}%
+                  {calcPercentage(globalStats.pending, globalStats.total)}%
                 </small>
               </div>
               <div>
@@ -91,10 +115,10 @@ const SupplierStats = ({ showStats }) => {
                   backgroundColor2="#FAFAFA"
                   height="100"
                   width="100"
-                  value={Math.min((globalStats.suspended / globalStats.total) * 100 || 0, 100)}
+                  value={calcPercentage(globalStats.suspended, globalStats.total)}
                 />
                 <small className="text-black">
-                  {Math.round((globalStats.suspended / globalStats.total) * 100) || 0}%
+                  {calcPercentage(globalStats.suspended, globalStats.total)}%
                 </small>
               </div>
               <div>
@@ -115,10 +139,10 @@ const SupplierStats = ({ showStats }) => {
                   backgroundColor2="#FAFAFA"
                   height="100"
                   width="100"
-                  value={Math.min((globalStats.inactive / globalStats.total) * 100 || 0, 100)}
+                  value={calcPercentage(globalStats.inactive, globalStats.total)}
                 />
                 <small className="text-black">
-                  {Math.round((globalStats.inactive / globalStats.total) * 100) || 0}%
+                  {calcPercentage(globalStats.inactive, globalStats.total)}%
                 </small>
               </div>
               <div>
@@ -139,10 +163,10 @@ const SupplierStats = ({ showStats }) => {
                   backgroundColor2="#FAFAFA"
                   height="100"
                   width="100"
-                  value={Math.min((globalStats.totalRestaurantsLinked / 50) * 100, 100)}
+                  value={restaurantsLinkedPercentage}
                 />
                 <small className="text-black">
-                  {Math.round((globalStats.totalRestaurantsLinked / 50) * 100)}%
+                  {restaurantsLinkedPercentage}%
                 </small>
               </div>
               <div>
