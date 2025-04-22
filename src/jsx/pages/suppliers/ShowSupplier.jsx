@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { Card, Row, Col, Button, Table, Form } from "react-bootstrap";
+import { Card, Row, Col, Button, Table } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 import useSupplierStore from "../../store/supplierStore";
 import Swal from "sweetalert2";
 import { Stepper, Step } from 'react-form-stepper';
+import BulkUpdateFormStep from './components/BulkUpdateFormStep';
+import BulkUpdateStatsStep from './components/BulkUpdateStatsStep';
 
 const ShowSupplier = () => {
   const { id } = useParams();
@@ -119,109 +121,6 @@ const ShowSupplier = () => {
 
   if (loading) return <div>Loading...</div>;
   if (!supplier) return <div>Supplier not found</div>;
-
-  // Step 1: Bulk Update Form
-  const BulkUpdateForm = () => (
-    <section>
-      <div className="row">
-        {bulkUpdateData.map((ingredient, index) => (
-          <div key={ingredient.ingredientId} className="col-lg-6 mb-2">
-            <div className="form-group mb-3">
-              <label className="form-label">{supplier.ingredients[index].name}</label>
-              <div className="mb-2">
-                <label className="form-label">Price per Unit <span className="required">*</span></label>
-                <Form.Control
-                  type="number"
-                  step="0.01"
-                  value={ingredient.pricePerUnit}
-                  onChange={(e) => handleBulkUpdateChange(index, "pricePerUnit", e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <label className="form-label">Lead Time (Days) <span className="required">*</span></label>
-                <Form.Control
-                  type="number"
-                  value={ingredient.leadTimeDays}
-                  onChange={(e) => handleBulkUpdateChange(index, "leadTimeDays", e.target.value)}
-                  required
-                />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-
-  // Step 2: Bulk Update Stats
-  const BulkUpdateStats = () => (
-    <section>
-      <Row>
-        <Col xl={3} sm={6}>
-          <Card style={{ background: "linear-gradient(to right, #FF7A7A, #FFC07A)" }}>
-            <Card.Body>
-              <div className="media align-items-center">
-                <div className="media-body me-2">
-                  <h2 className="text-white font-w600">{bulkUpdateStats.updatedCount}</h2>
-                  <span className="text-white">Ingredients Updated</span>
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col xl={3} sm={6}>
-          <Card style={{ background: "linear-gradient(to right, #FF7A7A, #FFC07A)" }}>
-            <Card.Body>
-              <div className="media align-items-center">
-                <div className="media-body me-2">
-                  <h2 className="text-white font-w600">{bulkUpdateStats.avgPriceAfterUpdate}</h2>
-                  <span className="text-white">Avg Price per Unit</span>
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col xl={3} sm={6}>
-          <Card style={{ background: "linear-gradient(to right, #FF7A7A, #FFC07A)" }}>
-            <Card.Body>
-              <div className="media align-items-center">
-                <div className="media-body me-2">
-                  <h2 className="text-white font-w600">{bulkUpdateStats.avgLeadTimeAfterUpdate}</h2>
-                  <span className="text-white">Avg Lead Time (Days)</span>
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col xl={3} sm={6}>
-          <Card style={{ background: "linear-gradient(to right, #FF7A7A, #FFC07A)" }}>
-            <Card.Body>
-              <div className="media align-items-center">
-                <div className="media-body me-2">
-                  <h2 className="text-white font-w600">{bulkUpdateStats.totalPriceChange}</h2>
-                  <span className="text-white">Total Price Change</span>
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col xl={3} sm={6}>
-          <Card style={{ background: "linear-gradient(to right, #FF7A7A, #FFC07A)" }}>
-            <Card.Body>
-              <div className="media align-items-center">
-                <div className="media-body me-2">
-                  <h2 className="text-white font-w600">{bulkUpdateStats.totalLeadTimeChange}</h2>
-                  <span className="text-white">Total Lead Time Change</span>
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </section>
-  );
-  
 
   return (
     <Card>
@@ -416,30 +315,20 @@ const ShowSupplier = () => {
                     <Step className="nav-link" onClick={() => setStep(2)} />
                   </Stepper>
                   {step === 1 && (
-                    <>
-                      <BulkUpdateForm />
-                      <div className="text-end toolbar toolbar-bottom p-2">
-                        <Button className="btn btn-secondary sw-btn-prev me-1" onClick={() => setStep(0)}>
-                          Cancel
-                        </Button>
-                        <Button className="btn btn-primary sw-btn-next ms-1" onClick={handleBulkUpdateSubmit}>
-                          Next
-                        </Button>
-                      </div>
-                    </>
+                    <BulkUpdateFormStep
+                      bulkUpdateData={bulkUpdateData}
+                      supplier={supplier}
+                      handleBulkUpdateChange={handleBulkUpdateChange}
+                      onNext={handleBulkUpdateSubmit}
+                      onCancel={() => setStep(0)}
+                    />
                   )}
                   {step === 2 && (
-                    <>
-                      <BulkUpdateStats />
-                      <div className="text-end toolbar toolbar-bottom p-2">
-                        <Button className="btn btn-secondary sw-btn-prev me-1" onClick={() => setStep(1)}>
-                          Prev
-                        </Button>
-                        <Button className="btn btn-primary sw-btn-next ms-1" onClick={() => setStep(0)}>
-                          Back to Linked Ingredients
-                        </Button>
-                      </div>
-                    </>
+                    <BulkUpdateStatsStep
+                      bulkUpdateStats={bulkUpdateStats}
+                      onPrev={() => setStep(1)}
+                      onBack={() => setStep(0)}
+                    />
                   )}
                 </div>
               )}
