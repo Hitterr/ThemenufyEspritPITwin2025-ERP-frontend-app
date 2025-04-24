@@ -105,6 +105,7 @@ import ShowIngredient from "./pages/ingredients/ShowIngredient";
 import AddInvoice from "./pages/invoice/AddInvoice";
 import { InvoicesPage } from "./pages/invoice";
 import ShowInvoice from "./pages/invoice/ShowInvoice";
+import StorageApp from "./pages/storage/StorageApp";
 const Markup = () => {
 	const allroutes = [
 		/// Dashboard
@@ -188,6 +189,7 @@ const Markup = () => {
 		{ url: "test", component: <Test /> },
 		{ url: "profile", component: <Profile /> },
 		{ url: "SuperAdmin", component: <SuperDb /> },
+		{ url: "storage", component: <StorageApp /> },
 		{ url: "Archived", component: <ArchivedSup /> },
 		{ url: "Resto", component: <RestoDb /> },
 		{ url: "Supplier", component: <InventorySupplierManager /> },
