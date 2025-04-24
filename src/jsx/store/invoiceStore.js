@@ -151,14 +151,16 @@ const useInvoiceStore = create(
       try {
         set({ loading: true, error: null });
         set((state) => {
-          const updatedInvoice = {
-            ...state.currentInvoice,
-            items: [...state.currentInvoice?.items, item],
-          };
-          return {
-            currentInvoice: updatedInvoice,
-            loading: false,
-          };
+          if (state.currentInvoice.items) {
+            const updatedInvoice = {
+              ...state.currentInvoice,
+              items: [...state.currentInvoice.items, item],
+            };
+            return {
+              currentInvoice: updatedInvoice,
+              loading: false,
+            };
+          }
         });
       } catch (error) {
         console.error(error);
