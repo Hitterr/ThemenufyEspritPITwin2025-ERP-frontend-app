@@ -1,0 +1,114 @@
+import { useEffect, useState } from "react";
+import { Button, Card, Col, Row, Table } from "react-bootstrap";
+import { FaEye, FaFilter, FaPencilAlt, FaPlus, FaTrash } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import useInvoiceStore from "../../store/invoiceStore";
+import { format } from "date-fns";
+import InvoicesPagination from "./components/InvoicesPagination";
+import Swal from "sweetalert2";
+import { ReceiptText } from "lucide-react";
+
+export const InvoicesPage = () => {
+  const { invoices, fetchInvoices, deleteInvoice } = useInvoiceStore();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showFilters, setShowFilters] = useState(false);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    fetchInvoices();
+  }, []);
+
+  // Calculate pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentInvoices = invoices.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(invoices.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  return (
+    <>
+      <h1 className="page-title">Invoices</h1>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <Link to="/invoices/add">
+          <Button variant="success">
+            <ReceiptText size={20} />
+          </Button>
+        </Link>
+        <Button variant="primary" onClick={() => setShowFilters(!showFilters)}>
+          <FaFilter className="me-1" /> Filters
+        </Button>
+      </div>
+
+      <Card>
+        <Card.Body>
+          <div className="table-responsive">
+            <Table className="table-hover">
+              <thead>
+                <tr>
+                  <th># Invoice Number</th>
+                  <th>Date</th>
+                  <th>status</th>
+                  <th>total</th>
+                  <th>created_by</th>
+                  <th className="text-center" style={{ width: "150px" }}>
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentInvoices.length > 0 &&
+                  currentInvoices.map((inv) => (
+                    <tr key={inv._id}>
+                      <td>{inv.invoiceNumber}</td>
+                      <td>{format(inv.createdAt, "dd-MM-yyyy HH:mm:ss")}</td>
+                      <td>{inv.status}</td>
+                      <td>${inv.total}</td>
+                      <td>{inv.created_by.email}</td>
+                      <td>
+                        <div className="d-flex justify-content-center gap-2">
+                          <Link
+                            to={`/invoices/${inv._id}`}
+                            className="btn btn-sm btn-info"
+                            title="View"
+                          >
+                            <FaEye />
+                          </Link>
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            title="Delete"
+                            onClick={() => {
+                              deleteInvoice(inv._id);
+                              Swal.fire({
+                                title: "Deleted!",
+                                text: "Your file has been deleted.",
+                                icon: "success",
+                              });
+                            }}
+                          >
+                            <FaTrash />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </Table>
+          </div>
+          <Row className="justify-content-around">
+            <Col xs={10} sm={6}>
+              <InvoicesPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
+    </>
+  );
+};
