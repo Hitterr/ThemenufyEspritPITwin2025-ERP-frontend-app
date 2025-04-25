@@ -9,10 +9,12 @@ import Logo from "../../../assets/images/logo.png";
 import Swal from "sweetalert2";
 import useIngredientStore from "../../store/ingredientStore";
 import { addInvoiceSchema } from "./validators/addInvoiceSchema";
+import useSupplierStore from "../../store/supplierStore";
 export const AddInvoice = () => {
   const [supplier, setSupplier] = React.useState(null);
   const { currentUser } = authStore();
   const { ingredients } = useIngredientStore();
+  const { suppliers, fetchSuppliers } = useSupplierStore();
   const {
     currentInvoice,
     invoices,
@@ -25,6 +27,7 @@ export const AddInvoice = () => {
     if (currentUser?.user?.restaurant?._id) {
       setInvoiceRestaurant(currentUser?.user?.restaurant?._id);
     }
+    fetchSuppliers();
   }, []);
 
   console.log("invoices : ", invoices);
@@ -53,6 +56,7 @@ export const AddInvoice = () => {
       });
     }
   };
+  const selectedSupplier = suppliers.find((s) => s._id === supplier);
   return (
     <Fragment>
       <Row className="my-4 gap-y-2">
@@ -69,11 +73,12 @@ export const AddInvoice = () => {
               required
             >
               <option value={""}>Select Supplier</option>
-              <option value={"64c8f1a2b4d5e6f7a8b9c0d2"}>Supplier 1</option>
-              <option value={"64c8f1a2b4d5e6f7a8b9c0d2"}>Supplier 2</option>
-              <option value={"64c8f1a2b4d5e6f7a8b9c0d2"}>Supplier 3</option>
-              <option value={"64c8f1a2b4d5e6f7a8b9c0d2"}>Supplier 4</option>
-            </FormSelect>{" "}
+              {suppliers.map((s) => (
+                <option key={s._id} value={s._id}>
+                  {s.name}
+                </option>
+              ))}
+            </FormSelect>
           </Col>
           <Col xs="12" sm={1}>
             <Button color="success" onClick={handleSubmit}>
@@ -102,23 +107,52 @@ export const AddInvoice = () => {
                 <Col xs={6} md={4} className="mb-3">
                   <h6>From:</h6>
                   <div>
-                    {" "}
-                    <strong>The Menufy</strong>{" "}
+                    <strong>
+                      {currentUser?.user?.restaurant?.name || "Restaurant Name"}
+                    </strong>
                   </div>
-                  <div>71-101 Szczecin, Poland</div>
-                  <div>Email: info@webz.com.pl</div>
-                  <div>Phone: +48 444 666 3333</div>
+                  <div>
+                    {currentUser?.user?.restaurant?.address?.postalCode || ""}{" "}
+                    {currentUser?.user?.restaurant?.address?.city || ""},{" "}
+                    {currentUser?.user?.restaurant?.address?.country || ""}
+                  </div>
+                  <div>
+                    Email:{" "}
+                    {currentUser?.user?.restaurant?.contact?.email || "N/A"}
+                  </div>
+                  <div>
+                    Phone:{" "}
+                    {currentUser?.user?.restaurant?.contact?.phone || "N/A"}
+                  </div>
                   <div>
                     Created By: {currentUser?.user?.email || "current User"}
                   </div>
                 </Col>
+
                 <Col xs={6} md={4} className="mb-3">
                   <h6>To:</h6>
-                  <div>{supplier}</div>
-                  <div>Attn: Daniel Marek</div>
-                  <div>43-190 Mikolow, Poland</div>
-                  <div>Email: marek@daniel.com</div>
-                  <div>Phone: +48 123 456 789</div>
+                  {selectedSupplier ? (
+                    <>
+                      <div>{selectedSupplier.name}</div>
+                      <div>
+                        Attn:{" "}
+                        {selectedSupplier.contact?.representative || "N/A"}
+                      </div>
+                      <div>
+                        {selectedSupplier.address?.postalCode || ""}{" "}
+                        {selectedSupplier.address?.city || ""},{" "}
+                        {selectedSupplier.address?.country || "N/A"}
+                      </div>
+                      <div>
+                        Email: {selectedSupplier.contact?.email || "N/A"}
+                      </div>
+                      <div>
+                        Phone: {selectedSupplier.contact?.phone || "N/A"}
+                      </div>
+                    </>
+                  ) : (
+                    <div>Select a supplier</div>
+                  )}
                 </Col>
               </Row>
               <div className="table-responsive">
