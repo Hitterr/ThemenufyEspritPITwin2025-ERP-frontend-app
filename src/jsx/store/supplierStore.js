@@ -243,7 +243,7 @@ const useSupplierStore = create(
             type: supplierIngredient.ingredientId.type,
             unit: supplierIngredient.ingredientId.unit,
           }));
-
+    
           set((state) => ({
             suppliers: state.suppliers.map((supplier) =>
               supplier._id === supplierId

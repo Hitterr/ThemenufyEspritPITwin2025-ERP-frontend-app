@@ -6,54 +6,97 @@ import Swal from "sweetalert2";
 import { Stepper, Step } from 'react-form-stepper';
 import BulkUpdateFormStep from './components/BulkUpdateFormStep';
 import BulkUpdateStatsStep from './components/BulkUpdateStatsStep';
+
 const ShowSupplier = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getSupplierById, unlinkIngredient, bulkUpdateSupplierIngredients } = useSupplierStore();
   const [supplier, setSupplier] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [step, setStep] = useState(0); 
+  const [step, setStep] = useState(0);
   const [bulkUpdateData, setBulkUpdateData] = useState([]);
   const [originalData, setOriginalData] = useState([]);
-  const [bulkUpdateStats, setBulkUpdateStats] = useState({updatedCount: 0,avgPriceAfterUpdate: 0,avgLeadTimeAfterUpdate: 0,totalPriceChange: 0,totalLeadTimeChange: 0,});
+  const [bulkUpdateStats, setBulkUpdateStats] = useState({
+    updatedCount: 0,
+    avgPriceAfterUpdate: 0,
+    avgLeadTimeAfterUpdate: 0,
+    totalPriceChange: 0,
+    totalLeadTimeChange: 0,
+  });
+
   useEffect(() => {
-    loadSupplier();}, [id]);
+    loadSupplier();
+  }, [id]);
+
   const loadSupplier = async () => {
-    const data = await getSupplierById(id);
-    console.log("Fetched supplier data:", data);
-    if (data) {
-      setSupplier(data);
-      const ingredientsData = (data.ingredients || []).map(ing => ({
-        ingredientId: ing._id,pricePerUnit: ing.pricePerUnit || 0,leadTimeDays: ing.leadTimeDays || 1,
-      }));
-      setBulkUpdateData(ingredientsData);
-      setOriginalData(ingredientsData);
-    } else {
+    try {
+      const data = await getSupplierById(id);
+      console.log("Fetched supplier data:", data);
+      if (data) {
+        setSupplier(data);
+        const ingredientsData = (data.ingredients || []).map(ing => ({
+          ingredientId: ing._id,
+          pricePerUnit: ing.pricePerUnit || 0,
+          leadTimeDays: ing.leadTimeDays || 1,
+        }));
+        setBulkUpdateData(ingredientsData);
+        setOriginalData(ingredientsData);
+      } else {
+        throw new Error("Supplier not found");
+      }
+    } catch (error) {
+      console.error("Error loading supplier:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: error.response?.data?.message || "Failed to load supplier data.",
+      });
       navigate("/suppliers");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
+
   const handleUnlinkIngredient = async (ingredientId, ingredientName) => {
     const result = await Swal.fire({
-      title: "Are you sure?",text: `Do you want to unlink ${ingredientName} from this supplier?`,icon: "warning",showCancelButton: true,confirmButtonColor: "#3085d6",cancelButtonColor: "#d33",confirmButtonText: "Yes, unlink it!",
+      title: "Are you sure?",
+      text: `Do you want to unlink ${ingredientName} from this supplier?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, unlink it!",
     });
     if (result.isConfirmed) {
-      const success = await unlinkIngredient(id, ingredientId);
-      if (success) {
+      try {
+        const success = await unlinkIngredient(id, ingredientId);
+        if (success) {
+          Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: `${ingredientName} has been unlinked from the supplier.`,
+          });
+          await loadSupplier();
+        } else {
+          throw new Error("Failed to unlink the ingredient");
+        }
+      } catch (error) {
+        const errorMessage = error.response?.data?.message || "Failed to unlink the ingredient";
         Swal.fire({
-          icon: "success",title: "Success!",text: `${ingredientName} has been unlinked from the supplier.`,
+          icon: "error",
+          title: "Error!",
+          text: errorMessage,
         });
-        await loadSupplier();
-      } else {
-        Swal.fire({
-          icon: "error",title: "Error!",text: "Failed to unlink the ingredient.",
-        });}}
+      }
+    }
   };
+
   const handleBulkUpdateChange = (index, field, value) => {
     const updatedData = [...bulkUpdateData];
     updatedData[index] = { ...updatedData[index], [field]: Number(value) };
     setBulkUpdateData(updatedData);
   };
+
   const handleBulkUpdateSubmit = async () => {
     if (bulkUpdateData.length === 0) {
       Swal.fire({
@@ -63,28 +106,39 @@ const ShowSupplier = () => {
       });
       return;
     }
-    const success = await bulkUpdateSupplierIngredients(id, bulkUpdateData);
-    if (success) {
-      const updatedCount = bulkUpdateData.length;
-      const avgPriceAfterUpdate = (bulkUpdateData.reduce((sum, ing) => sum + ing.pricePerUnit, 0) / updatedCount).toFixed(2);
-      const avgLeadTimeAfterUpdate = (bulkUpdateData.reduce((sum, ing) => sum + ing.leadTimeDays, 0) / updatedCount).toFixed(2);
-      const totalPriceChange = bulkUpdateData.reduce((sum, ing, index) => sum + (ing.pricePerUnit - originalData[index].pricePerUnit), 0).toFixed(2);
-      const totalLeadTimeChange = bulkUpdateData.reduce((sum, ing, index) => sum + (ing.leadTimeDays - originalData[index].leadTimeDays), 0).toFixed(2);
-      setBulkUpdateStats({
-        updatedCount,avgPriceAfterUpdate,avgLeadTimeAfterUpdate,totalPriceChange,totalLeadTimeChange,
-      });
-      setStep(2);
-      await loadSupplier();
-    } else {
+    try {
+      const success = await bulkUpdateSupplierIngredients(id, bulkUpdateData);
+      if (success) {
+        const updatedCount = bulkUpdateData.length;
+        const avgPriceAfterUpdate = (bulkUpdateData.reduce((sum, ing) => sum + ing.pricePerUnit, 0) / updatedCount).toFixed(2);
+        const avgLeadTimeAfterUpdate = (bulkUpdateData.reduce((sum, ing) => sum + ing.leadTimeDays, 0) / updatedCount).toFixed(2);
+        const totalPriceChange = bulkUpdateData.reduce((sum, ing, index) => sum + (ing.pricePerUnit - originalData[index].pricePerUnit), 0).toFixed(2);
+        const totalLeadTimeChange = bulkUpdateData.reduce((sum, ing, index) => sum + (ing.leadTimeDays - originalData[index].leadTimeDays), 0).toFixed(2);
+        setBulkUpdateStats({
+          updatedCount,
+          avgPriceAfterUpdate,
+          avgLeadTimeAfterUpdate,
+          totalPriceChange,
+          totalLeadTimeChange,
+        });
+        setStep(2);
+        await loadSupplier();
+      } else {
+        throw new Error("Failed to update ingredients");
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "Failed to update ingredients";
       Swal.fire({
         icon: "error",
         title: "Error!",
-        text: "Failed to update ingredients.",
+        text: errorMessage,
       });
     }
   };
+
   if (loading) return <div>Loading...</div>;
   if (!supplier) return <div>Supplier not found</div>;
+
   return (
     <Card>
       <Card.Header>
@@ -159,7 +213,8 @@ const ShowSupplier = () => {
               <div className="mb-3">
                 <strong>End Date:</strong>{" "}
                 {supplier.contract.endDate
-                  ? new Date(supplier.contract.endDate).toLocaleDateString(): "N/A"}
+                  ? new Date(supplier.contract.endDate).toLocaleDateString()
+                  : "N/A"}
               </div>
               <div className="mb-3">
                 <strong>Terms:</strong> {supplier.contract.terms || "N/A"}
@@ -209,7 +264,9 @@ const ShowSupplier = () => {
                 <Button
                   variant="warning"
                   onClick={() => setStep(1)}
-                  disabled={!(supplier.ingredients && supplier.ingredients.length > 0)}>Bulk Update Ingredients
+                  disabled={!(supplier.ingredients && supplier.ingredients.length > 0)}
+                >
+                  Bulk Update Ingredients
                 </Button>
               </div>
               {step === 0 ? (
@@ -233,14 +290,17 @@ const ShowSupplier = () => {
                             <Button
                               variant="danger"
                               size="sm"
-                              onClick={() => handleUnlinkIngredient(ingredient._id, ingredient.name)}>Unlink
+                              onClick={() => handleUnlinkIngredient(ingredient._id, ingredient.name)}
+                            >
+                              Unlink
                             </Button>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </Table>
-                ) : (<p>No ingredients linked to this supplier.</p>
+                ) : (
+                  <p>No ingredients linked to this supplier.</p>
                 )
               ) : (
                 <div className="form-wizard">
@@ -270,10 +330,21 @@ const ShowSupplier = () => {
                     <Step className="nav-link" onClick={() => setStep(2)} />
                   </Stepper>
                   {step === 1 && (
-                    <BulkUpdateFormStep bulkUpdateData={bulkUpdateData} supplier={supplier} handleBulkUpdateChange={handleBulkUpdateChange} onNext={handleBulkUpdateSubmit} onCancel={() => setStep(0)}/>
+                    <BulkUpdateFormStep
+                      bulkUpdateData={bulkUpdateData}
+                      supplier={supplier}
+                      handleBulkUpdateChange={handleBulkUpdateChange}
+                      onNext={handleBulkUpdateSubmit}
+                      onCancel={() => setStep(0)}
+                    />
                   )}
                   {step === 2 && (
-                    <BulkUpdateStatsStep bulkUpdateStats={bulkUpdateStats} onPrev={() => setStep(1)} onBack={() => setStep(0)}/>)}
+                    <BulkUpdateStatsStep
+                      bulkUpdateStats={bulkUpdateStats}
+                      onPrev={() => setStep(1)}
+                      onBack={() => setStep(0)}
+                    />
+                  )}
                 </div>
               )}
             </div>
@@ -281,17 +352,29 @@ const ShowSupplier = () => {
         </Row>
         <div className="mt-4">
           <Button
-            variant="primary" className="me-2" onClick={() => navigate(`/suppliers/edit/${supplier._id}`)}>Edit Supplier
+            variant="primary"
+            className="me-2"
+            onClick={() => navigate(`/suppliers/edit/${supplier._id}`, { state: { redirectTo: `/suppliers/${supplier._id}` } })}
+          >
+            Edit Supplier
           </Button>
           <Button
-            variant="success" className="me-2" onClick={() => navigate(`/suppliers/${supplier._id}/link-ingredient`)}>Link Ingredient
+            variant="success"
+            className="me-2"
+            onClick={() => navigate(`/suppliers/${supplier._id}/link-ingredient`)}
+          >
+            Link Ingredient
           </Button>
           <Button
-            variant="secondary" onClick={() => navigate("/suppliers")}>Back to List
+            variant="secondary"
+            onClick={() => navigate("/suppliers")}
+          >
+            Back to List
           </Button>
         </div>
       </Card.Body>
     </Card>
   );
 };
+
 export default ShowSupplier;

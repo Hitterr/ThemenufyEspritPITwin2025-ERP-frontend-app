@@ -2,8 +2,8 @@ import { Card, Row, Col, Button } from "react-bootstrap";
 
 const BulkUpdateStatsStep = ({ bulkUpdateStats, onPrev, onBack }) => (
   <section>
-    <Row>
-      <Col xl={3} sm={6}>
+    <Row className="g-3">
+      <Col lg={2} sm={6}>
         <Card style={{ background: "linear-gradient(to right, #FF7A7A, #FFC07A)" }}>
           <Card.Body>
             <div className="media align-items-center">
@@ -15,7 +15,7 @@ const BulkUpdateStatsStep = ({ bulkUpdateStats, onPrev, onBack }) => (
           </Card.Body>
         </Card>
       </Col>
-      <Col xl={3} sm={6}>
+      <Col lg={2} sm={6}>
         <Card style={{ background: "linear-gradient(to right, #FF7A7A, #FFC07A)" }}>
           <Card.Body>
             <div className="media align-items-center">
@@ -27,7 +27,7 @@ const BulkUpdateStatsStep = ({ bulkUpdateStats, onPrev, onBack }) => (
           </Card.Body>
         </Card>
       </Col>
-      <Col xl={3} sm={6}>
+      <Col lg={2} sm={6}>
         <Card style={{ background: "linear-gradient(to right, #FF7A7A, #FFC07A)" }}>
           <Card.Body>
             <div className="media align-items-center">
@@ -39,7 +39,7 @@ const BulkUpdateStatsStep = ({ bulkUpdateStats, onPrev, onBack }) => (
           </Card.Body>
         </Card>
       </Col>
-      <Col xl={3} sm={6}>
+      <Col lg={2} sm={6}>
         <Card style={{ background: "linear-gradient(to right, #FF7A7A, #FFC07A)" }}>
           <Card.Body>
             <div className="media align-items-center">
@@ -51,7 +51,7 @@ const BulkUpdateStatsStep = ({ bulkUpdateStats, onPrev, onBack }) => (
           </Card.Body>
         </Card>
       </Col>
-      <Col xl={3} sm={6}>
+      <Col lg={2} sm={6}>
         <Card style={{ background: "linear-gradient(to right, #FF7A7A, #FFC07A)" }}>
           <Card.Body>
             <div className="media align-items-center">

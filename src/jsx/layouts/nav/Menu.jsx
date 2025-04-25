@@ -9,9 +9,17 @@ export const MenuList = [
         title: "Dashboard",
         to: "dashboard",
       },
+	  {
+        title: "Our Suppliers",
+        to: "suppliers",
+      },
       {
         title: "Suppliers Comparation",
         to: "suppliers-comp",
+      },
+	  {
+        title: "Suppliers Dashboard",
+        to: "suppliers-dashboard",
       },
       {
         title: "Invoices",
@@ -21,7 +29,6 @@ export const MenuList = [
         title: "Super Admin",
         to: "super-admins",
       },
-      ,
       {
         title: "Archive",
         to: "Archived",
