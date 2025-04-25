@@ -108,21 +108,19 @@ export const AddInvoice = () => {
                   <h6>From:</h6>
                   <div>
                     <strong>
-                      {currentUser?.user?.restaurant?.name || "Restaurant Name"}
+                      {currentUser?.user?.restaurant?.nameRes ||
+                        "Restaurant Name"}
                     </strong>
                   </div>
                   <div>
-                    {currentUser?.user?.restaurant?.address?.postalCode || ""}{" "}
-                    {currentUser?.user?.restaurant?.address?.city || ""},{" "}
-                    {currentUser?.user?.restaurant?.address?.country || ""}
+                    {currentUser?.user?.restaurant?.address ||
+                      "Address not available"}
                   </div>
                   <div>
-                    Email:{" "}
-                    {currentUser?.user?.restaurant?.contact?.email || "N/A"}
+                    Email: {currentUser?.user?.restaurant?.email || "N/A"}
                   </div>
                   <div>
-                    Phone:{" "}
-                    {currentUser?.user?.restaurant?.contact?.phone || "N/A"}
+                    Phone: {currentUser?.user?.restaurant?.phone || "N/A"}
                   </div>
                   <div>
                     Created By: {currentUser?.user?.email || "current User"}
