@@ -35,28 +35,31 @@ const ShowIngredient = () => {
   return (
     <Card>
       <Card.Header>
-        <Card.Title className="mb-0">
-          Ingredient Details
-        </Card.Title>
+        <Card.Title className="mb-0">{ingredient.type.name} Details</Card.Title>
       </Card.Header>
       <Card.Body>
         <Row>
           <Col md={6}>
             <div className="mb-4">
               <h5 className="text-primary">Basic Information</h5>
+              <hr />
               <div className="mb-3">
                 <strong>Name:</strong> {ingredient.libelle}
               </div>
               <div className="mb-3">
-                <strong>Type:</strong> {ingredient.type}
+                <strong>Type:</strong> {ingredient.type.name}
               </div>
               <div className="mb-3">
                 <strong>Price:</strong> ${ingredient.price}
               </div>
               <div className="mb-3">
                 <strong>Status:</strong>{" "}
-                <span className={`badge ${ingredient.disponibility ? 'badge-success' : 'badge-danger'}`}>
-                  {ingredient.disponibility ? 'Available' : 'Unavailable'}
+                <span
+                  className={`badge ${
+                    ingredient.disponibility ? "badge-success" : "badge-danger"
+                  }`}
+                >
+                  {ingredient.disponibility ? "Available" : "Unavailable"}
                 </span>
               </div>
             </div>
@@ -64,40 +67,56 @@ const ShowIngredient = () => {
           <Col md={6}>
             <div className="mb-4">
               <h5 className="text-primary">Quantity Management</h5>
+              <hr />
               <div className="mb-3">
-                <strong>Current Quantity:</strong> {ingredient.quantity} {ingredient.unit}
+                <strong>Current Quantity:</strong> {ingredient.quantity}{" "}
+                {ingredient.unit}
               </div>
               <div className="mb-3">
-                <strong>Minimum Quantity:</strong> {ingredient.minQty} {ingredient.unit}
+                <strong>Minimum Quantity:</strong> {ingredient.minQty}{" "}
+                {ingredient.unit}
               </div>
               <div className="mb-3">
-                <strong>Maximum Quantity:</strong> {ingredient.maxQty} {ingredient.unit}
+                <strong>Maximum Quantity:</strong> {ingredient.maxQty}{" "}
+                {ingredient.unit}
               </div>
               <div className="mb-3">
-                <strong>Status:</strong>{" "}
-                <span className={`badge ${ingredient.quantity > ingredient.minQty ? 'badge-success' : 'badge-warning'}`}>
-                  {ingredient.quantity > ingredient.minQty ? 'Stock OK' : 'Low Stock'}
+                <span
+                  className={`badge ${
+                    ingredient.quantity > ingredient.minQty
+                      ? "badge-success"
+                      : "badge-warning"
+                  }`}
+                >
+                  {ingredient.quantity > ingredient.minQty
+                    ? "Stock OK"
+                    : "Low Stock"}
                 </span>
               </div>
             </div>
           </Col>
         </Row>
 
-        <div className="mt-4">
-          <Button 
-            variant="primary" 
-            className="me-2"
-            onClick={() => navigate(`/ingredients/edit/${ingredient._id}`)}
-          >
-            Edit Ingredient
-          </Button>
-          <Button 
-            variant="secondary"
-            onClick={() => navigate("/ingredients")}
-          >
-            Back to List
-          </Button>
-        </div>
+        <Row className="mt-4 row justify-content-between ">
+          <Col xs={3}>
+            <Button
+              variant="secondary"
+              className="w-100"
+              onClick={() => navigate("/ingredients")}
+            >
+              Back to List
+            </Button>
+          </Col>
+          <Col xs={3}>
+            <Button
+              variant="primary"
+              className="w-100"
+              onClick={() => navigate(`/ingredients/edit/${ingredient._id}`)}
+            >
+              Edit Ingredient
+            </Button>
+          </Col>
+        </Row>
       </Card.Body>
     </Card>
   );

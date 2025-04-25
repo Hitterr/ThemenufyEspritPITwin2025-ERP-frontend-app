@@ -31,8 +31,12 @@ export const MenuList = [
         to: "restaurants",
       },
       {
-        title: "ingredients",
+        title: "Ingredients",
         to: "ingredients",
+      },
+      {
+        title: "categories",
+        to: "categories",
       },
       {
         title: "Stock History",

@@ -106,6 +106,7 @@ import AddInvoice from "./pages/invoice/AddInvoice";
 import { InvoicesPage } from "./pages/invoice";
 import ShowInvoice from "./pages/invoice/ShowInvoice";
 import StorageApp from "./pages/storage/StorageApp";
+import CategoriesPage from "./pages/categories";
 const Markup = () => {
   const allroutes = [
     /// Dashboard
@@ -201,6 +202,8 @@ const Markup = () => {
     { url: "invoices", component: <InvoicesPage /> },
     { url: "invoices/add", component: <AddInvoice /> },
     { url: "invoices/:id", component: <ShowInvoice /> },
+    // ----------------------- invoice -----------------------------
+    { url: "categories", component: <CategoriesPage /> },
   ];
   return (
     <>

@@ -1,14 +1,23 @@
-import { useEffect } from "react";
-import { Card, Form, Button, Row, Col } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Card, Form, Button, Row, Col, Modal } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import useIngredientStore from "../../store/ingredientStore";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { editIngredientSchema } from "./validators/editIngredient";
-const EditIngredient = () => {
+import { units } from "./components/units";
+import { useCategories } from "./queries/categoriesQuery";
+import { FaPencilAlt } from "react-icons/fa";
+import { Check, Cross, CrossIcon, PencilOff, X } from "lucide-react";
+const EditIngredient = ({ idIng }) => {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { data, isLoading } = useCategories();
+
   const { updateIngredient, getIngredientById } = useIngredientStore();
   const {
     register,
@@ -22,9 +31,9 @@ const EditIngredient = () => {
   });
   useEffect(() => {
     loadIngredient();
-  }, [id]);
+  }, [idIng]);
   const loadIngredient = async () => {
-    const ingredient = await getIngredientById(id);
+    const ingredient = await getIngredientById(idIng);
     if (ingredient) {
       // Convert numeric strings to numbers
       const formattedIngredient = {
@@ -48,14 +57,15 @@ const EditIngredient = () => {
       maxQty: Number(data.maxQty),
       minQty: Number(data.minQty),
     };
-    const success = await updateIngredient(id, formData);
+    const success = await updateIngredient(idIng, formData);
     if (success) {
       Swal.fire({
         icon: "success",
         title: "Success!",
         text: "Ingredient updated successfully",
       });
-      navigate("/ingredients");
+      reset();
+      setShow(false);
     } else {
       Swal.fire({
         icon: "error",
@@ -65,15 +75,18 @@ const EditIngredient = () => {
     }
   };
   return (
-    <Card>
-      <Card.Header>
-        <Card.Title>Edit Ingredient</Card.Title>
-      </Card.Header>
-      <Card.Body>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Row>
-            <Col md={6}>
-              <Form.Group className="mb-3">
+    <>
+      <Button variant="warning" onClick={handleShow}>
+        <FaPencilAlt />
+      </Button>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header>
+          <Modal.Title>Edit Ingredient</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleSubmit(onSubmit)}>
+            <Row>
+              <Form.Group xs={12} sm={6} as={Col} className="mb-3">
                 <Form.Label>Name</Form.Label>
                 <Form.Control
                   type="text"
@@ -84,49 +97,65 @@ const EditIngredient = () => {
                   {errors.libelle?.message}
                 </Form.Control.Feedback>
               </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3">
+
+              <Form.Group xs={12} sm={6} as={Col} className="mb-3">
                 <Form.Label>Type</Form.Label>
-                <Form.Control
-                  type="text"
+                <Form.Select
                   {...register("type")}
+                  className="p-2 p-xl-3"
                   isInvalid={!!errors.type}
-                />
+                  aria-placeholder="Select a Category"
+                >
+                  {isLoading && <option value="">Loading...</option>}
+                  {data &&
+                    data?.map((type) => {
+                      return (
+                        <option key={type._id} value={type._id}>
+                          {type.name}
+                        </option>
+                      );
+                    })}
+                </Form.Select>
                 <Form.Control.Feedback type="invalid">
                   {errors.type?.message}
                 </Form.Control.Feedback>
               </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3">
+
+              <Form.Group xs={12} sm={6} as={Col} className="mb-3">
                 <Form.Label>Quantity</Form.Label>
                 <Form.Control
                   {...register("quantity")}
                   type="number"
-                  step={1}
                   isInvalid={!!errors.quantity}
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.quantity?.message}
                 </Form.Control.Feedback>
               </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3">
+
+              <Form.Group xs={12} sm={6} as={Col} className="mb-3">
                 <Form.Label>Unit</Form.Label>
-                <Form.Control
-                  type="text"
+
+                <Form.Select
                   {...register("unit")}
+                  className="p-2 p-xl-3"
                   isInvalid={!!errors.unit}
-                />
+                  aria-placeholder="Select a Unit"
+                >
+                  {units.map((u) => {
+                    return (
+                      <option key={u} value={u} className="capitalize">
+                        {u}
+                      </option>
+                    );
+                  })}
+                </Form.Select>
                 <Form.Control.Feedback type="invalid">
                   {errors.unit?.message}
                 </Form.Control.Feedback>
               </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3">
+
+              <Form.Group xs={12} sm={6} as={Col} className="mb-3">
                 <Form.Label>Price</Form.Label>
                 <Form.Control
                   type="number"
@@ -138,60 +167,61 @@ const EditIngredient = () => {
                   {errors.price?.message}
                 </Form.Control.Feedback>
               </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3">
+
+              <Form.Group xs={12} sm={6} as={Col} className="mb-3">
                 <Form.Label>Maximum Quantity</Form.Label>
                 <Form.Control
                   type="number"
                   {...register("maxQty")}
-                  step={1}
                   isInvalid={!!errors.maxQty}
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.maxQty?.message}
                 </Form.Control.Feedback>
               </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3">
+
+              <Form.Group xs={12} sm={6} as={Col} className="mb-3">
                 <Form.Label>Minimum Quantity</Form.Label>
                 <Form.Control
                   type="number"
                   {...register("minQty")}
-                  step={1}
                   isInvalid={!!errors.minQty}
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.minQty?.message}
                 </Form.Control.Feedback>
               </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3 pt-4">
-                <Form.Check
-                  type="checkbox"
-                  label="Available"
-                  {...register("disponibility")}
-                />
+
+              <Form.Group xs={12} sm={6} as={Col} className="mb-3">
+                <Form.Label>Available</Form.Label>
+                <Form.Check type="checkbox" {...register("disponibility")} />
               </Form.Group>
-            </Col>
-          </Row>
-          <div className="d-flex gap-2">
-            <Button variant="primary" type="submit">
-              Update Ingredient
-            </Button>
-            <Button
-              variant="secondary"
-              type="button"
-              onClick={() => navigate("/ingredients")}
-            >
-              Cancel
-            </Button>
-          </div>
-        </Form>
-      </Card.Body>
-    </Card>
+            </Row>
+            <Row className="d-flex justify-content-between  p-2">
+              <Col sm={5}>
+                {" "}
+                <Button
+                  variant="secondary"
+                  type="button"
+                  className="w-100 "
+                  onClick={() => {
+                    reset();
+                    setShow(false);
+                  }}
+                >
+                  <X />
+                </Button>
+              </Col>
+              <Col sm={5}>
+                <Button variant="primary" className="w-100" type="submit">
+                  <Check />
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        </Modal.Body>
+      </Modal>
+    </>
   );
 };
 export default EditIngredient;
