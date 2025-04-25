@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import { Button, Card, Col, Row, Table } from "react-bootstrap";
-import { FaEye, FaFilter, FaPencilAlt, FaPlus, FaTrash } from "react-icons/fa";
+import { FaEye, FaFilter, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import useInvoiceStore from "../../store/invoiceStore";
 import { format } from "date-fns";
 import InvoicesPagination from "./components/InvoicesPagination";
 import Swal from "sweetalert2";
 import { ReceiptText } from "lucide-react";
+import InvoiceFilters from "./components/InvoiceFilters";
 
 export const InvoicesPage = () => {
   const { invoices, fetchInvoices, deleteInvoice } = useInvoiceStore();
   const [currentPage, setCurrentPage] = useState(1);
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(false); // State to toggle filters
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -42,6 +43,9 @@ export const InvoicesPage = () => {
         </Button>
       </div>
 
+      {/* Conditionally render InvoiceFilters */}
+      {showFilters && <InvoiceFilters onClose={() => setShowFilters(false)} />}
+
       <Card>
         <Card.Body>
           <div className="table-responsive">
@@ -50,9 +54,9 @@ export const InvoicesPage = () => {
                 <tr>
                   <th># Invoice Number</th>
                   <th>Date</th>
-                  <th>status</th>
-                  <th>total</th>
-                  <th>created_by</th>
+                  <th>Status</th>
+                  <th>Total</th>
+                  <th>Created By</th>
                   <th className="text-center" style={{ width: "150px" }}>
                     Actions
                   </th>
