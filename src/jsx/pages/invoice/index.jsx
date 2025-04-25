@@ -70,7 +70,8 @@ export const InvoicesPage = () => {
                       <td>{format(inv.createdAt, "dd-MM-yyyy HH:mm:ss")}</td>
                       <td>{inv.status}</td>
                       <td>${inv.total}</td>
-                      <td>{inv.created_by.email}</td>
+                      <td>{inv.created_by?.email || "N/A"}</td>
+
                       <td>
                         <div className="d-flex justify-content-center gap-2">
                           <Link

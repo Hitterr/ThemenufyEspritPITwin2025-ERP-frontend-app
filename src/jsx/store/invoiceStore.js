@@ -95,6 +95,7 @@ const useInvoiceStore = create(
     // === CRUD INVOICE ===
     createInvoice: async (invoice) => {
       try {
+        console.log(invoice);
         set({ loading: true, error: null });
         const response = await apiRequest.post("/invoice", invoice);
         set((state) => ({
