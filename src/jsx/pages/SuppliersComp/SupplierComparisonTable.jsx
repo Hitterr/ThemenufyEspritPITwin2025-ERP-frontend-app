@@ -4,7 +4,10 @@ import axios from "axios";
 
 export default function SupplierComparisonTable({ ingredientId }) {
   const [suppliers, setSuppliers] = useState([]);
-  const [sortConfig, setSortConfig] = useState({ key: "price", direction: "asc" });
+  const [sortConfig, setSortConfig] = useState({
+    key: "price",
+    direction: "asc",
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -12,9 +15,16 @@ export default function SupplierComparisonTable({ ingredientId }) {
     const fetchComparison = async () => {
       setLoading(true);
       try {
-        const res = await axios.get("http://localhost:5000/api/suppliers/compare", {
-          params: { ingredientId, sortBy: sortConfig.key, order: sortConfig.direction },
-        });
+        const res = await axios.get(
+          "http://localhost:5000/api/suppliersComparaison/compare",
+          {
+            params: {
+              ingredientId,
+              sortBy: sortConfig.key,
+              order: sortConfig.direction,
+            },
+          }
+        );
         if (res.data.success) setSuppliers(res.data.data);
         else setError("Erreur API");
       } catch (err) {
@@ -39,48 +49,54 @@ export default function SupplierComparisonTable({ ingredientId }) {
   return (
     <Table striped bordered hover className="text-center shadow-sm">
       <thead className="table-primary text-white">
-  <tr>
-    <th onClick={() => handleSort("supplierName")} style={{ cursor: "pointer" }}>
-      <i className="fas fa-building me-2 text-info"></i>
-      <span className="text-dark">Fournisseur</span>
-      {sortConfig.key === "supplierName" ? (
-        sortConfig.direction === "asc" ? (
-          <i className="fas fa-sort-up ms-2 text-secondary" />
-        ) : (
-          <i className="fas fa-sort-down ms-2 text-secondary" />
-        )
-      ) : (
-        <i className="fas fa-sort ms-2 text-muted" />
-      )}
-    </th>
-    <th onClick={() => handleSort("price")} style={{ cursor: "pointer" }}>
-      <i className="fas fa-euro-sign me-2 text-success"></i>
-      <span className="text-dark">Prix</span>
-      {sortConfig.key === "price" ? (
-        sortConfig.direction === "asc" ? (
-          <i className="fas fa-sort-up ms-2 text-secondary" />
-        ) : (
-          <i className="fas fa-sort-down ms-2 text-secondary" />
-        )
-      ) : (
-        <i className="fas fa-sort ms-2 text-muted" />
-      )}
-    </th>
-    <th onClick={() => handleSort("deliveryTime")} style={{ cursor: "pointer" }}>
-      <i className="fas fa-truck me-2 text-warning"></i>
-      <span className="text-dark">Délai</span>
-      {sortConfig.key === "deliveryTime" ? (
-        sortConfig.direction === "asc" ? (
-          <i className="fas fa-sort-up ms-2 text-secondary" />
-        ) : (
-          <i className="fas fa-sort-down ms-2 text-secondary" />
-        )
-      ) : (
-        <i className="fas fa-sort ms-2 text-muted" />
-      )}
-    </th>
-  </tr>
-</thead>
+        <tr>
+          <th
+            onClick={() => handleSort("supplierName")}
+            style={{ cursor: "pointer" }}
+          >
+            <i className="fas fa-building me-2 text-info"></i>
+            <span className="text-dark">Fournisseur</span>
+            {sortConfig.key === "supplierName" ? (
+              sortConfig.direction === "asc" ? (
+                <i className="fas fa-sort-up ms-2 text-secondary" />
+              ) : (
+                <i className="fas fa-sort-down ms-2 text-secondary" />
+              )
+            ) : (
+              <i className="fas fa-sort ms-2 text-muted" />
+            )}
+          </th>
+          <th onClick={() => handleSort("price")} style={{ cursor: "pointer" }}>
+            <i className="fas fa-euro-sign me-2 text-success"></i>
+            <span className="text-dark">Prix</span>
+            {sortConfig.key === "price" ? (
+              sortConfig.direction === "asc" ? (
+                <i className="fas fa-sort-up ms-2 text-secondary" />
+              ) : (
+                <i className="fas fa-sort-down ms-2 text-secondary" />
+              )
+            ) : (
+              <i className="fas fa-sort ms-2 text-muted" />
+            )}
+          </th>
+          <th
+            onClick={() => handleSort("deliveryTime")}
+            style={{ cursor: "pointer" }}
+          >
+            <i className="fas fa-truck me-2 text-warning"></i>
+            <span className="text-dark">Délai</span>
+            {sortConfig.key === "deliveryTime" ? (
+              sortConfig.direction === "asc" ? (
+                <i className="fas fa-sort-up ms-2 text-secondary" />
+              ) : (
+                <i className="fas fa-sort-down ms-2 text-secondary" />
+              )
+            ) : (
+              <i className="fas fa-sort ms-2 text-muted" />
+            )}
+          </th>
+        </tr>
+      </thead>
       <tbody>
         {suppliers.length > 0 ? (
           suppliers.map((s) => (
@@ -92,7 +108,9 @@ export default function SupplierComparisonTable({ ingredientId }) {
           ))
         ) : (
           <tr>
-            <td colSpan="3" className="text-muted">Aucun fournisseur trouvé.</td>
+            <td colSpan="3" className="text-muted">
+              Aucun fournisseur trouvé.
+            </td>
           </tr>
         )}
       </tbody>
