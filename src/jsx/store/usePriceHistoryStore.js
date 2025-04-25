@@ -11,123 +11,103 @@ const usePriceHistoryStore = create(
     filterCriteria: {
       restaurantId: "",
       ingredientId: "",
+      invoiceId: "",
       supplierId: "",
     },
     isLoading: false,
     error: null,
 
-    // Update filter criteria and refetch price histories
-    setFilterCriteria: (criteria) => {
-      set((state) => ({
-        filterCriteria: { ...state.filterCriteria, ...criteria },
-      }));
-      get().fetchPriceHistories();
-    },
-
-    // Reset filter criteria and refetch price histories
-    resetFilters: () => {
-      set({
-        filterCriteria: { restaurantId: "", ingredientId: "", supplierId: "" },
-      });
-      get().fetchPriceHistories();
-    },
-
-    // Fetch price histories based on filter criteria
+    // Fetch price histories
     fetchPriceHistories: async () => {
       const { filterCriteria } = get();
-      console.log("Price History Filter Criteria:", filterCriteria);
       set({ isLoading: true, error: null });
       try {
         const response = await axios.get(`${API_URL}/storage/history/trends`, {
           params: {
             restaurantId: filterCriteria.restaurantId || undefined,
             ingredientId: filterCriteria.ingredientId || undefined,
+            invoiceId: filterCriteria.invoiceId || undefined,
             supplierId: filterCriteria.supplierId || undefined,
           },
         });
-        console.log("Fetch Price Histories Response:", response.data);
         set({ priceHistories: response.data, isLoading: false });
       } catch (error) {
-        const errorMessage = error.response
-          ? error.response.data.message || `HTTP ${error.response.status}: ${error.response.statusText}`
-          : error.message || "Network error or server unreachable";
-        console.error("Fetch Price Histories Error:", {
-          message: errorMessage,
-          status: error.response?.status,
-          data: error.response?.data,
-          stack: error.stack,
-          fullError: JSON.stringify(error, Object.getOwnPropertyNames(error)),
-        });
+        const errorMessage = error.response?.data?.message || error.message;
         set({ error: errorMessage, isLoading: false });
       }
     },
 
-    // Create a new price history record
-    createPriceHistory: async (ingredientId, restaurantId, price, supplierId) => {
+    // Create price history
+    createPriceHistory: async (data) => {
       set({ isLoading: true, error: null });
       try {
         const response = await axios.post(`${API_URL}/storage/history/Prices`, {
-          ingredientId,
-          restaurantId,
-          price,
-          supplierId: supplierId || undefined,
+          ingredientId: data.ingredientId,
+          restaurantId: data.restaurantId,
+          price: parseFloat(data.price),
+          invoiceId: data.invoiceId,
+          supplierId: data.supplierId || null,
+        }, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
         });
+
+        if (response.status >= 400) {
+          throw new Error(response.data?.message || "Failed to create price history");
+        }
+
         set((state) => ({
           priceHistories: [response.data, ...state.priceHistories],
           isLoading: false,
         }));
+
         return { success: true, data: response.data };
       } catch (error) {
-        const errorMessage = error.response
-          ? error.response.data.message || `HTTP ${error.response.status}: ${error.response.statusText}`
-          : error.message || "Network error or server unreachable";
-        console.error("Create Price History Error:", {
-          message: errorMessage,
-          status: error.response?.status,
-          data: error.response?.data,
-          stack: error.stack,
-          fullError: JSON.stringify(error, Object.getOwnPropertyNames(error)),
-        });
+        const errorMessage = error.response?.data?.message || 
+                           error.response?.data?.error || 
+                           error.message || 
+                           "Failed to create price history";
         set({ error: errorMessage, isLoading: false });
         return { success: false, error: errorMessage };
       }
     },
 
-    // Fetch daily price trends for a specific ingredient and restaurant
-    fetchDailyPriceTrends: async (ingredientId, restaurantId, days = 30) => {
-      if (!ingredientId || !restaurantId) {
-        const errorMsg = "ingredientId and restaurantId are required";
-        set({ error: errorMsg });
-        throw new Error(errorMsg);
-      }
+    // Update filter criteria
+    setFilterCriteria: (newCriteria) => {
+      set((state) => ({
+        filterCriteria: { ...state.filterCriteria, ...newCriteria },
+      }));
+    },
+
+    // Reset filters
+    resetFilters: () => {
+      set({
+        filterCriteria: {
+          restaurantId: "",
+          ingredientId: "",
+          invoiceId: "",
+          supplierId: "",
+        },
+      });
+    },
+
+    // Fetch daily price trends
+    fetchDailyPriceTrends: async () => {
+      const { filterCriteria } = get();
       set({ isLoading: true, error: null });
       try {
-        const response = await axios.get(
-          `${API_URL}/storage/history/trends/daily/${ingredientId}/${restaurantId}`,
-          {
-            params: { ingredientId, restaurantId, days },
-          }
-        );
-        // Transform data to ensure compatibility with chart
-        const transformedData = response.data.map((item) => ({
-          date: new Date(item.date).toLocaleDateString(), // Adjust based on API response
-          price: parseFloat(item.price), // Ensure price is a number
-        }));
-        console.log("Transformed Daily Price Trends:", transformedData);
-        set({ dailyPriceTrends: transformedData, isLoading: false });
-      } catch (error) {
-        const errorMessage = error.response
-          ? error.response.data.message || `HTTP ${error.response.status}: ${error.response.statusText}`
-          : error.message || "Network error or server unreachable";
-        console.error("Fetch Daily Price Trends Error:", {
-          message: errorMessage,
-          status: error.response?.status,
-          data: error.response?.data,
-          stack: error.stack,
-          fullError: JSON.stringify(error, Object.getOwnPropertyNames(error)),
+        const response = await axios.get(`${API_URL}/storage/history/daily-trends`, {
+          params: {
+            restaurantId: filterCriteria.restaurantId || undefined,
+            ingredientId: filterCriteria.ingredientId || undefined,
+            supplierId: filterCriteria.supplierId || undefined,
+          },
         });
+        set({ dailyPriceTrends: response.data, isLoading: false });
+      } catch (error) {
+        const errorMessage = error.response?.data?.message || error.message;
         set({ error: errorMessage, isLoading: false });
-        throw new Error(errorMessage);
       }
     },
   }))
