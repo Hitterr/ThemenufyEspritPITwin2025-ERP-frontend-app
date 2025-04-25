@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import useIngredientStore from "../../store/ingredientStore";
 import { addInvoiceSchema } from "./validators/addInvoiceSchema";
 import useSupplierStore from "../../store/supplierStore";
+import { useNavigate } from "react-router-dom";
 export const AddInvoice = () => {
   const [supplier, setSupplier] = React.useState(null);
   const { currentUser } = authStore();
@@ -23,6 +24,7 @@ export const AddInvoice = () => {
     setInvoiceRestaurant,
     deleteInvoiceItem,
   } = useInvoiceStore();
+  const navigate = useNavigate();
   useEffect(() => {
     if (currentUser?.user?.restaurant?._id) {
       setInvoiceRestaurant(currentUser?.user?.restaurant?._id);
@@ -48,6 +50,7 @@ export const AddInvoice = () => {
         title: "Success!",
         text: "Invoice created successfully",
       });
+      navigate("/invoices");
     } catch (error) {
       Swal.fire({
         icon: "error",
