@@ -15,6 +15,8 @@ import GeneralCustomers from "./components/Dashboard/GeneralCustomers";
 import Analytics from "./components/Dashboard/Analytics";
 import Reviews from "./components/Dashboard/Reviews";
 import Task from "./components/Dashboard/Task";
+// Suppliers Dashboard
+import SuppliersDashboard from "./pages/Dashbord/suppliers/suppliersDashboard"; // Import the SuppliersDashboard
 //CMS
 import Content from "./components/Cms/Content";
 import Menu from "./components/Cms/Menu";
@@ -106,6 +108,11 @@ import AddInvoice from "./pages/invoice/AddInvoice";
 import { InvoicesPage } from "./pages/invoice";
 import ShowInvoice from "./pages/invoice/ShowInvoice";
 import StorageApp from "./pages/storage/StorageApp";
+import Suppliers from './pages/suppliers/index';
+import AddSupplier from './pages/suppliers/AddSupplier';
+import EditSupplier from './pages/suppliers/EditSupplier';
+import ShowSupplier from "./pages/suppliers/ShowSupplier";
+import LinkIngredient from "./pages/suppliers/LinkIngredient";
 const Markup = () => {
   const allroutes = [
     /// Dashboard
@@ -117,6 +124,7 @@ const Markup = () => {
     { url: "analytics", component: <Analytics /> },
     { url: "review", component: <Reviews /> },
     { url: "task", component: <Task /> },
+    { url: "suppliers-dashboard", component: <SuppliersDashboard /> }, // New route for SuppliersDashboard
     //Cms
     { url: "content", component: <Content /> },
     { url: "menu", component: <Menu /> },
@@ -188,6 +196,11 @@ const Markup = () => {
     { url: "todo", component: <Todo /> },
     { url: "test", component: <Test /> },
     { url: "profile", component: <Profile /> },
+    { url: "suppliers", component: <Suppliers /> },
+    { url: "suppliers/add", component: <AddSupplier /> },
+    { url: "suppliers/edit/:id", component: <EditSupplier /> },
+    { url: "suppliers/:id", component: <ShowSupplier /> },
+    { url: "suppliers/:id/link-ingredient", component: <LinkIngredient /> },
     { url: "super-admins", component: <SuperDb /> },
     { url: "stock-history", component: <StorageApp /> },
     { url: "archived", component: <ArchivedSup /> },

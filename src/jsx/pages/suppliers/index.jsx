@@ -42,13 +42,17 @@ const Suppliers = () => {
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const success = await deleteSupplier(id);
-        if (success) {
-          await loadSuppliers();
-          setFilterCriteria({ page: 1 });
-          Swal.fire("Deleted!", "Supplier has been deleted.", "success");
-        } else {
-          Swal.fire("Error!", "Failed to delete supplier.", "error");
+        try {
+          const success = await deleteSupplier(id);
+          if (success) {
+            await loadSuppliers();
+            setFilterCriteria({ page: 1 });
+            Swal.fire("Deleted!", "Supplier has been deleted.", "success");
+          } else {
+            throw new Error("Failed to delete supplier");
+          }
+        } catch (error) {
+          Swal.fire("Error!", error.response?.data?.message || "Failed to delete supplier.", "error");
         }
       }
     });
@@ -137,6 +141,7 @@ const Suppliers = () => {
                       </Link>
                       <Link
                         to={`/suppliers/edit/${supplier._id}`}
+                        state={{ redirectTo: "/suppliers" }}
                         className="btn btn-sm btn-secondary"
                         title="Edit"
                       >

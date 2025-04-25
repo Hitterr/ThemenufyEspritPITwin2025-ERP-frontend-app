@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { Card, Form, Button } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom"; // Add useLocation
 import useSupplierStore from "../../store/supplierStore";
-import useRestaurantStore from "../../store/restaurantStore"; // Import the restaurant store
+import useRestaurantStore from "../../store/restaurantStore";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -11,8 +11,13 @@ import { editSupplierSchema } from "./validators/editSupplier";
 const EditSupplier = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const location = useLocation(); // Add useLocation to access state
   const { updateSupplier, getSupplierById, fetchSuppliers } = useSupplierStore();
-  const { restaurants, fetchRestaurants } = useRestaurantStore(); // Use the restaurant store
+  const { restaurants, fetchRestaurants } = useRestaurantStore();
+  
+  // Extract redirectTo from location.state, default to /suppliers
+  const redirectTo = location.state?.redirectTo || "/suppliers";
+
   const {
     register,
     handleSubmit,
@@ -24,42 +29,57 @@ const EditSupplier = () => {
   });
 
   useEffect(() => {
-    // Fetch restaurants when the component mounts
     fetchRestaurants();
     loadSupplier();
-  }, [id]);
+  }, [id, fetchRestaurants]); // Add fetchRestaurants to dependencies
 
   const loadSupplier = async () => {
-    const supplier = await getSupplierById(id);
-    if (supplier) {
-      // Transform restaurantId from an object to a string (the _id)
-      const transformedSupplier = {
-        ...supplier,
-        restaurantId: supplier.restaurantId ? supplier.restaurantId._id : "",
-      };
-      reset(transformedSupplier);
-    } else {
+    try {
+      const supplier = await getSupplierById(id);
+      if (supplier) {
+        const transformedSupplier = {
+          ...supplier,
+          restaurantId: supplier.restaurantId ? supplier.restaurantId._id : "",
+        };
+        reset(transformedSupplier);
+      } else {
+        throw new Error("Supplier not found");
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: error.response?.data?.message || "Failed to load supplier data.",
+      });
       navigate("/suppliers");
     }
   };
 
   const onSubmit = async (data) => {
-    const success = await updateSupplier(id, data);
-    if (success) {
-      await fetchSuppliers(); // Refresh the supplier list
-      await Swal.fire({
-        icon: "success",
-        title: "Success!",
-        text: "Supplier updated successfully",
-      });
-      navigate(`/suppliers/${id}`); // Redirect to the detail page
-    } else {
+    try {
+      const success = await updateSupplier(id, data);
+      if (success) {
+        await fetchSuppliers();
+        await Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Supplier updated successfully",
+        });
+        navigate(redirectTo); // Use redirectTo instead of hardcoding
+      } else {
+        throw new Error("Failed to update supplier");
+      }
+    } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Error!",
-        text: "Failed to update supplier",
+        text: error.response?.data?.message || "Failed to update supplier.",
       });
     }
+  };
+
+  const handleCancel = () => {
+    navigate(redirectTo); // Use redirectTo for cancel
   };
 
   return (
@@ -338,7 +358,7 @@ const EditSupplier = () => {
             <Button
               variant="secondary"
               type="button"
-              onClick={() => navigate("/suppliers")}
+              onClick={handleCancel} // Use handleCancel to navigate to redirectTo
             >
               Cancel
             </Button>
