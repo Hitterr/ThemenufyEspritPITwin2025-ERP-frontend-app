@@ -13,6 +13,12 @@ const useIngredientStore = create(
       minPrice: "",
       maxPrice: "",
     },
+    pagination: {
+      currentPage: 1,
+      totalPages: 1,
+      totalItems: 0,
+      limit: 10,
+    },
     setFilterCriteria: (criteria) => {
       set((state) => ({
         filterCriteria: { ...state.filterCriteria, ...criteria },
@@ -69,12 +75,13 @@ const useIngredientStore = create(
       set({ filteredIngredients: filtered });
     },
     // Modify fetchIngredients to initialize filteredIngredients
-    fetchIngredients: async () => {
+    fetchIngredients: async (page = 1) => {
       try {
-        const { data } = await axios.get(API_URL);
+        const { data } = await axios.get(API_URL, { params: { page: page } });
         set({
           ingredients: data.data,
           filteredIngredients: data.data,
+          pagination: data.pagination,
         });
       } catch (error) {
         console.error("Error fetching ingredients:", error.message);

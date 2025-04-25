@@ -13,6 +13,7 @@ import { apiRequest } from "../../utils/apiRequest";
 import IngredientFilters from "./components/IngredientFilters";
 import AddIngredient from "./AddIngredient";
 import EditIngredient from "./EditIngredient";
+import useIngredientStore from "../../store/ingredientStore";
 
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
 const ITEMS_PER_PAGE = 10;
@@ -21,18 +22,13 @@ const Ingredients = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
   const queryClient = useQueryClient();
-
-  // Fetch ingredients with pagination
-  const { data: ingredientsData, isLoading } = useQuery({
-    queryKey: ["ingredients", page],
-    queryFn: async () => {
-      const { data } = await apiRequest.get(
-        `/ingredient?page=${page}&limit=${ITEMS_PER_PAGE}`
-      );
-      return data;
-    },
-    keepPreviousData: true,
-  });
+  const {
+    ingredients,
+    pagination,
+    filteredIngredients,
+    fetchIngredients,
+    loading,
+  } = useIngredientStore();
 
   // Socket connection for real-time updates
   useEffect(() => {
@@ -65,8 +61,11 @@ const Ingredients = () => {
     });
 
     return () => socket.disconnect();
-  }, [queryClient]);
-
+  }, []);
+  useEffect(() => {
+    fetchIngredients(page);
+    console.log(ingredients); // Ajoutez cette ligne pour afficher les données dans la console
+  }, [page]);
   // Delete ingredient mutation
   const handleDelete = async (id) => {
     const result = await Swal.fire({
@@ -90,7 +89,7 @@ const Ingredients = () => {
     }
   };
 
-  if (isLoading) {
+  if (loading) {
     return <div>Loading...</div>;
   }
 
@@ -99,8 +98,11 @@ const Ingredients = () => {
       <h1 className="page-title">Ingredients</h1>
 
       <Card>
-        <Card.Header className="d-flex justify-content-between align-items-center">
-          <Row className="justify-content-between align-items-center gap-2 mb-3 w-100">
+        <Card.Header className="d-flex flex-wrap  justify-content-between align-items-center">
+          <Row
+            xs={12}
+            className="justify-content-between align-items-center gap-2 mb-3 w-100"
+          >
             <Col sm={3} lg={2}>
               <AddIngredient />
             </Col>
@@ -115,9 +117,11 @@ const Ingredients = () => {
               </Button>
             </Col>
           </Row>
-          {showFilters && (
-            <IngredientFilters onClose={() => setShowFilters(false)} />
-          )}
+          <Row xs={12}>
+            {showFilters && (
+              <IngredientFilters onClose={() => setShowFilters(false)} />
+            )}
+          </Row>
         </Card.Header>
         <Card.Body>
           <div className="table-responsive">
@@ -135,7 +139,7 @@ const Ingredients = () => {
                 </tr>
               </thead>
               <tbody>
-                {ingredientsData?.data?.map((ingredient) => (
+                {filteredIngredients.map((ingredient) => (
                   <tr key={ingredient._id}>
                     <td>{ingredient.libelle}</td>
                     <td>{ingredient.type.name}</td>
@@ -186,12 +190,12 @@ const Ingredients = () => {
                 Previous
               </Button>
               <span className="text-muted">
-                Page {page} of {ingredientsData?.pagination.totalPages}
+                Page {page} of {pagination.totalPages}
               </span>
               <Button
                 variant="outline-primary"
                 onClick={() => setPage((p) => p + 1)}
-                disabled={page >= ingredientsData?.pagination.totalPages}
+                disabled={page >= pagination.totalPages}
               >
                 Next
               </Button>
