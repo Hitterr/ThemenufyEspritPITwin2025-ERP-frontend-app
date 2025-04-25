@@ -120,8 +120,8 @@ export const ShowInvoice = () => {
                     Attn: {currentInvoice?.supplier?.representative || "N/A"}
                   </div>
                   <div>
-                    {currentInvoice?.supplier?.postalCode},{" "}
-                    {currentInvoice?.supplier?.city},{" "}
+                    {currentInvoice?.supplier?.postalCode}
+                    {currentInvoice?.supplier?.city}
                     {currentInvoice?.supplier?.country}
                   </div>
                   <div>Email: {currentInvoice?.supplier?.email || "N/A"}</div>

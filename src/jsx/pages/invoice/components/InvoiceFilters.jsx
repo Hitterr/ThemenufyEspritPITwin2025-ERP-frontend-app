@@ -7,12 +7,12 @@ const InvoiceFilters = ({ onClose }) => {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilterCriteria({ [name]: value });
+    setFilterCriteria({ [name]: value }); // Updates the filter criteria based on the input name
   };
 
   const handleReset = () => {
-    resetFilters();
-    onClose();
+    resetFilters(); // Resets the filter criteria in the store
+    onClose(); // Closes the filter panel
   };
 
   return (
@@ -37,11 +37,11 @@ const InvoiceFilters = ({ onClose }) => {
         <Row>
           <Col md={3}>
             <Form.Group className="mb-3">
-              <Form.Label>Search</Form.Label>
+              <Form.Label>Search by Invoice Number</Form.Label>
               <Form.Control
                 type="text"
                 name="invoiceNumber"
-                value={filterCriteria.invoiceNumber}
+                value={filterCriteria.invoiceNumber || ""}
                 onChange={handleFilterChange}
                 placeholder="Search by invoice number..."
               />
@@ -53,7 +53,7 @@ const InvoiceFilters = ({ onClose }) => {
               <Form.Control
                 as="select"
                 name="status"
-                value={filterCriteria.status}
+                value={filterCriteria.status || "all"}
                 onChange={handleFilterChange}
               >
                 <option value="all">All Statuses</option>
@@ -69,21 +69,9 @@ const InvoiceFilters = ({ onClose }) => {
               <Form.Control
                 type="text"
                 name="createdBy"
-                value={filterCriteria.createdBy}
+                value={filterCriteria.createdBy || ""}
                 onChange={handleFilterChange}
                 placeholder="Search by creator name..."
-              />
-            </Form.Group>
-          </Col>
-          <Col md={3}>
-            <Form.Group className="mb-3">
-              <Form.Label>Invoice Number</Form.Label>
-              <Form.Control
-                type="text"
-                name="invoiceNumber"
-                value={filterCriteria.invoiceNumber}
-                onChange={handleFilterChange}
-                placeholder="Search by invoice number..."
               />
             </Form.Group>
           </Col>

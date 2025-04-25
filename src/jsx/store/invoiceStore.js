@@ -4,6 +4,7 @@ import { devtools } from "zustand/middleware";
 
 const useInvoiceStore = create(
   devtools((set, get) => ({
+    // === STATE ===
     invoices: [],
     filteredInvoices: [],
     currentInvoice: {
@@ -95,7 +96,6 @@ const useInvoiceStore = create(
     // === CRUD INVOICE ===
     createInvoice: async (invoice) => {
       try {
-        console.log(invoice);
         set({ loading: true, error: null });
         const response = await apiRequest.post("/invoice", invoice);
         set((state) => ({
@@ -241,29 +241,33 @@ const useInvoiceStore = create(
       const { invoices, filterCriteria } = get();
       let filtered = [...invoices];
 
+      // Filter by invoice number (case-insensitive)
       if (filterCriteria.invoiceNumber) {
         const searchLower = filterCriteria.invoiceNumber.toLowerCase();
         filtered = filtered.filter((inv) =>
-          inv.invoiceNumber.toLowerCase().includes(searchLower)
+          inv.invoiceNumber?.toLowerCase().includes(searchLower)
         );
       }
 
+      // Filter by created by (case-insensitive, check both first and last name)
       if (filterCriteria.createdBy) {
         const createdByLower = filterCriteria.createdBy.toLowerCase();
         filtered = filtered.filter(
           (inv) =>
-            inv.created_by.firstName.toLowerCase().includes(createdByLower) ||
-            inv.created_by.lastName.toLowerCase().includes(createdByLower)
+            inv.created_by?.firstName?.toLowerCase().includes(createdByLower) ||
+            inv.created_by?.lastName?.toLowerCase().includes(createdByLower)
         );
       }
 
-      if (filterCriteria.status !== "all") {
+      // Filter by status (case-insensitive)
+      if (filterCriteria.status && filterCriteria.status !== "all") {
+        const statusLower = filterCriteria.status.toLowerCase();
         filtered = filtered.filter(
-          (inv) =>
-            inv.status?.toLowerCase() === filterCriteria.status.toLowerCase()
+          (inv) => inv.status?.toLowerCase() === statusLower
         );
       }
 
+      console.log("Filtered invoices:", filtered); // Debugging log
       set({ filteredInvoices: filtered });
     },
 
