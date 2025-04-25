@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect } from "react";
 import { format } from "date-fns";
-import { ArrowRight, Loader, Trash } from "lucide-react";
+import { ArrowRight, Trash } from "lucide-react";
 import { Button, Col, FormSelect, Row } from "react-bootstrap";
 import { authStore } from "../../store/authStore";
 import AddInvoiceItem from "./components/AddInvoiceItem";
@@ -11,6 +11,7 @@ import useIngredientStore from "../../store/ingredientStore";
 import { addInvoiceSchema } from "./validators/addInvoiceSchema";
 import useSupplierStore from "../../store/supplierStore";
 import { useNavigate } from "react-router-dom";
+
 export const AddInvoice = () => {
   const [supplier, setSupplier] = React.useState(null);
   const { currentUser } = authStore();
@@ -23,8 +24,10 @@ export const AddInvoice = () => {
     setInvoiceSupplier,
     setInvoiceRestaurant,
     deleteInvoiceItem,
+    setInvoiceStatus,
   } = useInvoiceStore();
   const navigate = useNavigate();
+
   useEffect(() => {
     if (currentUser?.user?.restaurant?._id) {
       setInvoiceRestaurant(currentUser?.user?.restaurant?._id);
@@ -32,12 +35,15 @@ export const AddInvoice = () => {
     fetchSuppliers();
   }, []);
 
-  console.log("invoices : ", invoices);
   const handleChangeSupplier = (e) => {
-    console.log(e.target.value);
     setSupplier(e.target.value);
     setInvoiceSupplier(e.target.value);
   };
+
+  const handleStatusChange = (e) => {
+    setInvoiceStatus(e.target.value); // Update the status in the invoice store
+  };
+
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -59,19 +65,19 @@ export const AddInvoice = () => {
       });
     }
   };
+
   const selectedSupplier = suppliers.find((s) => s._id === supplier);
+
   return (
     <Fragment>
       <Row className="my-4 gap-y-2">
-        <Col xs="12" className="">
+        <Col xs="12">
           <h1 className="page-title">Add Invoice</h1>
         </Col>
         <Row className="gap-x-3 w-100 justify-content-between">
-          <Col xs="12" sm={10} className="">
+          <Col xs="12" sm={10}>
             <FormSelect
-              onChange={(e) => {
-                handleChangeSupplier(e);
-              }}
+              onChange={handleChangeSupplier}
               className="h-full"
               required
             >
@@ -101,10 +107,10 @@ export const AddInvoice = () => {
             </Row>
 
             <div className="card-header">
-              {" "}
               <strong> Invoice : {"#12345678"}</strong>{" "}
-              <strong>{format(new Date(), "dd/MM/yyyy")}</strong>{" "}
+              <strong>{format(new Date(), "dd/MM/yyyy")}</strong>
             </div>
+
             <div className="card-body">
               <Row className="justify-content-between w-100  border-bottom">
                 <Col xs={6} md={4} className="mb-3">
@@ -156,6 +162,21 @@ export const AddInvoice = () => {
                   )}
                 </Col>
               </Row>
+
+              {/* Status Dropdown */}
+              <Row className="my-3">
+                <Col xs="12" sm={4}>
+                  <FormSelect
+                    onChange={handleStatusChange}
+                    value={currentInvoice?.status}
+                    required
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                  </FormSelect>
+                </Col>
+              </Row>
               <div className="table-responsive">
                 <Row>
                   <Col xs={12} sm={5} className="my-3">
@@ -174,38 +195,36 @@ export const AddInvoice = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {currentInvoice?.items?.map((item, index) => {
-                      return (
-                        <tr key={index}>
-                          <td className="center">{index + 1}</td>
-                          <td className="left">
-                            {
-                              ingredients.filter(
-                                (ing) => ing._id == item.ingredient
-                              )[0]?.libelle
-                            }
-                          </td>
-                          <td className="right">{item?.price} TND</td>
-                          <td className="right">{item?.quantity} UNIT </td>
-                          <td className="right">
-                            {item?.price * item?.quantity} TND
-                          </td>
-                          <td className="right">
-                            <Button
-                              variant="danger"
-                              onClick={() => {
-                                deleteInvoiceItem(item.ingredient);
-                              }}
-                            >
-                              <Trash size={20} />
-                            </Button>
-                          </td>
-                        </tr>
-                      );
-                    })}
+                    {currentInvoice?.items?.map((item, index) => (
+                      <tr key={index}>
+                        <td className="center">{index + 1}</td>
+                        <td className="left">
+                          {
+                            ingredients.find(
+                              (ing) => ing._id === item.ingredient
+                            )?.libelle
+                          }
+                        </td>
+                        <td className="right">{item?.price} TND</td>
+                        <td className="right">{item?.quantity} UNIT</td>
+                        <td className="right">
+                          {(item?.price * item?.quantity).toFixed(3)} TND
+                        </td>
+                        <td className="right">
+                          <Button
+                            variant="danger"
+                            onClick={() => deleteInvoiceItem(item.ingredient)}
+                          >
+                            <Trash size={20} />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
+
+              {/* Invoice Totals */}
               <div className="row">
                 <div className="col-lg-4 col-sm-5"> </div>
                 <div className="col-lg-4 col-sm-5 ms-auto">
@@ -217,9 +236,10 @@ export const AddInvoice = () => {
                         </td>
                         <td className="right">
                           {currentInvoice?.items
-                            ?.reduce((acc, item) => {
-                              return acc + item?.price * item?.quantity;
-                            }, 0)
+                            ?.reduce(
+                              (acc, item) => acc + item?.price * item?.quantity,
+                              0
+                            )
                             .toFixed(3)}
                         </td>
                       </tr>
@@ -229,9 +249,11 @@ export const AddInvoice = () => {
                         </td>
                         <td className="right">
                           {currentInvoice?.items
-                            ?.reduce((acc, item) => {
-                              return acc + item?.price * item?.quantity * 0.19;
-                            }, 0)
+                            ?.reduce(
+                              (acc, item) =>
+                                acc + item?.price * item?.quantity * 0.19,
+                              0
+                            )
                             .toFixed(3)}
                         </td>
                       </tr>
@@ -241,9 +263,11 @@ export const AddInvoice = () => {
                         </td>
                         <td className="right">
                           {currentInvoice?.items
-                            ?.reduce((acc, item) => {
-                              return acc + item?.price * item?.quantity * 1.19;
-                            }, 0)
+                            ?.reduce(
+                              (acc, item) =>
+                                acc + item?.price * item?.quantity * 1.19,
+                              0
+                            )
                             .toFixed(3)}
                         </td>
                       </tr>

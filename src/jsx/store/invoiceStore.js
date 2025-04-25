@@ -8,7 +8,7 @@ const useInvoiceStore = create(
     currentInvoice: {
       restaurant: "",
       supplier: "",
-      items: [], // Initialize items as an empty array
+      items: [],
     },
     loading: false,
     error: null,
@@ -45,7 +45,6 @@ const useInvoiceStore = create(
     createInvoice: async (invoice) => {
       try {
         set({ loading: true, error: null });
-        console.log(invoice);
         const response = await apiRequest.post("/invoice", invoice);
         set((state) => ({
           invoices: [...state.invoices, response.data.data],
@@ -60,6 +59,7 @@ const useInvoiceStore = create(
         throw error;
       }
     },
+
     // Delete invoice
     deleteInvoice: async (id) => {
       try {
@@ -77,19 +77,23 @@ const useInvoiceStore = create(
         });
       }
     },
+
     // Update invoice status
     updateInvoiceStatus: async (id, status) => {
       try {
         set({ loading: true, error: null });
+
+        // Call the backend API to update the invoice status
         const response = await apiRequest.patch(`/invoice/${id}/status`, {
           status,
         });
+
         set((state) => ({
           invoices: state.invoices.map((inv) =>
-            inv.id === id ? { ...inv, status: response.data.status } : inv
+            inv._id === id ? { ...inv, status: response.data.status } : inv
           ),
           currentInvoice:
-            state.currentInvoice?.id === id
+            state.currentInvoice?._id === id
               ? { ...state.currentInvoice, status: response.data.status }
               : state.currentInvoice,
           loading: false,
@@ -102,6 +106,7 @@ const useInvoiceStore = create(
         });
       }
     },
+
     setInvoiceRestaurant: (restaurantId) => {
       try {
         set({ loading: true, error: null });
@@ -124,6 +129,7 @@ const useInvoiceStore = create(
         });
       }
     },
+
     setInvoiceSupplier: (supplierId) => {
       try {
         set({ loading: true, error: null });
@@ -146,6 +152,7 @@ const useInvoiceStore = create(
         });
       }
     },
+
     // Add invoice item
     addInvoiceItem: (item) => {
       try {
@@ -207,7 +214,6 @@ const useInvoiceStore = create(
     deleteInvoiceItem: (itemId) => {
       try {
         set({ loading: true, error: null });
-
         set((state) => {
           const updatedInvoice = state.currentInvoice
             ? {
