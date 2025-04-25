@@ -100,16 +100,13 @@ export const ShowInvoice = () => {
                   <div>
                     <strong>The Menufy</strong>
                   </div>
-                  <div>71-101 Szczecin, Poland</div>
-                  <div>Email: info@webz.com.pl</div>
-                  <div>
-                    Phone: {currentUser?.user?.restaurant?.phone || "N/A"}
-                  </div>
                   <div>
                     Created By: {currentInvoice?.created_by?.firstName}{" "}
                     {currentInvoice?.created_by?.lastName}
                   </div>
                   <div>Email: {currentInvoice?.created_by?.email}</div>
+                  <div>Address:{currentUser?.user?.address || "N/A"}</div>
+                  <div>Phone: {currentUser?.user?.phone || "N/A"}</div>
                 </Col>
                 <Col xs={6} md={4} className="mb-3">
                   <h6>To:</h6>
@@ -117,15 +114,16 @@ export const ShowInvoice = () => {
                     <strong>{currentInvoice?.supplier?.name}</strong>
                   </div>
                   <div>
-                    Attn: {currentInvoice?.supplier?.representative || "N/A"}
+                    Attn:{" "}
+                    {currentInvoice?.supplier?.contact?.representative || "N/A"}
+                  </div>
+                  <div>{currentInvoice?.supplier?.address?.city || "N/A"}</div>
+                  <div>
+                    Email: {currentInvoice?.supplier?.contact?.email || "N/A"}
                   </div>
                   <div>
-                    {currentInvoice?.supplier?.postalCode}
-                    {currentInvoice?.supplier?.city}
-                    {currentInvoice?.supplier?.country}
+                    Phone: {currentInvoice?.supplier?.contact?.phone || "N/A"}
                   </div>
-                  <div>Email: {currentInvoice?.supplier?.email || "N/A"}</div>
-                  <div>Phone: {currentInvoice?.supplier?.phone || "N/A"}</div>
                 </Col>
               </Row>
 

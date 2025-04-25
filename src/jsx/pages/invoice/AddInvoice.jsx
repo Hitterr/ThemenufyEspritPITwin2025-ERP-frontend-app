@@ -134,20 +134,18 @@ export const AddInvoice = () => {
                       {currentUser?.user?.restaurant?.nameRes ||
                         "Restaurant Name"}
                     </strong>
+                    <div>
+                      Created By:{" "}
+                      {currentUser?.user?.firstName || "current User"}
+                      {currentInvoice?.created_by?.lastName}
+                    </div>
                   </div>
                   <div>
                     {currentUser?.user?.restaurant?.address ||
                       "Address not available"}
                   </div>
-                  <div>
-                    Email: {currentUser?.user?.restaurant?.email || "N/A"}
-                  </div>
-                  <div>
-                    Phone: {currentUser?.user?.restaurant?.phone || "N/A"}
-                  </div>
-                  <div>
-                    Created By: {currentUser?.user?.email || "current User"}
-                  </div>
+                  <div>Email: {currentUser?.user?.email || "N/A"}</div>
+                  <div>Phone: {currentUser?.user?.phone || "N/A"}</div>
                 </Col>
 
                 <Col xs={6} md={4} className="mb-3">

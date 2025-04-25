@@ -105,13 +105,23 @@ export const InvoicesPage = () => {
                               variant="danger"
                               size="sm"
                               title="Delete"
-                              onClick={() => {
-                                deleteInvoice(inv._id);
-                                Swal.fire({
-                                  title: "Deleted!",
-                                  text: "Your file has been deleted.",
-                                  icon: "success",
+                              onClick={async () => {
+                                const result = await Swal.fire({
+                                  title: "Are you sure?",
+                                  text: "You won't be able to revert this!",
+                                  icon: "warning",
+                                  showCancelButton: true,
+                                  confirmButtonText: "Yes, delete it!",
                                 });
+
+                                if (result.isConfirmed) {
+                                  await deleteInvoice(inv._id);
+                                  Swal.fire({
+                                    title: "Deleted!",
+                                    text: "The invoice has been deleted.",
+                                    icon: "success",
+                                  });
+                                }
                               }}
                             >
                               <FaTrash />
