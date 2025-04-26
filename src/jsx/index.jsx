@@ -107,13 +107,13 @@ import ShowIngredient from "./pages/ingredients/ShowIngredient";
 import AddInvoice from "./pages/invoice/AddInvoice";
 import { InvoicesPage } from "./pages/invoice";
 import ShowInvoice from "./pages/invoice/ShowInvoice";
-import StorageApp from "./pages/storage/StorageApp";
 import CategoriesPage from "./pages/categories";
 import Suppliers from "./pages/suppliers/index";
 import AddSupplier from "./pages/suppliers/AddSupplier";
 import EditSupplier from "./pages/suppliers/EditSupplier";
 import ShowSupplier from "./pages/suppliers/ShowSupplier";
 import LinkIngredient from "./pages/suppliers/LinkIngredient";
+import StorageApp from "./pages/storage/App";
 const Markup = () => {
 	const allroutes = [
 		/// Dashboard
