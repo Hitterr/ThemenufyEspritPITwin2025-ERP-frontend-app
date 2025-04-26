@@ -20,7 +20,7 @@ const Suppliers = () => {
 
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
-  const [showStats, setShowStats] = useState(false);
+  const [showStats, setShowStats] = useState(true);
 
   useEffect(() => {
     loadSuppliers();

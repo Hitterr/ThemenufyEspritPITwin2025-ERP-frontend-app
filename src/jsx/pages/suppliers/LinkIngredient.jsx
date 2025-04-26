@@ -104,15 +104,15 @@ import { Card, Form, Button } from "react-bootstrap";
                </Form.Control.Feedback>
              </Form.Group>
              <div className="d-flex gap-2">
-               <Button variant="primary" type="submit">
-                 Link Ingredient
-               </Button>
                <Button
                  variant="secondary"
                  type="button"
                  onClick={() => navigate(`/suppliers/${supplierId}`)}
                >
-                 Cancel
+                 &lt;
+               </Button>
+               <Button variant="primary" type="submit">
+                 Link Ingredient
                </Button>
              </div>
            </Form>
