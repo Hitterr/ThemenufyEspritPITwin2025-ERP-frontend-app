@@ -1,4 +1,6 @@
 import { Card, Row, Col, Button } from "react-bootstrap";
+import { FaCheck } from "react-icons/fa";
+
 
 const BulkUpdateStatsStep = ({ bulkUpdateStats, onPrev, onBack }) => (
   <section>
@@ -66,10 +68,10 @@ const BulkUpdateStatsStep = ({ bulkUpdateStats, onPrev, onBack }) => (
     </Row>
     <div className="text-end toolbar toolbar-bottom p-2">
       <Button className="btn btn-secondary sw-btn-prev me-1" onClick={onPrev}>
-        Prev
+      &lt;
       </Button>
       <Button className="btn btn-primary sw-btn-next ms-1" onClick={onBack}>
-        Back to Linked Ingredients
+      ✓
       </Button>
     </div>
   </section>

@@ -5,7 +5,7 @@ import useSupplierStore from "../../../store/supplierStore";
 
 const SupplierStats = ({ showStats }) => {
   const { globalStats, fetchGlobalStats } = useSupplierStore();
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [loading, setLoading] = useState(false); // Added loading state
 
   useEffect(() => {
     const loadStats = async () => {

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Card, Row, Col, Button, Table } from "react-bootstrap";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import useSupplierStore from "../../store/supplierStore";
 import Swal from "sweetalert2";
 import { Stepper, Step } from 'react-form-stepper';
 import BulkUpdateFormStep from './components/BulkUpdateFormStep';
 import BulkUpdateStatsStep from './components/BulkUpdateStatsStep';
+import { FaEye, FaPencilAlt, FaTrash } from "react-icons/fa";
 
 const ShowSupplier = () => {
   const { id } = useParams();
@@ -257,27 +258,28 @@ const ShowSupplier = () => {
           </Col>
         </Row>
         <Row>
-          <Col>
-            <div className="mb-4">
-              <h5 className="text-primary">Linked Ingredients</h5>
-              <div className="mb-2">
-                <Button
-                  variant="warning"
-                  onClick={() => setStep(1)}
-                  disabled={!(supplier.ingredients && supplier.ingredients.length > 0)}
-                >
-                  Bulk Update Ingredients
-                </Button>
-              </div>
-              {step === 0 ? (
-                supplier.ingredients && supplier.ingredients.length > 0 ? (
-                  <Table striped bordered hover>
+        <Col>
+          <div className="mb-4">
+            <h5 className="text-primary">Linked Ingredients</h5>
+            <div className="mb-2">
+              <Button
+                variant="warning"
+                onClick={() => setStep(1)}
+                disabled={!(supplier.ingredients && supplier.ingredients.length > 0)}
+              >
+                Bulk Update Ingredients
+              </Button>
+            </div>
+            {step === 0 ? (
+              supplier.ingredients && supplier.ingredients.length > 0 ? (
+                <div className="table-responsive">
+                  <Table className="table-hover">
                     <thead>
                       <tr>
                         <th>Name</th>
                         <th>Price per Unit</th>
                         <th>Lead Time (Days)</th>
-                        <th>Actions</th>
+                        <th className="text-center" style={{ width: "100px" }}>Unlink</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -286,23 +288,26 @@ const ShowSupplier = () => {
                           <td>{ingredient.name}</td>
                           <td>{ingredient.pricePerUnit || "N/A"}</td>
                           <td>{ingredient.leadTimeDays || "N/A"}</td>
-                          <td>
+                          <td className="text-center">
                             <Button
                               variant="danger"
                               size="sm"
+                              title="Unlink"
                               onClick={() => handleUnlinkIngredient(ingredient._id, ingredient.name)}
                             >
-                              Unlink
+                            <FaTrash className="me-1" /> 
                             </Button>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </Table>
-                ) : (
-                  <p>No ingredients linked to this supplier.</p>
-                )
+                </div>
               ) : (
+                <p>No ingredients linked to this supplier.</p>
+              )
+            ) : (
+
                 <div className="form-wizard">
                   <style>
                     {`
@@ -352,6 +357,13 @@ const ShowSupplier = () => {
         </Row>
         <div className="mt-4">
           <Button
+            variant="outline-secondary"
+            onClick={() => navigate("/suppliers")}
+            className="me-2"
+          >
+            &lt; Back
+          </Button>
+          <Button
             variant="primary"
             className="me-2"
             onClick={() => navigate(`/suppliers/edit/${supplier._id}`, { state: { redirectTo: `/suppliers/${supplier._id}` } })}
@@ -360,16 +372,9 @@ const ShowSupplier = () => {
           </Button>
           <Button
             variant="success"
-            className="me-2"
             onClick={() => navigate(`/suppliers/${supplier._id}/link-ingredient`)}
           >
             Link Ingredient
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={() => navigate("/suppliers")}
-          >
-            Back to List
           </Button>
         </div>
       </Card.Body>

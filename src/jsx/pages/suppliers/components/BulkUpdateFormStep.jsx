@@ -32,10 +32,10 @@ const BulkUpdateFormStep = ({ bulkUpdateData, supplier, handleBulkUpdateChange, 
     </div>
     <div className="text-end toolbar toolbar-bottom p-2">
       <Button className="btn btn-secondary sw-btn-prev me-1" onClick={onCancel}>
-        Cancel
+      &lt;
       </Button>
       <Button className="btn btn-primary sw-btn-next ms-1" onClick={onNext}>
-        Next
+      &gt;
       </Button>
     </div>
   </section>

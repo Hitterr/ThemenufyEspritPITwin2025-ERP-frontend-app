@@ -259,6 +259,21 @@ const useSupplierStore = create(
         return false;
       }
     },
+    getDeliveryStats: async (startDate, endDate) => {
+      try {
+        const { data } = await axios.get(`${API_URL}/delivery-stats`, {
+          params: { 
+            startDate: startDate.toISOString().split('T')[0],
+            endDate: endDate.toISOString().split('T')[0]
+          }
+        });
+        console.log("Delivery Stats API Response:", data); // Debug log
+        return data.data || [];
+      } catch (error) {
+        console.error("Error fetching delivery stats:", error.response?.data || error.message);
+        return [];
+      }
+    },
 
     bulkUpdateSupplierIngredients: async (supplierId, ingredients) => {
       try {
@@ -290,6 +305,7 @@ const useSupplierStore = create(
       }
     }
   }))
+  
 );
 
 export default useSupplierStore;
