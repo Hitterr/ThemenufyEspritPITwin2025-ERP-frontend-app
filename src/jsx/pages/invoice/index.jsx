@@ -116,6 +116,7 @@ export const InvoicesPage = () => {
 
                                 if (result.isConfirmed) {
                                   await deleteInvoice(inv._id);
+                                  fetchInvoices();
                                   Swal.fire({
                                     title: "Deleted!",
                                     text: "The invoice has been deleted.",
