@@ -25,6 +25,7 @@ export const AddInvoice = () => {
     setInvoiceRestaurant,
     deleteInvoiceItem,
     updateInvoiceStatus,
+    setInvoiceStatus,
   } = useInvoiceStore();
   const navigate = useNavigate();
 
@@ -41,7 +42,7 @@ export const AddInvoice = () => {
   };
 
   const handleStatusChange = (e) => {
-    updateInvoiceStatus(currentInvoice._id, e.target.value); // Pass both ID and new status
+    setInvoiceStatus(e.target.value);
   };
 
   const handleSubmit = async (e) => {

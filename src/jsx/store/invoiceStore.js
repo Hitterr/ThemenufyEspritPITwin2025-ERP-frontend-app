@@ -22,6 +22,25 @@ const useInvoiceStore = create(
     },
 
     // === SETTERS ===
+    setInvoiceStatus: (status) => {
+      try {
+        set({ loading: true, error: null });
+        set((state) => ({
+          currentInvoice: {
+            ...state.currentInvoice,
+            status,
+          },
+          loading: false,
+        }));
+      } catch (error) {
+        console.error(error);
+        set({
+          error:
+            error.response?.data?.message || "Failed to set invoice status",
+          loading: false,
+        });
+      }
+    },
     setInvoiceRestaurant: (restaurantId) => {
       try {
         set({ loading: true, error: null });
