@@ -63,18 +63,6 @@ const InvoiceFilters = ({ onClose }) => {
               </Form.Control>
             </Form.Group>
           </Col>
-          <Col md={3}>
-            <Form.Group className="mb-3">
-              <Form.Label>Created By</Form.Label>
-              <Form.Control
-                type="text"
-                name="createdBy"
-                value={filterCriteria.createdBy || ""}
-                onChange={handleFilterChange}
-                placeholder="Search by creator name..."
-              />
-            </Form.Group>
-          </Col>
         </Row>
       </Card.Body>
     </Card>

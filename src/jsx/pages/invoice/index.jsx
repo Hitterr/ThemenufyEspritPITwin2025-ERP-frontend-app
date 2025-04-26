@@ -8,18 +8,18 @@ import InvoicesPagination from "./components/InvoicesPagination";
 import Swal from "sweetalert2";
 import { ReceiptText } from "lucide-react";
 import InvoiceFilters from "./components/InvoiceFilters";
-
+import * as XLSX from "xlsx";
 export const InvoicesPage = () => {
   const {
     invoices,
     filteredInvoices,
     fetchInvoices,
     deleteInvoice,
-    loading, // Add loading from the store
-    error, // Add error from the store
+    loading,
+    error,
   } = useInvoiceStore();
   const [currentPage, setCurrentPage] = useState(1);
-  const [showFilters, setShowFilters] = useState(false); // State to toggle filters
+  const [showFilters, setShowFilters] = useState(false);
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -41,6 +41,13 @@ export const InvoicesPage = () => {
     setCurrentPage(pageNumber);
   };
 
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(invoices);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Rinvoices");
+    XLSX.writeFile(workbook, "invoicess.xlsx");
+  };
+
   return (
     <>
       <h1 className="page-title">Invoices</h1>
@@ -53,6 +60,12 @@ export const InvoicesPage = () => {
         <Button variant="primary" onClick={() => setShowFilters(!showFilters)}>
           <FaFilter className="me-1" /> Filters
         </Button>
+        {/* Excel Import Button */}
+        <label htmlFor="excel-file-input">
+          <Button variant="info" className="ms-2" onClick={exportToExcel}>
+            <i className="fa fa-file-excel fa-sm me-2" /> Export
+          </Button>
+        </label>
       </div>
 
       {showFilters && <InvoiceFilters onClose={() => setShowFilters(false)} />}
@@ -73,10 +86,13 @@ export const InvoicesPage = () => {
                 <thead>
                   <tr>
                     <th># Invoice Number</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Total</th>
+                    <th>createdAt</th>
+                    <th>Delivered At</th>
                     <th>Created By</th>
+                    <th>Status</th>
+                    <th>Paid</th>
+                    <th>Total</th>
+
                     <th className="text-center" style={{ width: "150px" }}>
                       Actions
                     </th>
@@ -88,10 +104,17 @@ export const InvoicesPage = () => {
                       <tr key={inv._id}>
                         <td>{inv.invoiceNumber}</td>
                         <td>{format(inv.createdAt, "dd-MM-yyyy HH:mm:ss")}</td>
-                        <td>{inv.status}</td>
-                        <td>${inv.total}</td>
+                        <td>
+                          {inv.deliveredAt
+                            ? format(
+                                new Date(inv.deliveredAt),
+                                "dd-MM-yyyy HH:mm:ss"
+                              )
+                            : "N/A"}
+                        </td>
                         <td>{inv.created_by?.email || "N/A"}</td>
-
+                        <td>{inv.status}</td>
+                        <td>{inv.paidStatus}</td> <td>${inv.total}</td>
                         <td>
                           <div className="d-flex justify-content-center gap-2">
                             <Link
@@ -133,7 +156,7 @@ export const InvoicesPage = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="6" className="text-center">
+                      <td colSpan="8" className="text-center">
                         No invoices found.
                       </td>
                     </tr>

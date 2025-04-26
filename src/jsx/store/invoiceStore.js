@@ -172,7 +172,37 @@ const useInvoiceStore = create(
         });
       }
     },
+    updatePaidInvoiceStatus: async (id, paidStatus) => {
+      try {
+        set({ loading: true, error: null });
+        const response = await apiRequest.post(`/invoice/${id}/paid-status`, {
+          paidStatus,
+        });
 
+        set((state) => ({
+          invoices: state.invoices.map((inv) =>
+            inv._id === id
+              ? { ...inv, paidStatus: response.data.paidStatus }
+              : inv
+          ),
+          currentInvoice:
+            state.currentInvoice?._id === id
+              ? {
+                  ...state.currentInvoice,
+                  paidStatus: response.data.paidStatus,
+                }
+              : state.currentInvoice,
+          loading: false,
+        }));
+      } catch (error) {
+        set({
+          error:
+            error.response?.data?.message ||
+            "Failed to update paid status of invoice",
+          loading: false,
+        });
+      }
+    },
     // === INVOICE ITEMS ===
     addInvoiceItem: (item) => {
       try {
@@ -259,8 +289,6 @@ const useInvoiceStore = create(
     applyFilters: () => {
       const { invoices, filterCriteria } = get();
       let filtered = [...invoices];
-
-      // Filter by invoice number (case-insensitive)
       if (filterCriteria.invoiceNumber) {
         const searchLower = filterCriteria.invoiceNumber.toLowerCase();
         filtered = filtered.filter((inv) =>
@@ -268,17 +296,6 @@ const useInvoiceStore = create(
         );
       }
 
-      // Filter by created by (case-insensitive, check both first and last name)
-      if (filterCriteria.createdBy) {
-        const createdByLower = filterCriteria.createdBy.toLowerCase();
-        filtered = filtered.filter(
-          (inv) =>
-            inv.created_by?.firstName?.toLowerCase().includes(createdByLower) ||
-            inv.created_by?.lastName?.toLowerCase().includes(createdByLower)
-        );
-      }
-
-      // Filter by status (case-insensitive)
       if (filterCriteria.status && filterCriteria.status !== "all") {
         const statusLower = filterCriteria.status.toLowerCase();
         filtered = filtered.filter(
@@ -286,7 +303,7 @@ const useInvoiceStore = create(
         );
       }
 
-      console.log("Filtered invoices:", filtered); // Debugging log
+      console.log("Filtered invoices:", filtered);
       set({ filteredInvoices: filtered });
     },
 
@@ -295,7 +312,6 @@ const useInvoiceStore = create(
         filterCriteria: {
           search: "",
           status: "all",
-          createdBy: "",
           invoiceNumber: "",
         },
         filteredInvoices: state.invoices,

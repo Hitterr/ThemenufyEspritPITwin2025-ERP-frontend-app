@@ -9,14 +9,22 @@ import useSupplierStore from "../../store/supplierStore";
 import { authStore } from "../../store/authStore";
 
 export const ShowInvoice = () => {
-  const { invoices, currentInvoice, fetchInvoiceById, updateInvoiceStatus } =
-    useInvoiceStore();
+  const {
+    invoices,
+    currentInvoice,
+    fetchInvoiceById,
+    updateInvoiceStatus,
+    updatePaidInvoiceStatus,
+  } = useInvoiceStore();
   const { ingredients } = useIngredientStore();
   const params = useParams();
-  const { currentUser } = authStore(); // Utilisation de authStore ici
+  const { currentUser } = authStore();
   const { suppliers, fetchSuppliers } = useSupplierStore();
 
   const [status, setStatus] = useState(currentInvoice?.status || "");
+  const [paidStatus, setPaidStatus] = useState(
+    currentInvoice?.paidStatus || ""
+  );
 
   // Récupération des données de la facture via le paramètre ID
   useEffect(() => {
@@ -28,13 +36,32 @@ export const ShowInvoice = () => {
   useEffect(() => {
     if (currentInvoice) {
       setStatus(currentInvoice.status);
+      setPaidStatus(currentInvoice.paidStatus);
     }
   }, [currentInvoice]);
 
   const handleStatusChange = (e) => {
     const newStatus = e.target.value;
     setStatus(newStatus);
-    updateInvoiceStatus(currentInvoice._id, newStatus); // Appeler la méthode pour mettre à jour le statut de la facture
+    updateInvoiceStatus(currentInvoice._id, newStatus);
+  };
+
+  const handlePaidStatusChange = async (e) => {
+    const newPaidStatus = e.target.value;
+    if (newPaidStatus !== paidStatus) {
+      setPaidStatus(newPaidStatus);
+      try {
+        const response = await updatePaidInvoiceStatus(
+          currentInvoice._id,
+          newPaidStatus
+        );
+        if (response.success) {
+          await fetchInvoiceById(currentInvoice._id);
+        }
+      } catch (error) {
+        console.error("Error updating paid status", error);
+      }
+    }
   };
 
   if (!currentInvoice._id) {
@@ -84,11 +111,24 @@ export const ShowInvoice = () => {
                   as="select"
                   value={status}
                   onChange={handleStatusChange}
-                  disabled={currentInvoice?.status === "delivered"} // Disable if already delivered
+                  disabled={currentInvoice?.status === "delivered"}
                 >
                   <option value="pending">Pending</option>
                   <option value="delivered">Delivered</option>
                   <option value="cancelled">Cancelled</option>
+                </Form.Control>
+              </Form.Group>
+
+              {/* Paid Status Dropdown */}
+              <Form.Group className="mt-2">
+                <Form.Label>Paid Status</Form.Label>
+                <Form.Control
+                  as="select"
+                  value={paidStatus}
+                  onChange={handlePaidStatusChange}
+                >
+                  <option value="nopaid">Not Paid</option>
+                  <option value="paid">Paid</option>
                 </Form.Control>
               </Form.Group>
             </div>
