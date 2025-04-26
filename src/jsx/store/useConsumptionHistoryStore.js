@@ -11,6 +11,7 @@ const useConsumptionHistoryStore = create(
     filterCriteria: {
       restaurantId: "",
       ingredientId: "",
+      ordreId:"",
     },
     isLoading: false,
     error: null,
@@ -21,7 +22,7 @@ const useConsumptionHistoryStore = create(
       get().fetchConsumptions();
     },
     resetFilters: () => {
-      set({ filterCriteria: { restaurantId: "", ingredientId: "" } });
+      set({ filterCriteria: { restaurantId: "", ingredientId: "" ,ordreId:""} });
       get().fetchConsumptions();
     },
     fetchConsumptions: async () => {
@@ -33,6 +34,7 @@ const useConsumptionHistoryStore = create(
           params: {
             restaurantId: filterCriteria.restaurantId || undefined,
             ingredientId: filterCriteria.ingredientId || undefined,
+            ordreId:filterCriteria.ordreId||undefined,
           },
         });
         console.log("Fetch Consumptions Response:", response.data); // Debug log
@@ -43,12 +45,13 @@ const useConsumptionHistoryStore = create(
       }
     },
     
-    createConsumption: async (ingredientId, restaurantId, qty) => {
+    createConsumption: async (ingredientId, restaurantId,ordreId, qty) => {
       set({ isLoading: true, error: null });
       try {
         const response = await axios.post(`${API_URL}/storage/history/consumptions`, {
           ingredientId,
           restaurantId,
+          ordreId,
           qty,
         });
         set((state) => ({

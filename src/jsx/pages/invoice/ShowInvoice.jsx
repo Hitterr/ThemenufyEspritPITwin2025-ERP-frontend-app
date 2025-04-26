@@ -1,28 +1,46 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { format } from "date-fns";
-import { Col, Row } from "react-bootstrap";
+import { Col, Row, Button, Form } from "react-bootstrap";
 import Logo from "../../../assets/images/logo.png";
 import useInvoiceStore from "../../store/invoiceStore";
 import useIngredientStore from "../../store/ingredientStore";
 import { useParams } from "react-router-dom";
+import useSupplierStore from "../../store/supplierStore";
+import { authStore } from "../../store/authStore";
 
 export const ShowInvoice = () => {
-  const { invoices, currentInvoice, fetchInvoiceById } = useInvoiceStore();
+  const { invoices, currentInvoice, fetchInvoiceById, updateInvoiceStatus } =
+    useInvoiceStore();
   const { ingredients } = useIngredientStore();
   const params = useParams();
+  const { currentUser } = authStore(); // Utilisation de authStore ici
+  const { suppliers, fetchSuppliers } = useSupplierStore();
 
+  const [status, setStatus] = useState(currentInvoice?.status || "");
+
+  // Récupération des données de la facture via le paramètre ID
   useEffect(() => {
-    console.log(invoices);
-    console.log(currentInvoice);
-    console.log(params.id);
     if (params.id) {
       fetchInvoiceById(params.id);
     }
-  }, []);
-  console.log(currentInvoice);
+  }, [params.id, fetchInvoiceById]);
+
+  useEffect(() => {
+    if (currentInvoice) {
+      setStatus(currentInvoice.status);
+    }
+  }, [currentInvoice]);
+
+  const handleStatusChange = (e) => {
+    const newStatus = e.target.value;
+    setStatus(newStatus);
+    updateInvoiceStatus(currentInvoice._id, newStatus); // Appeler la méthode pour mettre à jour le statut de la facture
+  };
+
   if (!currentInvoice._id) {
-    return <p>loading ...</p>;
+    return <p>Loading ...</p>;
   }
+
   return (
     <Fragment>
       <Row className="my-4 gap-y-2">
@@ -48,12 +66,31 @@ export const ShowInvoice = () => {
               <div className="mt-2">
                 <span
                   className={`badge bg-${
-                    currentInvoice?.status === "pending" ? "warning" : "success"
+                    currentInvoice?.status === "pending"
+                      ? "warning"
+                      : currentInvoice?.status === "delivered"
+                      ? "success"
+                      : "danger"
                   }`}
                 >
                   {currentInvoice?.status?.toUpperCase()}
                 </span>
               </div>
+
+              {/* Status Dropdown */}
+              <Form.Group className="mt-2">
+                <Form.Label>Change Status</Form.Label>
+                <Form.Control
+                  as="select"
+                  value={status}
+                  onChange={handleStatusChange}
+                  disabled={currentInvoice?.status === "delivered"} // Disable if already delivered
+                >
+                  <option value="pending">Pending</option>
+                  <option value="delivered">Delivered</option>
+                  <option value="cancelled">Cancelled</option>
+                </Form.Control>
+              </Form.Group>
             </div>
 
             <div className="card-body">
@@ -63,22 +100,30 @@ export const ShowInvoice = () => {
                   <div>
                     <strong>The Menufy</strong>
                   </div>
-                  <div>71-101 Szczecin, Poland</div>
-                  <div>Email: info@webz.com.pl</div>
-                  <div>Phone: +48 444 666 3333</div>
                   <div>
                     Created By: {currentInvoice?.created_by?.firstName}{" "}
                     {currentInvoice?.created_by?.lastName}
                   </div>
                   <div>Email: {currentInvoice?.created_by?.email}</div>
+                  <div>Address:{currentUser?.user?.address || "N/A"}</div>
+                  <div>Phone: {currentUser?.user?.phone || "N/A"}</div>
                 </Col>
                 <Col xs={6} md={4} className="mb-3">
                   <h6>To:</h6>
-                  <div>Supplier ID: {currentInvoice?.supplier}</div>
-                  <div>Attn: Daniel Marek</div>
-                  <div>43-190 Mikolow, Poland</div>
-                  <div>Email: marek@daniel.com</div>
-                  <div>Phone: +48 123 456 789</div>
+                  <div>
+                    <strong>{currentInvoice?.supplier?.name}</strong>
+                  </div>
+                  <div>
+                    Attn:{" "}
+                    {currentInvoice?.supplier?.contact?.representative || "N/A"}
+                  </div>
+                  <div>{currentInvoice?.supplier?.address?.city || "N/A"}</div>
+                  <div>
+                    Email: {currentInvoice?.supplier?.contact?.email || "N/A"}
+                  </div>
+                  <div>
+                    Phone: {currentInvoice?.supplier?.contact?.phone || "N/A"}
+                  </div>
                 </Col>
               </Row>
 

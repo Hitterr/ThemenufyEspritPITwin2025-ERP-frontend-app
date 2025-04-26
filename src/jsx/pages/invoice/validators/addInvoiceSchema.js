@@ -6,7 +6,7 @@ export const addInvoiceSchema = yup.object().shape({
   supplier: yup.string().required("Supplier ID is required"),
   status: yup
     .string()
-    .oneOf(["pending", "paid", "cancelled"])
+    .oneOf(["pending", "delivered", "cancelled"])
     .default("pending"),
   items: yup
     .array(addInvoiceItemSchema)

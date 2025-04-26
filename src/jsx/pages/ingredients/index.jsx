@@ -1,38 +1,44 @@
-import { useEffect, useState } from "react";
-import useIngredientStore from "../../store/ingredientStore";
-import { Button, Card, Table } from "react-bootstrap";
+import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Button, Card, Col, Row, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { FaEye, FaPencilAlt, FaPlus, FaTrash, FaFilter } from "react-icons/fa";
-import IngredientFilters from "./components/IngredientFilters";
-import IngredientPagination from "./components/IngredientPagination";
-import io from "socket.io-client";
-import Swal from "sweetalert2";
+import { FaEye, FaPencilAlt, FaTrash, FaFilter } from "react-icons/fa";
 import { Carrot } from "lucide-react";
+import Swal from "sweetalert2";
+import io from "socket.io-client";
+import { useEffect } from "react";
+import { apiRequest } from "../../utils/apiRequest";
+
+import IngredientFilters from "./components/IngredientFilters";
+import AddIngredient from "./AddIngredient";
+import EditIngredient from "./EditIngredient";
+import useIngredientStore from "../../store/ingredientStore";
+
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
+const ITEMS_PER_PAGE = 10;
+
 const Ingredients = () => {
-  const { filteredIngredients, fetchIngredients, deleteIngredient } =
-    useIngredientStore();
-  const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 2;
+  const [page, setPage] = useState(1);
+  const queryClient = useQueryClient();
+  const {
+    ingredients,
+    pagination,
+    filteredIngredients,
+    fetchIngredients,
+    loading,
+  } = useIngredientStore();
+
+  // Socket connection for real-time updates
   useEffect(() => {
-    loadIngredients();
-    const socket = io("http://localhost:5000");
-    socket.on("connect", () => {
-      console.log("Socket connected");
+    const socket = io(SOCKET_URL);
+
+    socket.on("ingredient-update", () => {
+      queryClient.invalidateQueries(["ingredients"]);
     });
-    socket.on("disconnect", () => {
-      console.log("Socket disconnected");
-    });
-    socket.on("ingredient-update", (data) => {
-      console.log("Ingredient updated:", data);
-      loadIngredients();
-    });
+
     socket.on("ingredient-alert", (data) => {
-      console.log("Ingredient alert received:", data);
-      loadIngredients();
       toast.warning(
         <div>
           <strong>{data.ingredient.libelle}</strong>
@@ -53,16 +59,16 @@ const Ingredients = () => {
         }
       );
     });
-    return () => {
-      socket.disconnect();
-    };
+
+    return () => socket.disconnect();
   }, []);
-  const loadIngredients = async () => {
-    await fetchIngredients();
-    setLoading(false);
-  };
+  useEffect(() => {
+    fetchIngredients(page);
+    console.log(ingredients); // Ajoutez cette ligne pour afficher les données dans la console
+  }, [page]);
+  // Delete ingredient mutation
   const handleDelete = async (id) => {
-    Swal.fire({
+    const result = await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
       icon: "warning",
@@ -70,136 +76,135 @@ const Ingredients = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        const success = await deleteIngredient(id);
-        if (success) {
-          await loadIngredients(); // Refresh the ingredients list
-          setCurrentPage(1); // Reset to first page
-          Swal.fire("Deleted!", "Ingredient has been deleted.", "success");
-        } else {
-          Swal.fire("Error!", "Failed to delete ingredient.", "error");
-        }
-      }
     });
+
+    if (result.isConfirmed) {
+      try {
+        await apiRequest.delete(`/ingredient/${id}`);
+        queryClient.invalidateQueries(["ingredients"]);
+        Swal.fire("Deleted!", "Ingredient has been deleted.", "success");
+      } catch (error) {
+        Swal.fire("Error!", "Failed to delete ingredient.", "error");
+      }
+    }
   };
+
   if (loading) {
     return <div>Loading...</div>;
   }
-  // Calculate pagination
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredIngredients.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
-  const totalPages = Math.ceil(filteredIngredients.length / itemsPerPage);
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-  // Update the return statement to include pagination and use currentItems
+
   return (
     <>
-      <>
-        <h1 className="page-title">Ingredients</h1>
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <Link to="/ingredients/add">
-            <Button variant="success">
-              <Carrot size={20} />
-            </Button>
-          </Link>
-          <Button
-            variant="primary"
-            onClick={() => setShowFilters(!showFilters)}
+      <h1 className="page-title">Ingredients</h1>
+
+      <Card>
+        <Card.Header className="d-flex flex-wrap  justify-content-between align-items-center">
+          <Row
+            xs={12}
+            className="justify-content-between align-items-center gap-2 mb-3 w-100"
           >
-            <FaFilter className="me-1" /> Filters
-          </Button>
-        </div>
-        {showFilters && (
-          <IngredientFilters onClose={() => setShowFilters(false)} />
-        )}
-        <Card>
-          <Card.Body>
-            <div className="table-responsive">
-              <Table className="table-hover">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Stock</th>
-                    <th>Price</th>
-                    <th>Status</th>
-                    <th className="text-center" style={{ width: "150px" }}>
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentItems.map((ingredient) => (
-                    <tr key={ingredient._id}>
-                      <td>{ingredient.libelle}</td>
-                      <td>{ingredient.type}</td>
-                      <td>
-                        {ingredient.quantity} {ingredient.unit}
-                      </td>
-                      <td>${ingredient.price}</td>
-                      <td>
-                        <span
-                          className={`badge ${
-                            ingredient.disponibility
-                              ? "bg-success"
-                              : "bg-danger"
-                          }`}
-                        >
-                          {ingredient.disponibility
-                            ? "Available"
-                            : "Unavailable"}
-                        </span>
-                      </td>
-                      <td>
-                        <div className="d-flex justify-content-center gap-2">
+            <Col sm={3} lg={2}>
+              <AddIngredient />
+            </Col>
+            <Col sm={3} lg={2}>
+              {" "}
+              <Button
+                variant="primary"
+                className="w-100"
+                onClick={() => setShowFilters(!showFilters)}
+              >
+                <FaFilter className="me-1" /> Filters
+              </Button>
+            </Col>
+          </Row>
+          <Row xs={12}>
+            {showFilters && (
+              <IngredientFilters onClose={() => setShowFilters(false)} />
+            )}
+          </Row>
+        </Card.Header>
+        <Card.Body>
+          <div className="table-responsive">
+            <Table className="table-hover">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Stock</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                  <th className="text-center" style={{ width: "150px" }}>
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredIngredients.map((ingredient) => (
+                  <tr key={ingredient._id}>
+                    <td>{ingredient.libelle}</td>
+                    <td>{ingredient.type.name}</td>
+                    <td>
+                      {ingredient.quantity} {ingredient.unit}
+                    </td>
+                    <td>${ingredient.price}</td>
+                    <td>
+                      <span
+                        className={`badge ${
+                          ingredient.disponibility ? "bg-success" : "bg-danger"
+                        }`}
+                      >
+                        {ingredient.disponibility ? "Available" : "Unavailable"}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="d-flex justify-content-center gap-2 row-cols-3">
+                        <Button variant="info">
                           <Link
                             to={`/ingredients/${ingredient._id}`}
-                            className="btn btn-sm btn-info"
-                            title="View"
+                            style={{ color: "white" }}
                           >
                             <FaEye />
                           </Link>
-                          <Link
-                            to={`/ingredients/edit/${ingredient._id}`}
-                            className="btn btn-sm btn-secondary"
-                            title="Edit"
-                          >
-                            <FaPencilAlt />
-                          </Link>
-                          <Button
-                            variant="danger"
-                            size="sm"
-                            title="Delete"
-                            onClick={() => handleDelete(ingredient._id)}
-                          >
-                            <FaTrash />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
+                        </Button>
+                        <EditIngredient idIng={ingredient._id} />
+                        <Button
+                          variant="danger"
+                          title="Delete"
+                          onClick={() => handleDelete(ingredient._id)}
+                        >
+                          <FaTrash />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+
+            <div className="d-flex justify-content-between align-items-center mt-4">
+              <Button
+                variant="outline-primary"
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+              >
+                Previous
+              </Button>
+              <span className="text-muted">
+                Page {page} of {pagination.totalPages}
+              </span>
+              <Button
+                variant="outline-primary"
+                onClick={() => setPage((p) => p + 1)}
+                disabled={page >= pagination.totalPages}
+              >
+                Next
+              </Button>
             </div>
-            {filteredIngredients.length > 0 ? (
-              <IngredientPagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
-            ) : (
-              <div className="text-center py-3">No ingredients found</div>
-            )}
-          </Card.Body>
-        </Card>
-      </>
+          </div>
+        </Card.Body>
+      </Card>
     </>
   );
 };
+
 export default Ingredients;
