@@ -1,7 +1,10 @@
 import { Form, Row, Col, Card, Button } from "react-bootstrap";
 import { FaTimes } from "react-icons/fa";
 import useIngredientStore from "../../../store/ingredientStore";
+import { apiRequest } from "../../../utils/apiRequest";
+import { useEffect, useState } from "react";
 const IngredientFilters = ({ onClose }) => {
+	const [types, setTypes] = useState([]);
 	const { filterCriteria, setFilterCriteria, resetFilters } =
 		useIngredientStore();
 	const handleFilterChange = (e) => {
@@ -12,8 +15,22 @@ const IngredientFilters = ({ onClose }) => {
 		resetFilters();
 		onClose();
 	};
+	const fetchTypes = async () => {
+		apiRequest
+			.get("/categories")
+			.then((response) => {
+				const fetchedTypes = response.data.data;
+				setTypes(fetchedTypes);
+			})
+			.catch((error) => {
+				console.error("Error fetching types:", error);
+			});
+	};
+	useEffect(() => {
+		fetchTypes();
+	}, []);
 	return (
-		<Card className="mb-3">
+		<Card className="mb-3 w-100" as={Col} xs={12}>
 			<Card.Body>
 				<div className="d-flex justify-content-between mb-3">
 					<h5 className="mb-0">Filters</h5>
@@ -54,11 +71,13 @@ const IngredientFilters = ({ onClose }) => {
 								onChange={handleFilterChange}
 							>
 								<option value="">All Types</option>
-								<option value="dairy">Dairy</option>
-								<option value="meat">Meat</option>
-								<option value="vegetable">Vegetable</option>
-								<option value="fruit">Fruit</option>
-								<option value="grain">Grain</option>
+								{types.map((type) => {
+									return (
+										<option key={type._id} value={type.name}>
+											{type.name}
+										</option>
+									);
+								})}
 							</Form.Control>
 						</Form.Group>
 					</Col>

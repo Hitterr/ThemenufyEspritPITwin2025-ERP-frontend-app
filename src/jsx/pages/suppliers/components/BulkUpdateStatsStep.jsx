@@ -1,9 +1,11 @@
 import { Card, Row, Col, Button } from "react-bootstrap";
+import { FaCheck } from "react-icons/fa";
+
 
 const BulkUpdateStatsStep = ({ bulkUpdateStats, onPrev, onBack }) => (
   <section>
-    <Row>
-      <Col xl={3} sm={6}>
+    <Row className="g-3">
+      <Col lg={2} sm={6}>
         <Card style={{ background: "linear-gradient(to right, #FF7A7A, #FFC07A)" }}>
           <Card.Body>
             <div className="media align-items-center">
@@ -15,7 +17,7 @@ const BulkUpdateStatsStep = ({ bulkUpdateStats, onPrev, onBack }) => (
           </Card.Body>
         </Card>
       </Col>
-      <Col xl={3} sm={6}>
+      <Col lg={2} sm={6}>
         <Card style={{ background: "linear-gradient(to right, #FF7A7A, #FFC07A)" }}>
           <Card.Body>
             <div className="media align-items-center">
@@ -27,7 +29,7 @@ const BulkUpdateStatsStep = ({ bulkUpdateStats, onPrev, onBack }) => (
           </Card.Body>
         </Card>
       </Col>
-      <Col xl={3} sm={6}>
+      <Col lg={2} sm={6}>
         <Card style={{ background: "linear-gradient(to right, #FF7A7A, #FFC07A)" }}>
           <Card.Body>
             <div className="media align-items-center">
@@ -39,7 +41,7 @@ const BulkUpdateStatsStep = ({ bulkUpdateStats, onPrev, onBack }) => (
           </Card.Body>
         </Card>
       </Col>
-      <Col xl={3} sm={6}>
+      <Col lg={2} sm={6}>
         <Card style={{ background: "linear-gradient(to right, #FF7A7A, #FFC07A)" }}>
           <Card.Body>
             <div className="media align-items-center">
@@ -51,7 +53,7 @@ const BulkUpdateStatsStep = ({ bulkUpdateStats, onPrev, onBack }) => (
           </Card.Body>
         </Card>
       </Col>
-      <Col xl={3} sm={6}>
+      <Col lg={2} sm={6}>
         <Card style={{ background: "linear-gradient(to right, #FF7A7A, #FFC07A)" }}>
           <Card.Body>
             <div className="media align-items-center">
@@ -66,10 +68,10 @@ const BulkUpdateStatsStep = ({ bulkUpdateStats, onPrev, onBack }) => (
     </Row>
     <div className="text-end toolbar toolbar-bottom p-2">
       <Button className="btn btn-secondary sw-btn-prev me-1" onClick={onPrev}>
-        Prev
+      &lt;
       </Button>
       <Button className="btn btn-primary sw-btn-next ms-1" onClick={onBack}>
-        Back to Linked Ingredients
+      ✓
       </Button>
     </div>
   </section>

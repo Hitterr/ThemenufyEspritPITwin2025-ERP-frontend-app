@@ -57,7 +57,7 @@ const handleSubmit = async (e) => {
         text: "Consumption recorded successfully",
         timer: 2000,
       });
-      setFormData({ restaurantId: "", ingredientId: "", qty: "" });
+      setFormData({ restaurantId: "", ingredientId: "", ordreId:"",qty: "" });
       setErrors({});
       navigate("/storage");
     } catch (error) {
@@ -80,8 +80,7 @@ const handleSubmit = async (e) => {
         </Card.Header>
         <Card.Body className="p-6">
           {message && (
-            <Alert
-              variant={message.includes("Error") ? "danger" : "success"}
+            <Alert variant={message.includes("Error") ? "danger" : "success"}
               className="mb-4"
             >
               {message}
@@ -124,6 +123,26 @@ const handleSubmit = async (e) => {
                 {errors.ingredientId}
               </Form.Control.Feedback>
             </Form.Group>
+
+            <Form.Group className="mb-4">
+              <Form.Label className="font-semibold flex items-center">
+                <FaCarrot className="mr-2 text-blue-500" /> Ordre ID
+              </Form.Label>
+              <Form.Control
+                type="text"
+                name="ordreId"
+                value={formData.ordreId}
+                onChange={handleChange}
+                placeholder="Enter ingredient ID"
+                className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
+                isInvalid={!!errors.ordreId}
+                required
+              />
+              <Form.Control.Feedback type="invalid">
+                {errors.ordreId}
+              </Form.Control.Feedback>
+            </Form.Group>
+
             <Form.Group className="mb-4">
               <Form.Label className="font-semibold flex items-center">
                 <FaSortNumericUp className="mr-2 text-blue-500" /> Quantity

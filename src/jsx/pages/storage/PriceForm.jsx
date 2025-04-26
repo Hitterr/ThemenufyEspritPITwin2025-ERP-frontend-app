@@ -1,33 +1,28 @@
-// src/components/PriceHistoryForm.jsx
 import React, { useState } from "react";
-import { Card, Form, Button, Alert } from "react-bootstrap";
+import { Card, Form, Button, Alert, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import {
-  FaUtensils,
-  FaCarrot,
-  FaDollarSign,
-  FaBoxes,
-} from "react-icons/fa";
+import { FaUtensils, FaCarrot, FaDollarSign, FaBoxes } from "react-icons/fa";
 import Swal from "sweetalert2";
 import usePriceHistoryStore from "../../store/usePriceHistoryStore";
-
 const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
   const navigate = useNavigate();
   const { createPriceHistory } = usePriceHistoryStore();
   const [formData, setFormData] = useState({
     restaurantId: restaurantId,
-    supplierId: "",
     ingredientId: "",
-    price: "",
+    invoiceId: "",
+    supplierId: "",
+    price: ""
   });
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validateField = (name, value) => {
     const newErrors = { ...errors };
-    if (!value.toString().trim()) {
+    if (!value.toString().trim() && name !== "supplierId") {
       newErrors[name] = `${name.replace(/Id$/, " ID")} is required`;
-    } else if (name === "price" && (isNaN(value) || value <= 0)) {
+    } else if (name === "price" && (isNaN(value) || parseFloat(value) <= 0)) {
       newErrors[name] = "Price must be a positive number";
     } else {
       delete newErrors[name];
@@ -35,33 +30,35 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
     setErrors(newErrors);
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    validateField(name, value);
-  };
+  const handleChange = (e) => {const { name, value } = e.target;setFormData({ ...formData, [name]: value });
+    validateField(name, value);};
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleBlur = (e) => {const { name, value } = e.target;validateField(name, value);};
+
+  const handleSubmit = async (e) => {e.preventDefault();
+    
+    // Validate required fields
+    const requiredFields = ['restaurantId', 'ingredientId', 'invoiceId', 'price'];
     const newErrors = {};
-    Object.keys(formData).forEach((key) => {
-      validateField(key, formData[key]);
-      if (!formData[key].toString().trim()) {
-        newErrors[key] = `${key.replace(/Id$/, " ID")} is required`;
+    requiredFields.forEach(field => {
+      if (!formData[field].toString().trim()) {
+        newErrors[field] = `${field.replace(/Id$/, " ID")} is required`;
       }
     });
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+
+    if (Object.keys(newErrors).length > 0) {setErrors(newErrors);return;}
+    setIsSubmitting(true);
+    setMessage("");
 
     try {
-      const { success, error } = await createPriceHistory(
-        formData.ingredientId,
-        formData.restaurantId,
-        parseFloat(formData.price),
-        formData.supplierId
-      );
+      const { success, error } = await createPriceHistory({
+        ingredientId: formData.ingredientId,
+        restaurantId: formData.restaurantId,
+        price: parseFloat(formData.price),
+        invoiceId: formData.invoiceId,
+        supplierId: formData.supplierId || null
+      });
+
       if (success) {
         setMessage("Price history created successfully!");
         Swal.fire({
@@ -72,24 +69,28 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
         });
         setFormData({
           restaurantId: restaurantId,
-          supplierId: "",
           ingredientId: "",
+          invoiceId: "",
+          supplierId: "",
           price: "",
         });
-        setErrors({});
         if (onSuccess) onSuccess();
-        else navigate("/Prices");
       } else {
         throw new Error(error);
       }
     } catch (error) {
-      const errorMsg = error.message || "Failed to create price history";
+      const errorMsg = error.response?.data?.message || 
+                      error.response?.data?.error || 
+                      error.message || 
+                      "Failed to create price history";
       setMessage(`Error: ${errorMsg}`);
       Swal.fire({
         icon: "error",
         title: "Error!",
         text: errorMsg,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -108,10 +109,7 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
         </Card.Header>
         <Card.Body className="p-6">
           {message && (
-            <Alert
-              variant={message.includes("Error") ? "danger" : "success"}
-              className="mb-4"
-            >
+            <Alert variant={message.includes("Error") ? "danger" : "success"} className="mb-4">
               {message}
             </Alert>
           )}
@@ -125,34 +123,18 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
                 name="restaurantId"
                 value={formData.restaurantId}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 placeholder="Enter restaurant ID"
                 className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
                 isInvalid={!!errors.restaurantId}
                 required
-                disabled={!!restaurantId} // Disable if restaurantId is provided
+                disabled={!!restaurantId}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.restaurantId}
               </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group className="mb-4">
-              <Form.Label className="font-semibold flex items-center">
-                <FaBoxes className="mr-2 text-blue-500" /> Supplier ID
-              </Form.Label>
-              <Form.Control
-                type="text"
-                name="supplierId"
-                value={formData.supplierId}
-                onChange={handleChange}
-                placeholder="Enter supplier ID"
-                className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
-                isInvalid={!!errors.supplierId}
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.supplierId}
-              </Form.Control.Feedback>
-            </Form.Group>
+
             <Form.Group className="mb-4">
               <Form.Label className="font-semibold flex items-center">
                 <FaCarrot className="mr-2 text-blue-500" /> Ingredient ID
@@ -162,6 +144,7 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
                 name="ingredientId"
                 value={formData.ingredientId}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 placeholder="Enter ingredient ID"
                 className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
                 isInvalid={!!errors.ingredientId}
@@ -171,6 +154,46 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
                 {errors.ingredientId}
               </Form.Control.Feedback>
             </Form.Group>
+
+            <Form.Group className="mb-4">
+              <Form.Label className="font-semibold flex items-center">
+                <FaUtensils className="mr-2 text-blue-500" /> Invoice ID
+              </Form.Label>
+              <Form.Control
+                type="text"
+                name="invoiceId"
+                value={formData.invoiceId}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Enter invoice ID"
+                className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
+                isInvalid={!!errors.invoiceId}
+                required
+              />
+              <Form.Control.Feedback type="invalid">
+                {errors.invoiceId}
+              </Form.Control.Feedback>
+            </Form.Group>
+
+            <Form.Group className="mb-4">
+              <Form.Label className="font-semibold flex items-center">
+                <FaBoxes className="mr-2 text-blue-500" /> Supplier ID (Optional)
+              </Form.Label>
+              <Form.Control
+                type="text"
+                name="supplierId"
+                value={formData.supplierId}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Enter supplier ID"
+                className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
+                isInvalid={!!errors.supplierId}
+              />
+              <Form.Control.Feedback type="invalid">
+                {errors.supplierId}
+              </Form.Control.Feedback>
+            </Form.Group>
+
             <Form.Group className="mb-4">
               <Form.Label className="font-semibold flex items-center">
                 <FaDollarSign className="mr-2 text-blue-500" /> Price
@@ -180,6 +203,7 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 placeholder="Enter price"
                 className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
                 isInvalid={!!errors.price}
@@ -191,13 +215,20 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
                 {errors.price}
               </Form.Control.Feedback>
             </Form.Group>
+
             <div className="flex gap-3">
               <Button
                 variant="primary"
                 type="submit"
+                disabled={isSubmitting}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300 flex-1"
               >
-                Submit
+                {isSubmitting ? (
+                  <>
+                    <Spinner animation="border" size="sm" className="mr-2" />
+                    Submitting...
+                  </>
+                ) : "Submit"}
               </Button>
               <Button
                 variant="secondary"

@@ -7,47 +7,76 @@ import Swal from "sweetalert2";
 import "animate.css";
 import useConsumptionHistoryStore from "../../store/useConsumptionHistoryStore";
 
-  const ConsumptionList = () => {
+const ConsumptionList = () => {
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(true);
   const [dateRange, setDateRange] = useState({ start: "", end: "" });
   const [showChart, setShowChart] = useState(false);
-  const {consumptions, filterCriteria, setFilterCriteria, resetFilters, isLoading, error, fetchConsumptions} = useConsumptionHistoryStore();
+  const [errorMessage, setErrorMessage] = useState(null); // Track error message separately
+  const { consumptions, filterCriteria, setFilterCriteria, resetFilters, isLoading, error, fetchConsumptions } = useConsumptionHistoryStore();
+
   const itemsPerPage = 10;
   const displayedConsumptions = consumptions.slice(0, page * itemsPerPage);
   const hasMore = consumptions.length > displayedConsumptions.length;
+
+  // Chart data calculation
   const chartData = useMemo(() => {
-  const consumptionByDate = consumptions.reduce((acc, curr) => {
-  const date = new Date(curr.createdAt).toLocaleDateString();acc[date] = (acc[date] || 0) + curr.qty;return acc;}, {});
-  const dates = Object.keys(consumptionByDate).sort();
-  const quantities = dates.map(date => consumptionByDate[date]);
+    const consumptionByDate = consumptions.reduce((acc, curr) => {
+      if (!curr.createdAt) return acc; // Skip entries without createdAt
+      const date = new Date(curr.createdAt).toLocaleDateString();
+      acc[date] = (acc[date] || 0) + curr.qty;
+      return acc;
+    }, {});
+    const dates = Object.keys(consumptionByDate).sort();
+    const quantities = dates.map(date => consumptionByDate[date]);
 
     return {
-      series: [{name: "Total Consumption", data: quantities}],
-      options: {chart: {type: 'area',height: 350,toolbar: {show: true,tools: {download: true,selection: true,pan: true,reset: true}}},
+      series: [{ name: "Total Consumption", data: quantities }],
+      options: {
+        chart: {type: 'area',height: 350,toolbar: {show: true,tools: { download: true, selection: true, pan: true, reset: true },},
+        },
         colors: ['#3a86ff'],
         dataLabels: { enabled: false },
         stroke: { curve: 'smooth', width: 3 },
         fill: {
-        type: 'gradient',gradient: {shadeIntensity: 1,opacityFrom: 0.7,opacityTo: 0.3,stops: [0, 90, 100]}},
-        xaxis: {categories: dates,labels: {formatter: function(value) {return value;}}},
-        yaxis: {title: { text: "Quantity Consumed" },labels: { formatter: (val) => val.toFixed(0) }},
-        tooltip: {y: { formatter: (val) => `${val} units` }}}
-    };}, [consumptions]);
-   const handleChange = (e) => {setFilterCriteria({ [e.target.name]: e.target.value });};
-    const handleDateChange = (e) => {const { name, value } = e.target;
-    setDateRange(prev => ({ ...prev, [name]: value }));
-  };
+          type: 'gradient',
+          gradient: {shadeIntensity: 1,opacityFrom: 0.7,opacityTo: 0.3,stops: [0, 90, 100],},
+        },
+        xaxis: {
+          categories: dates,labels: { formatter: function(value) { return value; } },
+        },
+        yaxis: {
+          title: { text: "Quantity Consumed" },
+          labels: { formatter: (val) => val.toFixed(0) },
+        },
+        tooltip: { y: { formatter: (val) => `${val} units` } },
+      },
+    };
+  }, [consumptions]);
+
+  const handleChange = (e) => {setFilterCriteria({ [e.target.name]: e.target.value });};
+  const handleDateChange = (e) => {const { name, value } = e.target;setDateRange(prev => ({ ...prev, [name]: value }));};
   const handleClearInput = (field) => {setFilterCriteria({ [field]: "" });};
   const handleFilter = (e) => {e.preventDefault();setPage(1);
-    fetchConsumptions({...filterCriteria,...(dateRange.start && { startDate: dateRange.start }),...(dateRange.end && { endDate: dateRange.end })});
+    setErrorMessage(null); 
+    fetchConsumptions({...filterCriteria,...(dateRange.start && { startDate: dateRange.start }),...(dateRange.end && { endDate: dateRange.end }),
+    });
   };
+
   const handleReset = () => {
-    resetFilters();setDateRange({ start: "", end: "" });setPage(1);
-    Swal.fire({icon: "success",title: "Filters Cleared!",text: "All filters have been reset.",timer: 1500,showConfirmButton: false,
-    animation: true,customClass: { popup: "animate__animated animate__zoomIn" },});};
-  const handleLoadMore = () => {setPage(prev => prev + 1);};
-  useEffect(() => {fetchConsumptions();}, [fetchConsumptions]);
+    resetFilters();
+    setDateRange({ start: "", end: "" });
+    setPage(1);
+    setErrorMessage(null); // Clear error on reset
+    Swal.fire({
+      icon: "success",title: "Filters Cleared!",text: "All filters have been reset.",
+      timer: 1500,showConfirmButton: false,animation: true,
+      customClass: { popup: "animate__animated animate__zoomIn" },
+    });
+  };
+ const handleLoadMore = () => {setPage(prev => prev + 1);};
+ useEffect(() => {fetchConsumptions();}, [fetchConsumptions]);
+ useEffect(() => {if (error) {setErrorMessage(error);}}, [error]);
 
   return (
     <div className="container-fluid px-3 py-3">
@@ -58,9 +87,7 @@ import useConsumptionHistoryStore from "../../store/useConsumptionHistoryStore";
               <h2 className="h5 mb-0 d-flex align-items-center">
                 <MdOutlineInventory2 className="text-primary me-2" />
                 Consumption History
-                {consumptions.length > 0 && (
-                  <Badge pill bg="light" text="dark" className="ms-2">{consumptions.length} records</Badge>
-                )}
+                {consumptions.length > 0 && (<Badge pill bg="light" text="dark" className="ms-2">{consumptions.length} records</Badge>)}
               </h2>
             </Col>
             <Col xs="auto">
@@ -79,13 +106,14 @@ import useConsumptionHistoryStore from "../../store/useConsumptionHistoryStore";
           <Card.Body className="border-bottom bg-light">
             <Form onSubmit={handleFilter}>
               <Row className="g-3">
-                <Col md={4}>
+                <Col md={3}>
                   <Form.Group>
                     <Form.Label className="small fw-bold">
                       <FaStore className="me-1 text-muted" /> Restaurant ID
                     </Form.Label>
                     <InputGroup>
-                      <Form.Control type="text" name="restaurantId" value={filterCriteria.restaurantId || ""} onChange={handleChange} size="sm"/>
+                      <Form.Control type="text" name="restaurantId"value={filterCriteria.restaurantId || ""}
+                        onChange={handleChange}size="sm"placeholder="Enter Restaurant ID"/>
                       {filterCriteria.restaurantId && (
                         <Button variant="outline-secondary" size="sm" onClick={() => handleClearInput("restaurantId")}>
                           <FaTimes />
@@ -94,13 +122,13 @@ import useConsumptionHistoryStore from "../../store/useConsumptionHistoryStore";
                     </InputGroup>
                   </Form.Group>
                 </Col>
-                <Col md={4}>
+                <Col md={3}>
                   <Form.Group>
-                    <Form.Label className="small fw-bold">
-                      <FaCarrot className="me-1 text-muted" /> Ingredient ID
-                    </Form.Label>
+                    <Form.Label className="small fw-bold"><FaCarrot className="me-1 text-muted" /> Ingredient ID</Form.Label>
                     <InputGroup>
-                      <Form.Control type="text" name="ingredientId" value={filterCriteria.ingredientId || ""} onChange={handleChange} size="sm"/>
+                      <Form.Control
+                        type="text"name="ingredientId"value={filterCriteria.ingredientId || ""}onChange={handleChange}
+                        size="sm"placeholder="Enter Ingredient ID"/>
                       {filterCriteria.ingredientId && (
                         <Button variant="outline-secondary" size="sm" onClick={() => handleClearInput("ingredientId")}>
                           <FaTimes />
@@ -109,7 +137,25 @@ import useConsumptionHistoryStore from "../../store/useConsumptionHistoryStore";
                     </InputGroup>
                   </Form.Group>
                 </Col>
-                 <Col xs={12} className="d-flex justify-content-end gap-2 mt-2">
+                <Col md={3}>
+                  <Form.Group>
+                    <Form.Label className="small fw-bold">
+                      <FaUtensils className="me-1 text-muted" /> Order ID
+                    </Form.Label>
+                    <InputGroup>
+                      <Form.Control type="text"name="ordreId" value={filterCriteria.ordreId || ""}
+                        onChange={handleChange}size="sm"placeholder="Enter Order ID"
+                      />
+                      {filterCriteria.ordreId && (
+                        <Button variant="outline-secondary" size="sm" onClick={() => handleClearInput("ordreId")}>
+                          <FaTimes />
+                        </Button>
+                      )}
+                    </InputGroup>
+                  </Form.Group>
+                </Col>
+                
+                <Col xs={12} className="d-flex justify-content-end gap-2 mt-2">
                   <Button variant="outline-secondary" onClick={handleReset} size="sm">
                     <FaTimesCircle className="me-1" /> Reset
                   </Button>
@@ -123,9 +169,9 @@ import useConsumptionHistoryStore from "../../store/useConsumptionHistoryStore";
           </Card.Body>
         )}
         <Card.Body className="py-2 px-4">
-          {error && (
-            <Alert variant="danger" className="animate__animated animate__fadeIn mb-3">
-              <strong>Error:</strong> {error}
+          {errorMessage && (
+            <Alert variant="danger" className="animate__animated animate__fadeIn mb-3" onClose={() => setErrorMessage(null)} dismissible>
+              <strong>Error:</strong> {errorMessage}
             </Alert>
           )}
           {isLoading && consumptions.length === 0 && (
@@ -134,34 +180,39 @@ import useConsumptionHistoryStore from "../../store/useConsumptionHistoryStore";
               <p className="mt-2 text-muted">Loading consumptions...</p>
             </div>
           )}
-       {!isLoading && consumptions.length === 0 && !error && (
+          {!isLoading && consumptions.length === 0 && !errorMessage && (
             <Alert variant="info" className="text-center mb-0">
               No consumption records found. Try adjusting your filters.
             </Alert>
           )}
         </Card.Body>
-       {showChart && !isLoading && consumptions.length > 0 && (
+        {showChart && !isLoading && consumptions.length > 0 && (
           <Card.Body className="border-bottom">
-            <ReactApexChart options={chartData.options} series={chartData.series}type="area" height={350}/>
+            <ReactApexChart options={chartData.options} series={chartData.series} type="area" height={350} />
           </Card.Body>
         )}
-       {!isLoading && consumptions.length > 0 && (
+        {!isLoading && consumptions.length > 0 && (
           <div className="table-responsive">
             <table className="table table-hover align-middle mb-0">
               <thead className="bg-light">
                 <tr>
-                  <th className="ps-4" style={{ width: '30%' }}>
+                  <th className="ps-4" style={{ width: '25%' }}>
                     <div className="d-flex align-items-center">
                       <FaStore className="text-primary me-2" /> Restaurant
                     </div>
                   </th>
-                  <th style={{ width: '30%' }}>
+                  <th style={{ width: '25%' }}>
                     <div className="d-flex align-items-center">
                       <FaCarrot className="text-success me-2" /> Ingredient
                     </div>
                   </th>
-                  <th style={{ width: '20%' }}>Quantity</th>
-                  <th style={{ width: '20%' }}>
+                  <th style={{ width: '25%' }}>
+                    <div className="d-flex align-items-center">
+                      <FaUtensils className="text-warning me-2" /> Order
+                    </div>
+                  </th>
+                  <th style={{ width: '15%' }}>Quantity</th>
+                  <th style={{ width: '10%' }}>
                     <div className="d-flex align-items-center">
                       <FaCalendarAlt className="text-info me-2" /> Date
                     </div>
@@ -203,8 +254,27 @@ import useConsumptionHistoryStore from "../../store/useConsumptionHistoryStore";
                     </td>
                     <td>
                       <div className="d-flex align-items-center">
+                        <div className="icon-shape icon-sm bg-warning bg-opacity-10 text-warning rounded-circle me-3">
+                          <FaUtensils />
+                        </div>
+                        <div>
+                          <h6 className="mb-0 text-truncate" style={{ maxWidth: '200px' }}>
+                            Order #{consumption.ordreId?.orderNb || "Unknown"}
+                          </h6>
+                          <small className="text-muted">
+                            {consumption.ordreId ? new Date(consumption.ordreId.date).toLocaleDateString() : "N/A"}
+                          </small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="d-flex align-items-center">
                         <div className="progress flex-grow-1 me-2" style={{ height: '6px' }}>
-                          <div className="progress-bar bg-warning" role="progressbar" style={{ width: `${Math.min(100, consumption.qty)}%` }} />
+                          <div
+                            className="progress-bar bg-warning"
+                            role="progressbar"
+                            style={{ width: `${Math.min(100, consumption.qty)}%` }}
+                          />
                         </div>
                         <span className="fw-bold">
                           {consumption.qty} {consumption.ingredientId?.unit || 'units'}
@@ -227,14 +297,7 @@ import useConsumptionHistoryStore from "../../store/useConsumptionHistoryStore";
             </table>
           </div>
         )}
-       {hasMore && (
-          <div className="text-center mt-3 mb-3">
-            <Button variant="outline-primary" onClick={handleLoadMore} disabled={isLoading}>
-              {isLoading && <Spinner as="span" animation="border" size="sm" className="me-2" />}
-              Load More ({consumptions.length - displayedConsumptions.length} remaining)
-            </Button>
-          </div>
-        )}
+   
       </Card>
     </div>
   );
