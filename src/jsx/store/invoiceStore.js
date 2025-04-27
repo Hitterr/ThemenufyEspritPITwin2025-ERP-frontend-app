@@ -300,13 +300,24 @@ const useInvoiceStore = create(
     },
 
     // === FILTERS ===
+    filterInvoices: async (filters) => {
+      try {
+        set({ loading: true, error: null });
+        const response = await apiRequest.get("/filter", filters);
+        set({ filteredInvoices: response.data.data, loading: false });
+      } catch (error) {
+        set({
+          error: error.response?.data?.message || "Failed to filter invoices",
+          loading: false,
+        });
+      }
+    },
     setFilterCriteria: (criteria) => {
       set((state) => ({
         filterCriteria: { ...state.filterCriteria, ...criteria },
       }));
       get().applyFilters();
     },
-
     applyFilters: () => {
       const { invoices, filterCriteria } = get();
       let filtered = [...invoices];
@@ -327,7 +338,6 @@ const useInvoiceStore = create(
       console.log("Filtered invoices:", filtered);
       set({ filteredInvoices: filtered });
     },
-
     resetFilters: () => {
       set((state) => ({
         filterCriteria: {
