@@ -24,8 +24,6 @@ export const AddInvoice = () => {
     setInvoiceSupplier,
     setInvoiceRestaurant,
     deleteInvoiceItem,
-    updateInvoiceStatus,
-    setInvoiceStatus,
   } = useInvoiceStore();
   const navigate = useNavigate();
 
@@ -71,7 +69,6 @@ export const AddInvoice = () => {
         <Col xs="12">
           <h1 className="page-title">Add Invoice</h1>
         </Col>
-
         <Row className="gap-x-3 w-100 justify-content-between">
           <Col xs="12" sm={10}>
             <FormSelect
@@ -92,19 +89,6 @@ export const AddInvoice = () => {
               <ArrowRight size={20} />
             </Button>
           </Col>
-
-          {/* 👇 Select Status ici */}
-          <Col xs="12" sm={4} className="mt-2">
-            <FormSelect
-              onChange={handleStatusChange}
-              value={currentInvoice?.status}
-              required
-            >
-              <option value="pending">Pending</option>
-              <option value="delivered">Delivered</option>
-              <option value="cancelled">Cancelled</option>
-            </FormSelect>
-          </Col>
         </Row>
       </Row>
       <div className="row">
@@ -119,7 +103,6 @@ export const AddInvoice = () => {
               <strong> Invoice : {"#12345678"}</strong>{" "}
               <strong>{format(new Date(), "dd/MM/yyyy")}</strong>
             </div>
-
             <div className="card-body">
               <Row className="justify-content-between w-100 border-bottom">
                 <Col xs={6} md={4} className="mb-3">
@@ -142,7 +125,6 @@ export const AddInvoice = () => {
                   <div>Email: {currentUser?.user?.email || "N/A"}</div>
                   <div>Phone: {currentUser?.user?.phone || "N/A"}</div>
                 </Col>
-
                 <Col xs={6} md={4} className="mb-3">
                   <h6>To:</h6>
                   {selectedSupplier ? (
@@ -169,7 +151,6 @@ export const AddInvoice = () => {
                   )}
                 </Col>
               </Row>
-
               <div className="table-responsive">
                 <Row>
                   <Col xs={12} sm={5} className="my-3">

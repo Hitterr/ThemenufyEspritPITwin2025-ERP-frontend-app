@@ -17,7 +17,6 @@ const useInvoiceStore = create(
     filterCriteria: {
       search: "",
       status: "all",
-      createdBy: "",
       invoiceNumber: "",
     },
 

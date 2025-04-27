@@ -7,6 +7,7 @@ import useIngredientStore from "../../store/ingredientStore";
 import { useParams } from "react-router-dom";
 import useSupplierStore from "../../store/supplierStore";
 import { authStore } from "../../store/authStore";
+import { jsPDF } from "jspdf";
 
 export const ShowInvoice = () => {
   const {
@@ -62,6 +63,134 @@ export const ShowInvoice = () => {
         console.error("Error updating paid status", error);
       }
     }
+  };
+
+  // Fonction pour générer le PDF
+  const generatePDF = () => {
+    const doc = new jsPDF();
+
+    const marginLeft = 10; // gauche pour "From"
+    const marginRight = 110; // droite pour "To"
+    const startY = 100; // position Y de départ
+    const lineHeight = 10; // espace entre les lignes
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+
+    // Adding Logo
+    doc.addImage(Logo, "PNG", 10, 10, 50, 50);
+
+    // Title and Invoice Info
+    doc.text(`Invoice: #${currentInvoice?.invoiceNumber}`, 10, 60);
+    doc.text(
+      `Date: ${format(new Date(currentInvoice?.createdAt), "dd-MM-yyyy")}`,
+      10,
+      70
+    );
+    doc.text(`Status: ${currentInvoice?.status?.toUpperCase()}`, 10, 80);
+    doc.text(
+      `Paid Status: ${currentInvoice?.paidStatus?.toUpperCase()}`,
+      10,
+      90
+    );
+
+    // Sender and Recipient Info
+    doc.setFontSize(12);
+
+    // Partie "From"
+    doc.setFont(undefined, "bold");
+    doc.text("From:", marginLeft, startY);
+    doc.setFont(undefined, "normal");
+    doc.text("The Menufy", marginLeft, startY + lineHeight);
+    doc.text(
+      `Created By: ${currentInvoice?.created_by?.firstName || ""} ${
+        currentInvoice?.created_by?.lastName || ""
+      }`,
+      marginLeft,
+      startY + 2 * lineHeight
+    );
+    doc.text(
+      `Email: ${currentInvoice?.created_by?.email || ""}`,
+      marginLeft,
+      startY + 3 * lineHeight
+    );
+    doc.text(
+      `Phone: ${currentUser?.user?.phone || "N/A"}`,
+      marginLeft,
+      startY + 4 * lineHeight
+    );
+
+    // Partie "To"
+    doc.setFont(undefined, "bold");
+    doc.text("To:", marginRight, startY);
+    doc.setFont(undefined, "normal");
+    doc.text(
+      `${currentInvoice?.supplier?.name || ""}`,
+      marginRight,
+      startY + lineHeight
+    );
+    doc.text(
+      `Attn: ${currentInvoice?.supplier?.contact?.representative || "N/A"}`,
+      marginRight,
+      startY + 2 * lineHeight
+    );
+    doc.text(
+      `${currentInvoice?.supplier?.address?.city || "N/A"}`,
+      marginRight,
+      startY + 3 * lineHeight
+    );
+    doc.text(
+      `Email: ${currentInvoice?.supplier?.contact?.email || "N/A"}`,
+      marginRight,
+      startY + 4 * lineHeight
+    );
+    doc.text(
+      `Phone: ${currentInvoice?.supplier?.contact?.phone || "N/A"}`,
+      marginRight,
+      startY + 5 * lineHeight
+    );
+
+    // Table headers
+    const tableStartY = startY + 6 * lineHeight + 10; // Un peu d'espace après "From" et "To"
+    doc.setFont(undefined, "bold");
+    doc.text("Item", 10, tableStartY);
+    doc.text("Unit Cost", 100, tableStartY);
+    doc.text("Quantity", 140, tableStartY);
+    doc.text("Total", 180, tableStartY);
+    doc.setFont(undefined, "normal");
+
+    // Sort the items by ingredient name
+    const sortedItems = currentInvoice?.items?.sort((a, b) => {
+      const ingredientA = ingredients.find((ing) => ing._id === a.ingredient);
+      const ingredientB = ingredients.find((ing) => ing._id === b.ingredient);
+      if (ingredientA && ingredientB) {
+        return ingredientA.libelle.localeCompare(ingredientB.libelle);
+      }
+      return 0;
+    });
+
+    // Items
+    sortedItems?.forEach((item, index) => {
+      const ingredient = ingredients.find((ing) => ing._id === item.ingredient);
+      const y = tableStartY + 10 + index * 10;
+      doc.text(`${ingredient?.libelle || "Unknown"}`, 10, y);
+      doc.text(`${item?.price} TND`, 100, y);
+      doc.text(`${item?.quantity}`, 140, y);
+      doc.text(`${(item?.price * item?.quantity).toFixed(3)} TND`, 180, y);
+    });
+
+    // Total Calculations
+    const totalStartY = tableStartY + 10 + (sortedItems?.length || 0) * 10 + 10;
+    const subtotal = currentInvoice?.total?.toFixed(3);
+    const vat = (currentInvoice?.total * 0.19)?.toFixed(3);
+    const total = (currentInvoice?.total * 1.19)?.toFixed(3);
+
+    doc.text(`Subtotal: ${subtotal} TND`, 10, totalStartY);
+    doc.text(`VAT (19%): ${vat} TND`, 10, totalStartY + 10);
+    doc.text(`Total: ${total} TND`, 10, totalStartY + 20);
+
+    // Save PDF
+    doc.save(`Invoice_${currentInvoice?.invoiceNumber}.pdf`);
   };
 
   if (!currentInvoice._id) {
@@ -235,6 +364,10 @@ export const ShowInvoice = () => {
                   </table>
                 </div>
               </div>
+
+              <Button variant="primary" onClick={generatePDF}>
+                Download PDF
+              </Button>
             </div>
           </div>
         </div>
