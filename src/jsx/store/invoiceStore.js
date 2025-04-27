@@ -117,7 +117,11 @@ const useInvoiceStore = create(
       try {
         set({ loading: true, error: null });
         const response = await apiRequest.get("/invoice/stats", {
-          params: { period, startDate, endDate },
+          params: {
+            period,
+            startDate: startDate.toISOString().split("T")[0],
+            endDate: endDate.toISOString().split("T")[0],
+          },
         });
         set({ invoiceStats: response.data.data, loading: false });
       } catch (error) {
