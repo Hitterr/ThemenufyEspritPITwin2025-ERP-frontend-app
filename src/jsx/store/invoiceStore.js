@@ -19,6 +19,7 @@ const useInvoiceStore = create(
       status: "all",
       invoiceNumber: "",
     },
+    invoiceStats: [],
 
     // === SETTERS ===
     setInvoiceStatus: (status) => {
@@ -106,6 +107,23 @@ const useInvoiceStore = create(
       } catch (error) {
         set({
           error: error.response?.data?.message || "Failed to fetch invoice",
+          loading: false,
+        });
+      }
+    },
+
+    // === STATS ===
+    fetchInvoiceStats: async ({ period, startDate, endDate }) => {
+      try {
+        set({ loading: true, error: null });
+        const response = await apiRequest.get("/invoice/stats", {
+          params: { period, startDate, endDate },
+        });
+        set({ invoiceStats: response.data.data, loading: false });
+      } catch (error) {
+        set({
+          error:
+            error.response?.data?.message || "Failed to fetch invoice stats",
           loading: false,
         });
       }
