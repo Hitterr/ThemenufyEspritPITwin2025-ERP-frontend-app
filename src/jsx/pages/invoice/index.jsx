@@ -110,7 +110,7 @@ export const InvoicesPage = () => {
                                 new Date(inv.deliveredAt),
                                 "dd-MM-yyyy HH:mm:ss"
                               )
-                            : "N/A"}
+                            : "notdelivered"}
                         </td>
                         <td>{inv.created_by?.email || "N/A"}</td>
                         <td>{inv.status}</td>
