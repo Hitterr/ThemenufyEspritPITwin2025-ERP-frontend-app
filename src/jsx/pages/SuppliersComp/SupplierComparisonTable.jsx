@@ -25,8 +25,17 @@ export default function SupplierComparisonTable({ ingredientId }) {
             },
           }
         );
-        if (res.data.success) setSuppliers(res.data.data);
-        else setError("Erreur API");
+        if (res.data.success) {
+          // Ensure price and deliveryTime have default values
+          const enrichedData = res.data.data.map((supplier) => ({
+            ...supplier,
+            price: supplier.price ?? 0, // Default to 0 if undefined
+            deliveryTime: supplier.deliveryTime ?? 0, // Default to 0 if undefined
+          }));
+          setSuppliers(enrichedData);
+        } else {
+          setError("Erreur API");
+        }
       } catch (err) {
         setError("Erreur de chargement");
       } finally {
@@ -46,6 +55,7 @@ export default function SupplierComparisonTable({ ingredientId }) {
   if (loading) return <Spinner animation="border" />;
 
   if (error) return <Alert variant="danger">{error}</Alert>;
+
   return (
     <Table striped bordered hover className="text-center shadow-sm">
       <thead className="table-primary text-white">

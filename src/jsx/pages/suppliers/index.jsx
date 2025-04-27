@@ -5,7 +5,6 @@ import { FaEye, FaPencilAlt, FaPlus, FaTrash, FaFilter } from "react-icons/fa";
 import useSupplierStore from "../../store/supplierStore";
 import SupplierFilters from "./components/SupplierFilters";
 import SupplierPagination from "./components/SupplierPagination";
-import SupplierStats from "./components/SupplierStats";
 import Swal from "sweetalert2";
 
 const Suppliers = () => {
@@ -15,12 +14,10 @@ const Suppliers = () => {
     deleteSupplier,
     pagination,
     setFilterCriteria,
-    globalStats
   } = useSupplierStore();
 
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
-  const [showStats, setShowStats] = useState(true);
 
   useEffect(() => {
     loadSuppliers();
@@ -62,10 +59,6 @@ const Suppliers = () => {
     setFilterCriteria({ page: pageNumber });
   };
 
-  const toggleStats = () => {
-    setShowStats(!showStats);
-  };
-
   if (loading) return <div>Loading...</div>;
 
   return (
@@ -81,16 +74,11 @@ const Suppliers = () => {
             </Button>
           </Link>
           <div className="d-flex gap-2">
-            <Button variant="info" onClick={toggleStats}>
-              {showStats ? "Hide Stats" : "Show Stats"}
-            </Button>
             <Button variant="primary" onClick={() => setShowFilters(!showFilters)}>
               <FaFilter className="me-1" /> Filters
             </Button>
           </div>
         </div>
-
-        <SupplierStats showStats={showStats} />
 
         {showFilters && <SupplierFilters onClose={() => setShowFilters(false)} />}
         
