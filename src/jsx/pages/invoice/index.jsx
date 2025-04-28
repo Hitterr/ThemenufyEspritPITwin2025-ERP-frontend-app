@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import { ReceiptText } from "lucide-react";
 import InvoiceFilters from "./components/InvoiceFilters";
 import * as XLSX from "xlsx";
+
 export const InvoicesPage = () => {
   const {
     invoices,
@@ -42,7 +43,27 @@ export const InvoicesPage = () => {
   };
 
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(invoices);
+    const flattenedInvoices = invoices.map((inv) => ({
+      _id: inv._id,
+      invoiceNumber: inv.invoiceNumber,
+      created_by_email: inv.created_by?.email || "N/A",
+      restaurant_name: inv.restaurant?.nameRes || "N/A",
+      supplier_name: inv.supplier?.name || "N/A",
+      total: inv.total,
+      status: inv.status,
+      createdAt: inv.createdAt
+        ? format(new Date(inv.createdAt), "dd-MM-yyyy HH:mm:ss")
+        : "N/A",
+      updatedAt: inv.updatedAt
+        ? format(new Date(inv.updatedAt), "dd-MM-yyyy HH:mm:ss")
+        : "N/A",
+      deliveredAt: inv.deliveredAt
+        ? format(new Date(inv.deliveredAt), "dd-MM-yyyy HH:mm:ss")
+        : "notdelivered",
+      paidStatus: inv.paidStatus,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(flattenedInvoices);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Rinvoices");
     XLSX.writeFile(workbook, "invoicess.xlsx");
@@ -69,7 +90,6 @@ export const InvoicesPage = () => {
           </label>
           <Link to="/invoices/stats" className="mt-2">
             <Button variant="primary" title="Statistics">
-              {" "}
               <FaChartBar size={30} />
               STATS
             </Button>
@@ -101,7 +121,6 @@ export const InvoicesPage = () => {
                     <th>Status</th>
                     <th>Paid</th>
                     <th>Total</th>
-
                     <th className="text-center" style={{ width: "150px" }}>
                       Actions
                     </th>
@@ -123,7 +142,8 @@ export const InvoicesPage = () => {
                         </td>
                         <td>{inv.created_by?.email || "N/A"}</td>
                         <td>{inv.status}</td>
-                        <td>{inv.paidStatus}</td> <td>${inv.total}</td>
+                        <td>{inv.paidStatus}</td>
+                        <td>${inv.total}</td>
                         <td>
                           <div className="d-flex justify-content-center gap-2">
                             <Link
