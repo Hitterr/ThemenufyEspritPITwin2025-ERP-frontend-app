@@ -11,6 +11,11 @@ class InvoiceStats extends Component {
       period: "month", // Default period
       startDate: new Date(new Date().getFullYear(), 0, 1), // Default: Start of current year
       endDate: new Date(), // Default: Today
+      statusCounts: {
+        pending: 0,
+        delivered: 0,
+        cancelled: 0,
+      },
       areaChartData: {
         series: [
           { name: "Pending", data: [] },
@@ -47,76 +52,6 @@ class InvoiceStats extends Component {
           },
         },
       },
-      radialBarData: {
-        series: [0, 0, 0],
-        options: {
-          chart: {
-            type: "radialBar",
-            offsetY: 0,
-            offsetX: 0,
-          },
-          plotOptions: {
-            radialBar: {
-              size: undefined,
-              inverseOrder: false,
-              hollow: {
-                margin: 0,
-                size: "30%",
-                background: "transparent",
-              },
-              track: {
-                show: true,
-                background: "#e1e5ff",
-                strokeWidth: "10%",
-                opacity: 1,
-                margin: 18,
-              },
-            },
-          },
-          responsive: [
-            {
-              breakpoint: 830,
-              options: {
-                chart: { offsetY: 0, offsetX: 0 },
-                legend: { position: "bottom", offsetX: 0, offsetY: 0 },
-                plotOptions: { radialBar: { hollow: { size: "20%" } } },
-              },
-            },
-            {
-              breakpoint: 800,
-              options: {
-                chart: { offsetY: 0, offsetX: 0 },
-                legend: { position: "bottom", offsetX: 0, offsetY: 0 },
-                plotOptions: { radialBar: { hollow: { size: "10%" } } },
-              },
-            },
-            {
-              breakpoint: 768,
-              options: {
-                chart: { offsetY: 0, offsetX: 0 },
-                legend: { position: "bottom", offsetX: 0, offsetY: 0 },
-                plotOptions: { radialBar: { hollow: { size: "30%" } } },
-              },
-            },
-            {
-              breakpoint: 330,
-              options: {
-                chart: { offsetY: 0, offsetX: 0 },
-                legend: { position: "bottom", offsetX: 0, offsetY: 0 },
-                plotOptions: { radialBar: { hollow: { size: "20%" } } },
-              },
-            },
-          ],
-          fill: { opacity: 1 },
-          colors: ["#f53c79", "#36A2EB", "#FFCE56"],
-          labels: ["Pending", "Delivered", "Cancelled"],
-          legend: {
-            fontSize: "14px",
-            show: true,
-            position: "bottom",
-          },
-        },
-      },
     };
   }
 
@@ -132,12 +67,12 @@ class InvoiceStats extends Component {
       await fetchInvoiceStats({ period, startDate, endDate });
       const invoiceStats = useInvoiceStore.getState().invoiceStats.data;
 
-      // Update Radial Bar Chart
-      const radialSeries = [
-        invoiceStats.statusCounts.pending || 0,
-        invoiceStats.statusCounts.delivered || 0,
-        invoiceStats.statusCounts.cancelled || 0,
-      ];
+      // Update Status Counts for Cards
+      const statusCounts = {
+        pending: invoiceStats.statusCounts.pending || 0,
+        delivered: invoiceStats.statusCounts.delivered || 0,
+        cancelled: invoiceStats.statusCounts.cancelled || 0,
+      };
 
       // Update Area Chart
       const periods = invoiceStats.periodCounts.map((item) => {
@@ -164,10 +99,7 @@ class InvoiceStats extends Component {
       );
 
       this.setState({
-        radialBarData: {
-          ...this.state.radialBarData,
-          series: radialSeries,
-        },
+        statusCounts,
         areaChartData: {
           ...this.state.areaChartData,
           series: [
@@ -198,7 +130,7 @@ class InvoiceStats extends Component {
   };
 
   render() {
-    const { period, startDate, endDate } = this.state;
+    const { period, startDate, endDate, statusCounts } = this.state;
 
     return (
       <div>
@@ -235,18 +167,36 @@ class InvoiceStats extends Component {
           </label>
         </div>
 
-        {/* Radial Bar Chart */}
-        <div id="radial-bar-chart">
-          <ReactApexChart
-            options={this.state.radialBarData.options}
-            series={this.state.radialBarData.series}
-            type="radialBar"
-            height={this.props.height || 300}
-          />
+        {/* Card-Based Status Counts */}
+        <div className="row">
+          <div className="col-sm-4 mb-md-0 mb-3">
+            <div className="p-3 border rounded">
+              <h3 className="fs-32 text-black font-w600 mb-1">
+                {statusCounts.pending}
+              </h3>
+              <span className="fs-18 text-primary">Pending</span>
+            </div>
+          </div>
+          <div className="col-sm-4 mb-md-0 mb-3">
+            <div className="p-3 border rounded">
+              <h3 className="fs-32 text-black font-w600 mb-1">
+                {statusCounts.delivered}
+              </h3>
+              <span className="fs-18 text-primary">Delivered</span>
+            </div>
+          </div>
+          <div className="col-sm-4">
+            <div className="p-3 border rounded">
+              <h3 className="fs-32 text-black font-w600 mb-1">
+                {statusCounts.cancelled}
+              </h3>
+              <span className="fs-18 text-primary">Cancelled</span>
+            </div>
+          </div>
         </div>
 
         {/* Area Chart */}
-        <div id="area-chart">
+        <div id="area-chart" style={{ marginTop: "20px" }}>
           <ReactApexChart
             options={this.state.areaChartData.options}
             series={this.state.areaChartData.series}
