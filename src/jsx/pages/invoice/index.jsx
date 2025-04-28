@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Card, Col, Row, Table, Spinner } from "react-bootstrap";
-import { FaEye, FaFilter, FaTrash } from "react-icons/fa";
+import { FaEye, FaFilter, FaTrash, FaChartBar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import useInvoiceStore from "../../store/invoiceStore";
 import { format } from "date-fns";
@@ -60,12 +60,21 @@ export const InvoicesPage = () => {
         <Button variant="primary" onClick={() => setShowFilters(!showFilters)}>
           <FaFilter className="me-1" /> Filters
         </Button>
-        {/* Excel Import Button */}
-        <label htmlFor="excel-file-input">
-          <Button variant="info" className="ms-2" onClick={exportToExcel}>
-            <i className="fa fa-file-excel fa-sm me-2" /> Export
-          </Button>
-        </label>
+
+        <div className="d-flex flex-column align-items-end">
+          <label htmlFor="excel-file-input">
+            <Button variant="info" onClick={exportToExcel}>
+              <i className="fa fa-file-excel fa-sm " /> EXPORT
+            </Button>
+          </label>
+          <Link to="/invoices/stats" className="mt-2">
+            <Button variant="primary" title="Statistics">
+              {" "}
+              <FaChartBar size={30} />
+              STATS
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {showFilters && <InvoiceFilters onClose={() => setShowFilters(false)} />}
