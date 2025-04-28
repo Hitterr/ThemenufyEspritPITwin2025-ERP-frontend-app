@@ -1,63 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect,useState } from "react";
 import { Link } from "react-router-dom";
 import pMinDelay from "p-min-delay";
 import loadable from "@loadable/component";
-import { Dropdown, Nav, Tab, Row, Col } from "react-bootstrap";
+import { Dropdown, Nav, Tab } from "react-bootstrap";
 import ChartDonught2 from "../Sego/Home/donught2";
 import ChartDonught3 from "../Sego/Home/donught3";
+
 import ActivityLineChart from "../Sego/Home/ActivityLineChart";
 import TimeLineChart from "../Sego/Home/TimeLineChart";
 import TimeLineChart2 from "../Sego/Home/TimeLineChart2";
 import TimeLineChart3 from "../Sego/Home/TimeLineChart3";
-import SupplierStats from "../../pages/suppliers/components/SupplierStats"; // Add SupplierStats import
-import axios from "axios"; // Add axios for API calls
 
-// Import Image
+//** Import Image */
 import menu9 from "../../../assets/images/menus/9.png";
 import menu10 from "../../../assets/images/menus/10.png";
 import menu11 from "../../../assets/images/menus/11.png";
 import menu12 from "../../../assets/images/menus/12.png";
 
-// Placeholder images for suppliers
-const supplierImages = [menu9, menu10, menu11, menu12, menu9];
-
-const BarChart = loadable(() => pMinDelay(import("../Sego/Home/BarChart"), 1000));
+const BarChart = loadable(() =>
+  pMinDelay(import("../Sego/Home/BarChart"), 1000)
+);
 const RadialBarChart = loadable(() =>
   pMinDelay(import("../Sego/Home/RadialBarChart"), 1000)
 );
 
-function Home() {
-  const [session, setSession] = useState("Monthly");
-  const [topSuppliers, setTopSuppliers] = useState([]);
-  const [loadingSuppliers, setLoadingSuppliers] = useState(false);
-  const [errorSuppliers, setErrorSuppliers] = useState(null);
-
-  // Fetch top 5 suppliers by delivery time for the current day
-  useEffect(() => {
-    const fetchTopSuppliers = async () => {
-      setLoadingSuppliers(true);
-      setErrorSuppliers(null);
-      try {
-        const today = new Date();
-        const startDate = new Date(today.setHours(0, 0, 0, 0)).toISOString();
-        const endDate = new Date(today.setHours(23, 59, 59, 999)).toISOString();
-
-        const response = await axios.get(
-          "http://localhost:3000/suppliers/stats/delivery-time",
-          {
-            params: { startDate, endDate },
-          }
-        );
-        setTopSuppliers(response.data.data.slice(0, 5));
-      } catch (error) {
-        console.error("Error fetching top suppliers:", error.message);
-        setErrorSuppliers("Failed to load top suppliers. Please try again.");
-      } finally {
-        setLoadingSuppliers(false);
-      }
-    };
-    fetchTopSuppliers();
-  }, []);
+function Home() {  
+	const [session, setSession] = useState('Monthly');
   return (
     <>
       <div className="row">

@@ -114,6 +114,7 @@ import EditSupplier from "./pages/suppliers/EditSupplier";
 import ShowSupplier from "./pages/suppliers/ShowSupplier";
 import LinkIngredient from "./pages/suppliers/LinkIngredient";
 import StorageApp from "./pages/storage/App";
+import RecipeCostDashboard from './pages/Dashbord/recipe/RecipeCostDashboard';
 const Markup = () => {
 	const allroutes = [
 		/// Dashboard
@@ -125,8 +126,8 @@ const Markup = () => {
 		{ url: "analytics", component: <Analytics /> },
 		{ url: "review", component: <Reviews /> },
 		{ url: "task", component: <Task /> },
-		{ url: "suppliers-dashboard", component: <SuppliersDashboard /> }, // New route for SuppliersDashboard
-		//Cms
+		{ url: "suppliers-dashboard", component: <SuppliersDashboard /> }, 
+    { url: "Recipes-dashboard", component: <RecipeCostDashboard /> }, 
 		{ url: "content", component: <Content /> },
 		{ url: "menu", component: <Menu /> },
 		{ url: "email-template", component: <EmailTemplate /> },
