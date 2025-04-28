@@ -215,7 +215,7 @@ export const ShowInvoice = () => {
                       </tr>
                       <tr>
                         <td className="left">
-                          <strong>VAT (19%)</strong>
+                          <strong>TVA (19%)</strong>
                         </td>
                         <td className="right">
                           {(currentInvoice?.total * 0.19)?.toFixed(3)} TND
@@ -240,7 +240,7 @@ export const ShowInvoice = () => {
                 variant="primary"
                 onClick={() =>
                   generatePDF(currentInvoice, currentUser, ingredients)
-                } // Pass data correctly
+                }
               >
                 Download PDF
               </Button>

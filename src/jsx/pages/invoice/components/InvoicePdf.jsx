@@ -2,37 +2,35 @@ import { jsPDF } from "jspdf";
 import { format } from "date-fns";
 import Logo from "../../../../assets/images/logo.png";
 
-// Fonction pour générer le PDF
 const generatePDF = (currentInvoice, currentUser, ingredients) => {
   const doc = new jsPDF();
 
-  const marginLeft = 10;
-  const marginRight = 110;
-  const startY = 100;
-  const lineHeight = 10;
-  const orangeColor = "#F25C05"; // Orange
-  const whiteColor = "#FFFFFF"; // Blanc
-  const blackColor = "#000000"; // Noir
-
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(12);
-
-  // Ajouter le logo au centre
+  const marginLeft = 15;
+  const marginRight = 140;
+  const startY = 80;
+  const lineHeight = 6;
   const pageWidth = doc.internal.pageSize.getWidth();
-  const imgWidth = 50;
-  const imgX = (pageWidth - imgWidth) / 2;
-  doc.addImage(Logo, "PNG", imgX, 10, imgWidth, 50);
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const lightPink = [255, 230, 230];
+  const lightGray = [240, 240, 240];
 
-  // --- INFOS FACTURE à DROITE ---
-  doc.setFontSize(20);
-  doc.setTextColor(orangeColor);
-  doc.setFont(undefined, "bold");
-  doc.text("FACTURE", 10, 70);
-
+  // Set default font
+  doc.setFont("Helvetica", "normal");
   doc.setFontSize(12);
-  doc.setTextColor(blackColor);
-  doc.setFont(undefined, "normal");
 
+  // --- HEADER ---
+  // Light pink background for header
+  doc.setFillColor(...lightPink);
+  doc.rect(0, 0, pageWidth, 60, "F");
+
+  // Logo at the center
+  const imgWidth = 30;
+  const imgX = (pageWidth - imgWidth) / 2;
+  doc.addImage(Logo, "PNG", imgX, 10, imgWidth, 30);
+
+  // --- INVOICE INFO (Right-aligned) ---
+  doc.setFontSize(12);
+  doc.setFont("Helvetica", "normal");
   const invoiceInfos = [
     `Invoice: #${currentInvoice?.invoiceNumber || "N/A"}`,
     `Date: ${
@@ -45,13 +43,14 @@ const generatePDF = (currentInvoice, currentUser, ingredients) => {
   ];
 
   invoiceInfos.forEach((text, index) => {
-    doc.text(text, pageWidth - 10, 70 + index * 8, { align: "right" });
+    doc.text(text, 10, 10 + index * 5);
   });
 
-  // --- INFOS "From" ---
-  doc.setFont(undefined, "bold");
+  // --- FROM AND TO SECTIONS ---
+  // From (Left)
+  doc.setFont("Helvetica", "bold");
   doc.text("From:", marginLeft, startY);
-  doc.setFont(undefined, "normal");
+  doc.setFont("Helvetica", "normal");
   doc.text("The Menufy", marginLeft, startY + lineHeight);
   doc.text(
     `Created By: ${currentInvoice?.created_by?.firstName || ""} ${
@@ -71,14 +70,15 @@ const generatePDF = (currentInvoice, currentUser, ingredients) => {
     startY + 4 * lineHeight
   );
 
-  // --- INFOS "To" ---
-  doc.setFont(undefined, "bold");
+  // --- TO INFO (Supplier) ---
+  doc.setFont("Helvetica", "bold");
   doc.text("To:", marginRight, startY);
-  doc.setFont(undefined, "normal");
+
+  doc.setFont("Helvetica", "normal");
   doc.text(
     `${currentInvoice?.supplier?.name || ""}`,
     marginRight,
-    startY + lineHeight
+    startY + 1 * lineHeight
   );
   doc.text(
     `Attn: ${currentInvoice?.supplier?.contact?.representative || "N/A"}`,
@@ -104,19 +104,17 @@ const generatePDF = (currentInvoice, currentUser, ingredients) => {
   // --- TABLEAU DES PRODUITS ---
   const tableStartY = startY + 6 * lineHeight + 10;
 
-  doc.setFillColor(242, 92, 5); // orange
-  doc.rect(10, tableStartY - 8, 190, 10, "F");
+  // Table Header
+  doc.setFillColor(...lightPink);
+  doc.rect(15, tableStartY - 6, 180, 8, "F");
+  doc.setFont("Helvetica", "bold");
+  doc.text("DESCRIPTION", 20, tableStartY);
+  doc.text("PRICE", 100, tableStartY);
+  doc.text("QTY", 140, tableStartY);
+  doc.text("TOTAL", 170, tableStartY);
 
-  doc.setTextColor(whiteColor);
-  doc.setFont(undefined, "bold");
-  doc.text("Item", 15, tableStartY);
-  doc.text("Unit Cost", 80, tableStartY);
-  doc.text("Quantity", 130, tableStartY);
-  doc.text("Total", 170, tableStartY);
-
-  doc.setTextColor(blackColor);
-  doc.setFont(undefined, "normal");
-
+  // Table Body
+  doc.setFont("Helvetica", "normal");
   const sortedItems = currentInvoice?.items?.sort((a, b) => {
     const ingredientA = ingredients.find((ing) => ing._id === a.ingredient);
     const ingredientB = ingredients.find((ing) => ing._id === b.ingredient);
@@ -129,29 +127,56 @@ const generatePDF = (currentInvoice, currentUser, ingredients) => {
   sortedItems?.forEach((item, index) => {
     const ingredient = ingredients.find((ing) => ing._id === item.ingredient);
     const y = tableStartY + 10 + index * 10;
-    doc.text(`${ingredient?.libelle || "Unknown"}`, 15, y);
-    doc.text(`${item?.price} TND`, 80, y);
-    doc.text(`${item?.quantity}`, 130, y);
+    // Alternating row background
+    if (index % 2 === 0) {
+      doc.setFillColor(255, 230, 240); // Very light gray
+      doc.rect(15, y - 6, 180, 8, "F");
+    }
+    doc.text(`${ingredient?.libelle || "Unknown"}`, 20, y);
+    doc.text(`${item?.price} TND`, 100, y);
+    doc.text(`${item?.quantity}`, 140, y);
     doc.text(`${(item?.price * item?.quantity).toFixed(3)} TND`, 170, y);
   });
 
-  // --- TOTALS ---
+  // --- TOTALS (Right-aligned) ---
   const totalStartY = tableStartY + 10 + (sortedItems?.length || 0) * 10 + 10;
   const subtotal = currentInvoice?.total?.toFixed(3);
   const vat = (currentInvoice?.total * 0.19)?.toFixed(3);
   const total = (currentInvoice?.total * 1.19)?.toFixed(3);
 
-  doc.setFont(undefined, "bold");
-  doc.text(`Subtotal: ${subtotal} TND`, 10, totalStartY);
-  doc.text(`VAT (19%): ${vat} TND`, 10, totalStartY + 10);
-  doc.text(`Total: ${total} TND`, 10, totalStartY + 20);
+  doc.setFont("Helvetica", "bold");
+  doc.text(`SUBTOTAL: ${subtotal} TND`, pageWidth - 15, totalStartY, {
+    align: "right",
+  });
+  doc.text(`TVA (19%): ${vat} TND`, pageWidth - 15, totalStartY + 10, {
+    align: "right",
+  });
+  doc.text(`TOTAL: ${total} TND`, pageWidth - 15, totalStartY + 20, {
+    align: "right",
+  });
 
-  // --- LIGNE ORANGE EN BAS ---
-  doc.setDrawColor(242, 92, 5);
-  doc.line(10, 280, 200, 280);
+  doc.setFont("Helvetica", "normal");
+  doc.setFontSize(10);
+  doc.text("Pay to:", marginLeft, pageHeight - 40);
+  doc.text("The Menufy", marginLeft, pageHeight - 35);
 
-  // --- ENREGISTRER PDF ---
-  doc.save(`Invoice_${currentInvoice?.invoiceNumber}.pdf`);
+  const rectX = pageWidth - 60; // Rectangle X position
+  const rectY = pageHeight - 45; // Rectangle Y position
+  const rectWidth = 45; // Rectangle width
+  const rectHeight = 15; // Rectangle height
+
+  doc.setFillColor(255, 230, 240); // Very light pink
+  doc.rect(rectX, rectY, rectWidth, rectHeight, "F");
+
+  doc.setFont("Helvetica", "bold");
+  doc.setFontSize(14);
+
+  const centerX = rectX + rectWidth / 2;
+  const centerY = rectY + rectHeight / 2 + 5; // +5 for better vertical centering
+
+  doc.text("Thank you!", centerX, centerY, { align: "center" });
+
+  -doc.save(`Invoice_${currentInvoice?.invoiceNumber}.pdf`);
 };
 
 export default generatePDF;
