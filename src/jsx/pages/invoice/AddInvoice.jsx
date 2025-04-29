@@ -92,19 +92,6 @@ export const AddInvoice = () => {
               <ArrowRight size={20} />
             </Button>
           </Col>
-
-          {/* 👇 Select Status ici */}
-          <Col xs="12" sm={4} className="mt-2">
-            <FormSelect
-              onChange={handleStatusChange}
-              value={currentInvoice?.status}
-              required
-            >
-              <option value="pending">Pending</option>
-              <option value="delivered">Delivered</option>
-              <option value="cancelled">Cancelled</option>
-            </FormSelect>
-          </Col>
         </Row>
       </Row>
       <div className="row">
