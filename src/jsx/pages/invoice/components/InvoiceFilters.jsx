@@ -7,12 +7,12 @@ const InvoiceFilters = ({ onClose }) => {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilterCriteria({ [name]: value }); // Updates the filter criteria based on the input name
+    setFilterCriteria({ [name]: value });
   };
 
   const handleReset = () => {
-    resetFilters(); // Resets the filter criteria in the store
-    onClose(); // Closes the filter panel
+    resetFilters();
+    onClose();
   };
 
   return (
@@ -61,18 +61,6 @@ const InvoiceFilters = ({ onClose }) => {
                 <option value="delivered">Delivered</option>
                 <option value="cancelled">Cancelled</option>
               </Form.Control>
-            </Form.Group>
-          </Col>
-          <Col md={3}>
-            <Form.Group className="mb-3">
-              <Form.Label>Created By</Form.Label>
-              <Form.Control
-                type="text"
-                name="createdBy"
-                value={filterCriteria.createdBy || ""}
-                onChange={handleFilterChange}
-                placeholder="Search by creator name..."
-              />
             </Form.Group>
           </Col>
         </Row>

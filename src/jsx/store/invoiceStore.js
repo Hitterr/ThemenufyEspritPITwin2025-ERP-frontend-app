@@ -17,9 +17,9 @@ const useInvoiceStore = create(
     filterCriteria: {
       search: "",
       status: "all",
-      createdBy: "",
       invoiceNumber: "",
     },
+    invoiceStats: [],
 
     // === SETTERS ===
     setInvoiceStatus: (status) => {
@@ -112,6 +112,27 @@ const useInvoiceStore = create(
       }
     },
 
+    // === STATS ===
+    fetchInvoiceStats: async ({ period, startDate, endDate }) => {
+      try {
+        set({ loading: true, error: null });
+        const response = await apiRequest.get("/invoice/stats", {
+          params: {
+            period,
+            startDate: startDate.toISOString().split("T")[0],
+            endDate: endDate.toISOString().split("T")[0],
+          },
+        });
+        set({ invoiceStats: response.data.data, loading: false });
+      } catch (error) {
+        set({
+          error:
+            error.response?.data?.message || "Failed to fetch invoice stats",
+          loading: false,
+        });
+      }
+    },
+
     // === CRUD INVOICE ===
     createInvoice: async (invoice) => {
       try {
@@ -172,7 +193,37 @@ const useInvoiceStore = create(
         });
       }
     },
+    updatePaidInvoiceStatus: async (id, paidStatus) => {
+      try {
+        set({ loading: true, error: null });
+        const response = await apiRequest.post(`/invoice/${id}/paid-status`, {
+          paidStatus,
+        });
 
+        set((state) => ({
+          invoices: state.invoices.map((inv) =>
+            inv._id === id
+              ? { ...inv, paidStatus: response.data.paidStatus }
+              : inv
+          ),
+          currentInvoice:
+            state.currentInvoice?._id === id
+              ? {
+                  ...state.currentInvoice,
+                  paidStatus: response.data.paidStatus,
+                }
+              : state.currentInvoice,
+          loading: false,
+        }));
+      } catch (error) {
+        set({
+          error:
+            error.response?.data?.message ||
+            "Failed to update paid status of invoice",
+          loading: false,
+        });
+      }
+    },
     // === INVOICE ITEMS ===
     addInvoiceItem: (item) => {
       try {
@@ -249,18 +300,27 @@ const useInvoiceStore = create(
     },
 
     // === FILTERS ===
+    filterInvoices: async (filters) => {
+      try {
+        set({ loading: true, error: null });
+        const response = await apiRequest.get("/filter", filters);
+        set({ filteredInvoices: response.data.data, loading: false });
+      } catch (error) {
+        set({
+          error: error.response?.data?.message || "Failed to filter invoices",
+          loading: false,
+        });
+      }
+    },
     setFilterCriteria: (criteria) => {
       set((state) => ({
         filterCriteria: { ...state.filterCriteria, ...criteria },
       }));
       get().applyFilters();
     },
-
     applyFilters: () => {
       const { invoices, filterCriteria } = get();
       let filtered = [...invoices];
-
-      // Filter by invoice number (case-insensitive)
       if (filterCriteria.invoiceNumber) {
         const searchLower = filterCriteria.invoiceNumber.toLowerCase();
         filtered = filtered.filter((inv) =>
@@ -268,17 +328,6 @@ const useInvoiceStore = create(
         );
       }
 
-      // Filter by created by (case-insensitive, check both first and last name)
-      if (filterCriteria.createdBy) {
-        const createdByLower = filterCriteria.createdBy.toLowerCase();
-        filtered = filtered.filter(
-          (inv) =>
-            inv.created_by?.firstName?.toLowerCase().includes(createdByLower) ||
-            inv.created_by?.lastName?.toLowerCase().includes(createdByLower)
-        );
-      }
-
-      // Filter by status (case-insensitive)
       if (filterCriteria.status && filterCriteria.status !== "all") {
         const statusLower = filterCriteria.status.toLowerCase();
         filtered = filtered.filter(
@@ -286,16 +335,14 @@ const useInvoiceStore = create(
         );
       }
 
-      console.log("Filtered invoices:", filtered); // Debugging log
+      console.log("Filtered invoices:", filtered);
       set({ filteredInvoices: filtered });
     },
-
     resetFilters: () => {
       set((state) => ({
         filterCriteria: {
           search: "",
           status: "all",
-          createdBy: "",
           invoiceNumber: "",
         },
         filteredInvoices: state.invoices,

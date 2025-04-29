@@ -41,10 +41,6 @@ export const AddInvoice = () => {
     setInvoiceSupplier(e.target.value);
   };
 
-  const handleStatusChange = (e) => {
-    setInvoiceStatus(e.target.value);
-  };
-
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -96,22 +92,8 @@ export const AddInvoice = () => {
               <ArrowRight size={20} />
             </Button>
           </Col>
-
-          {/* 👇 Select Status ici */}
-          <Col xs="12" sm={4} className="mt-2">
-            <FormSelect
-              onChange={handleStatusChange}
-              value={currentInvoice?.status}
-              required
-            >
-              <option value="pending">Pending</option>
-              <option value="delivered">Delivered</option>
-              <option value="cancelled">Cancelled</option>
-            </FormSelect>
-          </Col>
         </Row>
       </Row>
-
       <div className="row">
         <div className="col-lg-12">
           <div className="card">
@@ -120,7 +102,6 @@ export const AddInvoice = () => {
                 <img src={Logo} className="thumbnail w-100" />
               </Col>
             </Row>
-
             <div className="card-header">
               <strong> Invoice : {"#12345678"}</strong>{" "}
               <strong>{format(new Date(), "dd/MM/yyyy")}</strong>
@@ -222,7 +203,6 @@ export const AddInvoice = () => {
                   </tbody>
                 </table>
               </div>
-
               {/* Invoice Totals */}
               <div className="row">
                 <div className="col-lg-4 col-sm-5"> </div>
