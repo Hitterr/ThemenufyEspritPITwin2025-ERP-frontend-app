@@ -33,6 +33,7 @@ export const ShowInvoice = () => {
     currentInvoice?.paidStatus || ""
   );
 
+  // Récupération des données de la facture via le paramètre ID
   useEffect(() => {
     if (params.id) {
       fetchInvoiceById(params.id);

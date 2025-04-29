@@ -20,7 +20,7 @@ export const InvoicesPage = () => {
     error,
   } = useInvoiceStore();
   const [currentPage, setCurrentPage] = useState(1);
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(false); // State to toggle filters
   const itemsPerPage = 10;
 
   useEffect(() => {

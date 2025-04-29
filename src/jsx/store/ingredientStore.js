@@ -77,7 +77,10 @@ const useIngredientStore = create(
     // Modify fetchIngredients to initialize filteredIngredients
     fetchIngredients: async (page = 1) => {
       try {
-        const { data } = await axios.get(API_URL, { params: { page: page } });
+        const filters = get().filterCriteria;
+        const { data } = await axios.get(API_URL, {
+          params: { page: page, ...filters },
+        });
         set({
           ingredients: data.data,
           filteredIngredients: data.data,
@@ -123,9 +126,7 @@ const useIngredientStore = create(
           maxQty: parseInt(ingredientData.maxQty),
           minQty: parseInt(ingredientData.minQty),
         };
-
         const { data } = await axios.put(`${API_URL}/${id}`, dataToSend);
-
         set((state) => {
           const updatedIngredients = state.ingredients.map((ingredient) =>
             ingredient._id === id ? data.data : ingredient
