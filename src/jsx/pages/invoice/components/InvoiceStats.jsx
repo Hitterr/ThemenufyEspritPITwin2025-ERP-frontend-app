@@ -70,7 +70,12 @@ class InvoiceStats extends Component {
     const fetchInvoiceStats = useInvoiceStore.getState().fetchInvoiceStats;
 
     try {
-      if (!startDate || !endDate || isNaN(startDate) || isNaN(endDate)) {
+      if (
+        !startDate ||
+        !endDate ||
+        isNaN(startDate.getTime()) ||
+        isNaN(endDate.getTime())
+      ) {
         throw new Error("Invalid date range");
       }
 
@@ -95,8 +100,15 @@ class InvoiceStats extends Component {
             return format(new Date(2023, item.period - 1, 1), "MMM");
           case "year":
             return item.period.toString();
+          case "day":
+            const date = new Date(item.period);
+            if (isNaN(date.getTime())) {
+              console.warn(`Invalid date value for period: ${item.period}`);
+              return "Invalid Date"; // Fallback
+            }
+            return format(date, "yyyy-MM-dd");
           default:
-            return format(new Date(item.period), "yyyy-MM-dd");
+            return "Unknown Period";
         }
       });
 
@@ -131,7 +143,10 @@ class InvoiceStats extends Component {
       });
     } catch (error) {
       console.error("Failed to fetch stats:", error);
-      this.setState({ error: error.message || "Failed to fetch statistics" });
+      const errorMessage = error.message.includes("Invalid time value")
+        ? "Invalid date format in statistics data"
+        : error.message || "Failed to fetch statistics";
+      this.setState({ error: errorMessage });
     }
   };
 

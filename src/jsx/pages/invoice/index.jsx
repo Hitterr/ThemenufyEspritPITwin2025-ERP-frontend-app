@@ -84,14 +84,21 @@ export const InvoicesPage = () => {
 
         <div className="d-flex flex-column align-items-end">
           <label htmlFor="excel-file-input">
-            <Button variant="info" onClick={exportToExcel}>
-              <i className="fa fa-file-excel fa-sm " /> EXPORT
+            <Button
+              variant="info"
+              onClick={exportToExcel}
+              style={{ width: "45px", height: "45px", padding: 0 }}
+            >
+              <i className="fa fa-file-excel fa-sm " />
             </Button>
           </label>
           <Link to="/invoices/stats" className="mt-2">
-            <Button variant="primary" title="Statistics">
-              <FaChartBar size={30} />
-              STATS
+            <Button
+              variant="primary"
+              title="Statistics"
+              style={{ width: "45px", height: "45px", padding: 0 }}
+            >
+              <FaChartBar size={20} />
             </Button>
           </Link>
         </div>
