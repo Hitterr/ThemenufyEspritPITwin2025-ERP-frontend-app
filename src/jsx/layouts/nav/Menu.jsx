@@ -14,8 +14,12 @@ export const MenuList = [
 				to: "suppliers",
 			},
 			{
-				title: "Suppliers Comparation",
+				title: "Suppliers Comparison",
 				to: "suppliers-comp",
+			},
+			{
+				title: "Forecast",
+				to: "ForecastChart",
 			},
 			{
 				title: "Suppliers Dashboard",

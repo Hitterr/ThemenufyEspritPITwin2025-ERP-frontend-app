@@ -114,6 +114,9 @@ import EditSupplier from "./pages/suppliers/EditSupplier";
 import ShowSupplier from "./pages/suppliers/ShowSupplier";
 import LinkIngredient from "./pages/suppliers/LinkIngredient";
 import StorageApp from "./pages/storage/App";
+import TurnoverTable from "./pages/Turnover/TurnoverTable";
+import ForecastChart from "./pages/forecastedSales/ForecastChart";
+import ApexForecast from "./pages/forecastedSales/ApexForecast";
 const Markup = () => {
 	const allroutes = [
 		/// Dashboard
@@ -211,6 +214,9 @@ const Markup = () => {
 		{ url: "ingredients/add", component: <AddIngredient /> },
 		{ url: "ingredients/edit/:id", component: <EditIngredient /> },
 		{ url: "ingredients/:id", component: <ShowIngredient /> },
+		{ url: "Turnover", component: <TurnoverTable /> },
+		{ url: "ForecastChart", component: <ApexForecast /> },
+
 		// ----------------------- invoice -----------------------------
 		{ url: "invoices", component: <InvoicesPage /> },
 		{ url: "invoices/add", component: <AddInvoice /> },
