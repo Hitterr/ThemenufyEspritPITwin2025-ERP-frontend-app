@@ -34,6 +34,10 @@ export const MenuList = [
 				to: "storage",
 			},
 			{
+				title: "Waste",
+				to: "waste",
+			},
+			{
 				title: "Orders",
 				to: "orders",
 			},

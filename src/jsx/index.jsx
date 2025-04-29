@@ -102,8 +102,9 @@ import AddIngredient from "./pages/ingredients/AddIngredient";
 import EditIngredient from "./pages/ingredients/EditIngredient";
 import ShowIngredient from "./pages/ingredients/ShowIngredient";
 
-
+import Waste from "./pages/waste/waste";
 import App from "./pages/storage/App";
+
 const Markup = () => {
 	const allroutes = [
 		/// Dashboard
@@ -188,6 +189,7 @@ const Markup = () => {
 		{ url: "profile", component: <Profile /> },
 		{ url: "SuperAdmin", component: <SuperDb /> },
 		{ url: "storage", component: <App/> },
+		{ url: "waste", component: <Waste/> },
 		{ url: "Archived", component: <ArchivedSup /> },
 		{ url: "Resto", component: <RestoDb /> },
 		{ url: "ingredients", component: <Ingredients /> },
