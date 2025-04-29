@@ -117,6 +117,8 @@ import StorageApp from "./pages/storage/App";
 import StockAnalysis from "./pages/stockAnalysis";
 import ShowCategory from "./pages/categories/ShowCategory";
 import InvoiceStats from "./pages/invoice/components/InvoiceStats";
+import TurnoverTable from "./pages/Turnover/TurnoverTable";
+import ApexForecast from "./pages/forecastedSales/ApexForecast";
 const Markup = () => {
 	const allroutes = [
 		/// Dashboard
@@ -223,6 +225,8 @@ const Markup = () => {
 		{ url: "categories", component: <CategoriesPage /> },
 		{ url: "categories/:id", component: <ShowCategory /> },
 		{ url: "invoices/stats", component: <InvoiceStats /> },
+		{ url: "Turnover", component: <TurnoverTable /> },
+		{ url: "ForecastChart", component: <ApexForecast /> },
 	];
 	return (
 		<>
