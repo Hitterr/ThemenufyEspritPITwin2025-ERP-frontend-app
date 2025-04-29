@@ -1,13 +1,12 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { format } from "date-fns";
-import { Col, Row, Button, Form } from "react-bootstrap";
+import { Col, Row, Button, Form, Badge } from "react-bootstrap";
 import Logo from "../../../assets/images/logo.png";
 import useInvoiceStore from "../../store/invoiceStore";
 import useIngredientStore from "../../store/ingredientStore";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // Ajout de useNavigate
 import useSupplierStore from "../../store/supplierStore";
 import { authStore } from "../../store/authStore";
-import { jsPDF } from "jspdf";
 import generatePDF from "./components/InvoicePdf";
 
 export const ShowInvoice = () => {
@@ -18,8 +17,14 @@ export const ShowInvoice = () => {
     updateInvoiceStatus,
     updatePaidInvoiceStatus,
   } = useInvoiceStore();
-  const { ingredients } = useIngredientStore();
+  const {
+    ingredients,
+    fetchIngredients,
+    loading: ingredientsLoading,
+    error: ingredientsError,
+  } = useIngredientStore();
   const params = useParams();
+  const navigate = useNavigate(); // Utilisation de useNavigate
   const { currentUser } = authStore();
   const { suppliers, fetchSuppliers } = useSupplierStore();
 
@@ -28,12 +33,12 @@ export const ShowInvoice = () => {
     currentInvoice?.paidStatus || ""
   );
 
-  // Récupération des données de la facture via le paramètre ID
   useEffect(() => {
     if (params.id) {
       fetchInvoiceById(params.id);
     }
-  }, [params.id, fetchInvoiceById]);
+    fetchIngredients();
+  }, [params.id, fetchInvoiceById, fetchIngredients]);
 
   useEffect(() => {
     if (currentInvoice) {
@@ -67,13 +72,29 @@ export const ShowInvoice = () => {
   };
 
   if (!currentInvoice._id) {
-    return <p>Loading ...</p>;
+    return <p>Loading Invoice...</p>;
+  }
+
+  if (ingredientsLoading) {
+    return <p>Loading Ingredients...</p>;
+  }
+
+  if (ingredientsError) {
+    return <p>Error loading ingredients: {ingredientsError}</p>;
   }
 
   return (
     <Fragment>
+      <Button
+        variant="secondary"
+        size="sm"
+        className="mb-3"
+        onClick={() => navigate("/invoices")}
+      >
+        &#8592;
+      </Button>
       <Row className="my-4 gap-y-2">
-        <Col xs="12" className="">
+        <Col xs="12">
           <h1 className="page-title">Invoice Details</h1>
         </Col>
       </Row>
@@ -106,7 +127,6 @@ export const ShowInvoice = () => {
                 </span>
               </div>
 
-              {/* Status Dropdown */}
               <Form.Group className="mt-2">
                 <Form.Label>Change Status</Form.Label>
                 <Form.Control
@@ -121,9 +141,18 @@ export const ShowInvoice = () => {
                 </Form.Control>
               </Form.Group>
 
+              <div className="mt-2">
+                <strong>Paid Status: </strong>
+                {paidStatus === "paid" ? (
+                  <Badge bg="success">Paid</Badge>
+                ) : (
+                  <Badge bg="danger">Not Paid</Badge>
+                )}
+              </div>
+
               {/* Paid Status Dropdown */}
               <Form.Group className="mt-2">
-                <Form.Label>Paid Status</Form.Label>
+                <Form.Label>Change Paid Status</Form.Label>
                 <Form.Control
                   as="select"
                   value={paidStatus}
@@ -147,7 +176,7 @@ export const ShowInvoice = () => {
                     {currentInvoice?.created_by?.lastName}
                   </div>
                   <div>Email: {currentInvoice?.created_by?.email}</div>
-                  <div>Address:{currentUser?.user?.address || "N/A"}</div>
+                  <div>Address: {currentUser?.user?.address || "N/A"}</div>
                   <div>Phone: {currentUser?.user?.phone || "N/A"}</div>
                 </Col>
                 <Col xs={6} md={4} className="mb-3">
@@ -168,6 +197,7 @@ export const ShowInvoice = () => {
                   </div>
                 </Col>
               </Row>
+
               <div className="table-responsive mt-4">
                 <table className="table table-striped">
                   <thead>
@@ -180,28 +210,37 @@ export const ShowInvoice = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {currentInvoice?.items?.map((item, index) => (
-                      <tr key={index}>
-                        <td className="center">{index + 1}</td>
-                        <td className="left">
-                          {
-                            ingredients.find(
-                              (ing) => ing._id === item.ingredient
-                            )?.libelle
-                          }
-                        </td>
-                        <td className="right">{item?.price} TND</td>
-                        <td className="right">{item?.quantity} UNIT</td>
-                        <td className="right">
-                          {item?.price * item?.quantity} TND
-                        </td>
-                      </tr>
-                    ))}
+                    {currentInvoice?.items?.map((item, index) => {
+                      const ingredientId =
+                        typeof item.ingredient === "object" &&
+                        item.ingredient?._id
+                          ? item.ingredient._id
+                          : item.ingredient;
+
+                      const ingredient = ingredients.find(
+                        (ing) => ing._id === ingredientId
+                      );
+
+                      return (
+                        <tr key={index}>
+                          <td className="center">{index + 1}</td>
+                          <td className="left">
+                            {ingredient?.libelle || "Unknown Ingredient"}
+                          </td>
+                          <td className="right">{item?.price} TND</td>
+                          <td className="right">{item?.quantity} UNIT</td>
+                          <td className="right">
+                            {(item?.price * item?.quantity).toFixed(2)} TND
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
+
               <div className="row">
-                <div className="col-lg-4 col-sm-5"> </div>
+                <div className="col-lg-4 col-sm-5"></div>
                 <div className="col-lg-4 col-sm-5 ms-auto">
                   <table className="table table-clear">
                     <tbody>

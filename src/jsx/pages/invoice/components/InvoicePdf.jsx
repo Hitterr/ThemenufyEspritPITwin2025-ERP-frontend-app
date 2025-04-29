@@ -12,23 +12,18 @@ const generatePDF = (currentInvoice, currentUser, ingredients) => {
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const lightPink = [255, 230, 230];
-  const lightGray = [240, 240, 240];
 
-  // Set default font
   doc.setFont("Helvetica", "normal");
   doc.setFontSize(12);
 
-  // --- HEADER ---
-  // Light pink background for header
   doc.setFillColor(...lightPink);
   doc.rect(0, 0, pageWidth, 60, "F");
 
-  // Logo at the center
-  const imgWidth = 30;
+  const imgWidth = 45;
+  const imgHeight = 45;
   const imgX = (pageWidth - imgWidth) / 2;
-  doc.addImage(Logo, "PNG", imgX, 10, imgWidth, 30);
+  doc.addImage(Logo, "PNG", imgX, 10, imgWidth, imgHeight);
 
-  // --- INVOICE INFO (Right-aligned) ---
   doc.setFontSize(12);
   doc.setFont("Helvetica", "normal");
   const invoiceInfos = [
@@ -46,8 +41,6 @@ const generatePDF = (currentInvoice, currentUser, ingredients) => {
     doc.text(text, 10, 10 + index * 5);
   });
 
-  // --- FROM AND TO SECTIONS ---
-  // From (Left)
   doc.setFont("Helvetica", "bold");
   doc.text("From:", marginLeft, startY);
   doc.setFont("Helvetica", "normal");
@@ -70,7 +63,6 @@ const generatePDF = (currentInvoice, currentUser, ingredients) => {
     startY + 4 * lineHeight
   );
 
-  // --- TO INFO (Supplier) ---
   doc.setFont("Helvetica", "bold");
   doc.text("To:", marginRight, startY);
 
@@ -101,10 +93,8 @@ const generatePDF = (currentInvoice, currentUser, ingredients) => {
     startY + 5 * lineHeight
   );
 
-  // --- TABLEAU DES PRODUITS ---
   const tableStartY = startY + 6 * lineHeight + 10;
 
-  // Table Header
   doc.setFillColor(...lightPink);
   doc.rect(15, tableStartY - 6, 180, 8, "F");
   doc.setFont("Helvetica", "bold");
@@ -113,7 +103,6 @@ const generatePDF = (currentInvoice, currentUser, ingredients) => {
   doc.text("QTY", 140, tableStartY);
   doc.text("TOTAL", 170, tableStartY);
 
-  // Table Body
   doc.setFont("Helvetica", "normal");
   const sortedItems = currentInvoice?.items?.sort((a, b) => {
     const ingredientA = ingredients.find((ing) => ing._id === a.ingredient);
@@ -127,18 +116,17 @@ const generatePDF = (currentInvoice, currentUser, ingredients) => {
   sortedItems?.forEach((item, index) => {
     const ingredient = ingredients.find((ing) => ing._id === item.ingredient);
     const y = tableStartY + 10 + index * 10;
-    // Alternating row background
+
     if (index % 2 === 0) {
-      doc.setFillColor(255, 230, 240); // Very light gray
+      doc.setFillColor(255, 230, 240);
       doc.rect(15, y - 6, 180, 8, "F");
     }
-    doc.text(`${ingredient?.libelle || "Unknown"}`, 20, y);
+    doc.text(`${item?.ingredient?.libelle || "Unknown"}`, 20, y);
     doc.text(`${item?.price} TND`, 100, y);
     doc.text(`${item?.quantity}`, 140, y);
     doc.text(`${(item?.price * item?.quantity).toFixed(3)} TND`, 170, y);
   });
 
-  // --- TOTALS (Right-aligned) ---
   const totalStartY = tableStartY + 10 + (sortedItems?.length || 0) * 10 + 10;
   const subtotal = currentInvoice?.total?.toFixed(3);
   const vat = (currentInvoice?.total * 0.19)?.toFixed(3);
@@ -160,19 +148,19 @@ const generatePDF = (currentInvoice, currentUser, ingredients) => {
   doc.text("Pay to:", marginLeft, pageHeight - 40);
   doc.text("The Menufy", marginLeft, pageHeight - 35);
 
-  const rectX = pageWidth - 60; // Rectangle X position
-  const rectY = pageHeight - 45; // Rectangle Y position
-  const rectWidth = 45; // Rectangle width
-  const rectHeight = 15; // Rectangle height
+  const rectX = pageWidth - 60;
+  const rectY = pageHeight - 45;
+  const rectWidth = 45;
+  const rectHeight = 15;
 
-  doc.setFillColor(255, 230, 240); // Very light pink
+  doc.setFillColor(255, 230, 240);
   doc.rect(rectX, rectY, rectWidth, rectHeight, "F");
 
   doc.setFont("Helvetica", "bold");
   doc.setFontSize(14);
 
   const centerX = rectX + rectWidth / 2;
-  const centerY = rectY + rectHeight / 2 + 5; // +5 for better vertical centering
+  const centerY = rectY + rectHeight / 2 + 5;
 
   doc.text("Thank you!", centerX, centerY, { align: "center" });
 

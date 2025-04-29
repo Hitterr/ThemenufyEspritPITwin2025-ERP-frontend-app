@@ -9,9 +9,9 @@ class InvoiceStats extends Component {
     super(props);
 
     this.state = {
-      period: "month", // Default period
-      startDate: new Date(new Date().getFullYear(), 0, 1), // Default: Start of current year
-      endDate: new Date(), // Default: Today
+      period: "month",
+      startDate: new Date(new Date().getFullYear(), 0, 1),
+      endDate: new Date(),
       statusCounts: {
         pending: 0,
         delivered: 0,
@@ -150,7 +150,6 @@ class InvoiceStats extends Component {
     }
   };
 
-  // Handle focus to ensure date pickers don't interfere
   handleDateFocus = (field) => () => {
     if (field === "startDate" && this.startDateInputRef.current) {
       this.startDateInputRef.current.focus();
@@ -199,7 +198,7 @@ class InvoiceStats extends Component {
             </Dropdown.Menu>
           </Dropdown>
 
-          <div className="input-group">
+          <div className="input-group ">
             <label className="input-group-text bg-primary text-white">
               Start Date
             </label>

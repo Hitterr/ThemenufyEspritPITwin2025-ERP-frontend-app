@@ -7,12 +7,12 @@ const InvoiceFilters = ({ onClose }) => {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilterCriteria({ [name]: value }); // Updates the filter criteria based on the input name
+    setFilterCriteria({ [name]: value });
   };
 
   const handleReset = () => {
-    resetFilters(); // Resets the filter criteria in the store
-    onClose(); // Closes the filter panel
+    resetFilters();
+    onClose();
   };
 
   return (

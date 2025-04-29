@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Card, Col, Row, Table, Spinner } from "react-bootstrap";
+import { Button, Card, Col, Row, Table, Spinner, Badge } from "react-bootstrap"; // Notice Badge imported
 import { FaEye, FaFilter, FaTrash, FaChartBar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import useInvoiceStore from "../../store/invoiceStore";
@@ -115,7 +115,7 @@ export const InvoicesPage = () => {
                 <thead>
                   <tr>
                     <th># Invoice Number</th>
-                    <th>createdAt</th>
+                    <th>Created At</th>
                     <th>Delivered At</th>
                     <th>Created By</th>
                     <th>Status</th>
@@ -141,8 +141,33 @@ export const InvoicesPage = () => {
                             : "notdelivered"}
                         </td>
                         <td>{inv.created_by?.email || "N/A"}</td>
-                        <td>{inv.status}</td>
-                        <td>{inv.paidStatus}</td>
+
+                        {/* Status Badge */}
+                        <td>
+                          <Badge
+                            bg={
+                              inv.status === "delivered"
+                                ? "success"
+                                : inv.status === "pending"
+                                ? "warning"
+                                : "danger"
+                            }
+                          >
+                            {inv.status?.toUpperCase()}
+                          </Badge>
+                        </td>
+
+                        {/* Paid Badge */}
+                        <td>
+                          <Badge
+                            bg={
+                              inv.paidStatus === "paid" ? "success" : "danger"
+                            }
+                          >
+                            {inv.paidStatus === "paid" ? "PAID" : "NOT PAID"}
+                          </Badge>
+                        </td>
+
                         <td>${inv.total}</td>
                         <td>
                           <div className="d-flex justify-content-center gap-2">
