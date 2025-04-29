@@ -19,10 +19,10 @@ const generatePDF = (currentInvoice, currentUser, ingredients) => {
   doc.setFillColor(...lightPink);
   doc.rect(0, 0, pageWidth, 60, "F");
 
-  const imgWidth = 45;
-  const imgHeight = 45;
+  const imgWidth = 50;
+  const imgHeight = 50;
   const imgX = (pageWidth - imgWidth) / 2;
-  doc.addImage(Logo, "PNG", imgX, 10, imgWidth, imgHeight);
+  doc.addImage(Logo, "PNG", imgX, 1, imgWidth, imgHeight);
 
   doc.setFontSize(12);
   doc.setFont("Helvetica", "normal");
