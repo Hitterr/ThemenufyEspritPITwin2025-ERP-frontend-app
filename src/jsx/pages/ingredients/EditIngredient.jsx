@@ -78,7 +78,12 @@ const EditIngredient = ({ idIng }) => {
   };
   return (
     <>
-      <Button variant="warning" className="w-100" onClick={handleShow}>
+      <Button
+        variant="warning"
+        size="sm"
+        className="w-100"
+        onClick={handleShow}
+      >
         <FaPencilAlt size={15} />
       </Button>
       <Modal show={show} onHide={handleClose}>

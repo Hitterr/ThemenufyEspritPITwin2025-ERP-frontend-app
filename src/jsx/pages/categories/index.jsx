@@ -3,8 +3,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, Table, Button, Modal, Spinner } from "react-bootstrap";
 import CategoryForm from "./components/CategoryForm";
 import PageTitle from "../../layouts/PageTitle";
-import { FaPencilAlt } from "react-icons/fa";
-import { Eye, Plus } from "lucide-react";
+import { FaPencilAlt, FaTrash } from "react-icons/fa";
+import { Eye, Plus, Trash, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 const CategoriesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -97,25 +97,27 @@ const CategoriesPage = () => {
                   <td>{category.description}</td>
                   <td className="text-end">
                     <Link to={"/categories/" + category._id}>
-                      <Button variant="info" className="me-2">
-                        <Eye />
+                      <Button size="sm" variant="info" className="me-2">
+                        <Eye size={15} />
                       </Button>
                     </Link>
                     <Button
                       variant="warning"
                       className="me-2"
+                      size="sm"
                       onClick={() => {
                         setEditingCategory(category);
                         setIsModalOpen(true);
                       }}
                     >
-                      <FaPencilAlt />
+                      <FaPencilAlt size={15} />
                     </Button>
                     <Button
                       variant="danger"
+                      size="sm"
                       onClick={() => deleteMutation.mutate(category._id)}
                     >
-                      <i className="fas fa-trash"></i>
+                      <FaTrash size={15} />
                     </Button>
                   </td>
                 </tr>

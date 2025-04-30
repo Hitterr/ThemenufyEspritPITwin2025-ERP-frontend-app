@@ -163,8 +163,8 @@ const Ingredients = () => {
                             to={`/stock/${ingredient._id}`}
                             style={{ color: "white" }}
                           >
-                            <Button variant="info">
-                              <Eye size={20} />
+                            <Button variant="info" size="sm">
+                              <Eye size={15} />
                             </Button>
                           </Link>
                         </Col>
@@ -176,10 +176,11 @@ const Ingredients = () => {
                           {" "}
                           <Button
                             variant="danger"
+                            size="sm"
                             title="Delete"
                             onClick={() => handleDelete(ingredient._id)}
                           >
-                            <FaTrash size={20} />
+                            <FaTrash size={15} />
                           </Button>
                         </Col>
                       </div>
