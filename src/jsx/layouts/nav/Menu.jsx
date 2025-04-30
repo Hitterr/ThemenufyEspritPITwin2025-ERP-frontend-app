@@ -10,6 +10,14 @@ export const MenuList = [
 				to: "dashboard",
 			},
 			{
+				title: "Suppliers Dashboard",
+				to: "suppliers-dashboard",
+			},
+			{
+				title: "Recipes Dashboard",
+				to: "Recipes-dashboard",
+			},
+			{
 				title: "Our Suppliers",
 				to: "suppliers",
 			},

@@ -59,22 +59,35 @@ const Suppliers = () => {
     setFilterCriteria({ page: pageNumber });
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div style={{ textAlign: "center", padding: "1rem" }}>Loading...</div>;
 
   return (
-    <Card>
-      <Card.Header>
-        <Card.Title>Suppliers</Card.Title>
+    <Card style={{ margin: "1rem auto", maxWidth: "100%", width: "100%" }}>
+      <Card.Header style={{ padding: "0.75rem", textAlign: window.innerWidth < 768 ? "center" : "left" }}>
+        <Card.Title style={{ fontSize: window.innerWidth < 576 ? "1rem" : "1.3rem" }}>
+          Suppliers
+        </Card.Title>
       </Card.Header>
       <Card.Body>
-        <div className="d-flex justify-content-between align-items-center mb-3">
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-3">
           <Link to="/suppliers/add">
-            <Button variant="success">
+            <Button
+              variant="success"
+              size="sm"
+              className="w-100 w-md-auto"
+              style={{ minWidth: "40px", marginBottom: window.innerWidth < 768 ? "0.5rem" : "0" }}
+            >
               <FaPlus /> Add Supplier
             </Button>
           </Link>
           <div className="d-flex gap-2">
-            <Button variant="primary" onClick={() => setShowFilters(!showFilters)}>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => setShowFilters(!showFilters)}
+              className="w-100 w-md-auto"
+              style={{ minWidth: "40px" }}
+            >
               <FaFilter className="me-1" /> Filters
             </Button>
           </div>
@@ -83,14 +96,30 @@ const Suppliers = () => {
         {showFilters && <SupplierFilters onClose={() => setShowFilters(false)} />}
         
         <div className="table-responsive">
-          <Table className="table-hover">
+          <Table
+            className="table-hover"
+            style={{ fontSize: window.innerWidth < 576 ? "0.75rem" : window.innerWidth < 768 ? "0.85rem" : "0.95rem" }}
+          >
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Status</th>
-                <th>Restaurant</th>
-                <th className="text-center" style={{ width: "150px" }}>
+                <th style={{ padding: window.innerWidth < 768 ? "0.4rem" : "0.5rem" }}>Name</th>
+                <th style={{ padding: window.innerWidth < 768 ? "0.4rem" : "0.5rem" }}>Email</th>
+                <th
+                  className="d-none d-md-table-cell"
+                  style={{ padding: window.innerWidth < 768 ? "0.4rem" : "0.5rem" }}
+                >
+                  Status
+                </th>
+                <th
+                  className="d-none d-lg-table-cell"
+                  style={{ padding: window.innerWidth < 768 ? "0.4rem" : "0.5rem" }}
+                >
+                  Restaurant
+                </th>
+                <th
+                  className="text-center"
+                  style={{ width: "150px", padding: window.innerWidth < 768 ? "0.4rem" : "0.5rem" }}
+                >
                   Actions
                 </th>
               </tr>
@@ -98,9 +127,16 @@ const Suppliers = () => {
             <tbody>
               {filteredSuppliers.map((supplier) => (
                 <tr key={supplier._id}>
-                  <td>{supplier.name}</td>
-                  <td>{supplier.contact.email}</td>
-                  <td>
+                  <td style={{ padding: window.innerWidth < 768 ? "0.4rem" : "0.5rem" }}>
+                    {supplier.name}
+                  </td>
+                  <td style={{ padding: window.innerWidth < 768 ? "0.4rem" : "0.5rem" }}>
+                    {supplier.contact.email}
+                  </td>
+                  <td
+                    className="d-none d-md-table-cell"
+                    style={{ padding: window.innerWidth < 768 ? "0.4rem" : "0.5rem" }}
+                  >
                     <span
                       className={`badge ${
                         supplier.status === "active"
@@ -113,33 +149,43 @@ const Suppliers = () => {
                           ? "bg-secondary"
                           : "bg-secondary"
                       }`}
+                      style={{ fontSize: window.innerWidth < 768 ? "0.7rem" : "0.8rem" }}
                     >
                       {supplier.status}
                     </span>
                   </td>
-                  <td>{supplier.restaurantId ? supplier.restaurantId.nameRes : "N/A"}</td>
-                  <td>
-                    <div className="d-flex justify-content-center gap-2">
+                  <td
+                    className="d-none d-lg-table-cell"
+                    style={{ padding: window.innerWidth < 768 ? "0.4rem" : "0.5rem" }}
+                  >
+                    {supplier.restaurantId ? supplier.restaurantId.nameRes : "N/A"}
+                  </td>
+                  <td style={{ padding: window.innerWidth < 768 ? "0.4rem" : "0.5rem" }}>
+                    <div className="d-flex flex-column flex-md-row justify-content-center gap-2">
                       <Link
                         to={`/suppliers/${supplier._id}`}
-                        className="btn btn-sm btn-info"
+                        className="btn btn-sm btn-info flex-grow-1"
                         title="View"
+                        style={{ minWidth: "40px", padding: window.innerWidth < 768 ? "0.3rem" : "0.25rem 0.5rem" }}
                       >
                         <FaEye />
                       </Link>
                       <Link
                         to={`/suppliers/edit/${supplier._id}`}
                         state={{ redirectTo: "/suppliers" }}
-                        className="btn btn-sm btn-secondary"
+                        className="btn btn-sm btn-secondary flex-grow-1"
                         title="Edit"
+                        style={{ minWidth: "40px", padding: window.innerWidth < 768 ? "0.3rem" : "0.25rem 0.5rem" }}
                       >
                         <FaPencilAlt />
                       </Link>
                       <Button
                         variant="danger"
-                        size="sm"
+                        size=" among the smallest available in Bootstrap"
                         title="Delete"
                         onClick={() => handleDelete(supplier._id)}
+                        className="flex-grow-1"
+                        style={{ minWidth: "40px", padding: window.innerWidth < 768 ? "0.3rem" : "0.25rem 0.5rem" }}
                       >
                         <FaTrash />
                       </Button>
@@ -158,7 +204,7 @@ const Suppliers = () => {
             onPageChange={handlePageChange}
           />
         ) : (
-          <div className="text-center py-3">No suppliers found</div>
+          <div style={{ textAlign: "center", padding: "1rem" }}>No suppliers found</div>
         )}
       </Card.Body>
     </Card>
