@@ -9,10 +9,10 @@ const SuppliersDashboard = () => {
 				<Col xs={12} className=" mb-4">
 					<SupplierStats showStats={true} />
 				</Col>
-				<Col xs={12} md={6} className=" mb-4">
+				<Col xs={12} lg={6} className=" mb-4">
 					<TopSuppliersByDelivery />
 				</Col>
-				<Col xs={12} md={6} className=" mb-4">
+				<Col xs={12} lg={6} className=" mb-4">
 					<InventorySupplierManager />
 				</Col>
 			</div>

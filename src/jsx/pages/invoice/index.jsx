@@ -66,14 +66,14 @@ export const InvoicesPage = () => {
 			<Card>
 				<Card.Header>
 					<Row className="w-100 gap-2 justify-content-between align-items-center ">
-						<Col md={3}>
+						<Col md={2}>
 							<Link to="/invoices/add">
 								<Button variant="success" className="w-100">
 									<ReceiptText size={20} />
 								</Button>
 							</Link>
 						</Col>
-						<Col md={6} className="text-center">
+						<Col md={3} className="text-center">
 							<Row>
 								<Col xs={4}>
 									<Button
@@ -91,7 +91,7 @@ export const InvoicesPage = () => {
 								</Col>
 								<Col xs={4}>
 									<Link to="/invoices/stats">
-										<Button variant="primary" className="w-100">
+										<Button variant="secondary" className="w-100">
 											<FaChartBar size={20} />
 										</Button>
 									</Link>
