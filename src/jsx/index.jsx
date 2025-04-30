@@ -119,6 +119,7 @@ import ShowCategory from "./pages/categories/ShowCategory";
 import InvoiceStats from "./pages/invoice/components/InvoiceStats";
 import TurnoverTable from "./pages/Turnover/TurnoverTable";
 import ApexForecast from "./pages/forecastedSales/ApexForecast";
+import Waste from "./pages/waste/waste";
 const Markup = () => {
 	const allroutes = [
 		/// Dashboard
@@ -227,6 +228,7 @@ const Markup = () => {
 		{ url: "invoices/stats", component: <InvoiceStats /> },
 		{ url: "Turnover", component: <TurnoverTable /> },
 		{ url: "ForecastChart", component: <ApexForecast /> },
+		{ url: "waste", component: <Waste /> },
 	];
 	return (
 		<>

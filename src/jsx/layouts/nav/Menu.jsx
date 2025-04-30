@@ -54,6 +54,14 @@ export const MenuList = [
 				to: "stock-history",
 			},
 			{
+				title: "Storage",
+				to: "storage",
+			},
+			{
+				title: "Waste",
+				to: "waste",
+			},
+			{
 				title: "Orders",
 				to: "orders",
 			},
