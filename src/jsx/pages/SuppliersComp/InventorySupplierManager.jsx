@@ -18,9 +18,7 @@ export default function InventorySupplierManager() {
   useEffect(() => {
     const fetchInventory = async () => {
       try {
-        const { data } = await axios.get(
-          "http://localhost:5000/api/ingredient"
-        );
+        const { data } = await axios.get("http://localhost:5000/api/stock");
         if (data.success) setInventory(data.data);
         else console.error("API error:", data.message);
       } catch (error) {
@@ -57,7 +55,7 @@ export default function InventorySupplierManager() {
     };
     try {
       const response = await axios.patch(
-        "http://localhost:5000/api/ingredient/bulk",
+        "http://localhost:5000/api/stock/bulk",
         payload
       );
       if (response.data.success) {
@@ -81,155 +79,158 @@ export default function InventorySupplierManager() {
   };
 
   return (
-    <Card className="container mt-5 p-5">
+    <div>
       <Card.Header className="mb-3">
-        <Card.Title className="text-xl font-bold flex items-center">
-          Inventory and Supplier Management
-        </Card.Title>
+        <h3 className="">Inventory and Supplier Management</h3>
       </Card.Header>
+      <Card.Body>
+        {/* Chatbot and Filters Button */}
+        <Row className="mb-4 d-flex justify-content-between align-items-center">
+          <Col>
+            {" "}
+            <Button
+              variant="secondary"
+              onClick={() => setShowFilters(!showFilters)}
+              className="   rounded-3 w-100 text-center"
+            >
+              <i className="fas fa-filter mx-2"></i>{" "}
+              {showFilters ? "Hide Filters" : "Show Filters"}
+            </Button>
+          </Col>
+          <Col>
+            {" "}
+            <Button
+              variant="primary"
+              onClick={() => setShowChatbot(true)}
+              className="   rounded-3 w-100 text-center"
+            >
+              <i className="fas fa-robot mx-2"></i> Chatbot
+            </Button>
+          </Col>
+        </Row>
 
-      {/* Chatbot and Filters Button */}
-      <div className="mb-4 d-flex justify-content-between align-items-center">
-        <Button
-          variant="secondary"
-          onClick={() => setShowFilters(!showFilters)}
-          className="d-flex align-items-center gap-2 rounded-3"
-        >
-          <i className="fas fa-filter"></i>{" "}
-          {showFilters ? "Hide Filters" : "Show Filters"}
-        </Button>
+        {/* Chatbot Modal */}
+        <Chatbot show={showChatbot} onHide={() => setShowChatbot(false)} />
 
-        <Button
-          variant="primary"
-          onClick={() => setShowChatbot(true)}
-          className="d-flex align-items-center gap-2 rounded-3"
-        >
-          <i className="fas fa-robot"></i> Chatbot
-        </Button>
-      </div>
+        {/* Filters */}
+        <Collapse in={showFilters}>
+          <div>
+            <Row className=" align-items-center">
+              <Form.Group xs={12} className="p-2" as={Col}>
+                <Form.Control
+                  type="text"
+                  placeholder="Search by Name"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="ps-5 rounded-3"
+                />
+              </Form.Group>
 
-      {/* Chatbot Modal */}
-      <Chatbot show={showChatbot} onHide={() => setShowChatbot(false)} />
+              <Form.Group xs={6} lg={4} className="p-2" as={Col}>
+                <Form.Control
+                  as="select"
+                  value={filterStock}
+                  onChange={(e) => setFilterStock(e.target.value)}
+                  className="rounded-3"
+                >
+                  <option value="all">📦 All</option>
+                  <option value="low">🟡 Low Stock</option>
+                  <option value="critical">🔴 Critical Stock</option>
+                </Form.Control>
+              </Form.Group>
 
-      {/* Filters */}
-      <Collapse in={showFilters}>
-        <div>
-          <Row className="mb-4 align-items-center">
-            <Form.Group xs={3} as={Col}>
-              <i className="fa fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-primary"></i>
-              <Form.Control
-                type="text"
-                placeholder="Search ingredient..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="ps-5 rounded-3"
-              />
-            </Form.Group>
+              <Form.Group xs={6} lg={4} className="p-2" as={Col}>
+                <Form.Control
+                  as="select"
+                  value={bulkField}
+                  onChange={(e) => setBulkField(e.target.value)}
+                  className="rounded-3"
+                >
+                  <option value="minQty">Minimum Quantity</option>
+                  <option value="maxQty">Maximum Quantity</option>
+                  <option value="price">Price</option>
+                </Form.Control>
+              </Form.Group>
 
-            <Form.Group md={2} as={Col}>
-              <Form.Control
-                as="select"
-                value={filterStock}
-                onChange={(e) => setFilterStock(e.target.value)}
-                className="rounded-3"
-              >
-                <option value="all">📦 All</option>
-                <option value="low">🟡 Low Stock</option>
-                <option value="critical">🔴 Critical Stock</option>
-              </Form.Control>
-            </Form.Group>
+              <Form.Group xs={6} lg={4} className="p-2" as={Col}>
+                <Form.Control
+                  type="number"
+                  placeholder="Price"
+                  value={bulkValue}
+                  onChange={(e) => setBulkValue(e.target.value)}
+                  className="rounded-3"
+                />
+              </Form.Group>
 
-            <Form.Group md={2} as={Col}>
-              <Form.Control
-                as="select"
-                value={bulkField}
-                onChange={(e) => setBulkField(e.target.value)}
-                className="rounded-3"
-              >
-                <option value="minQty">Minimum Quantity</option>
-                <option value="maxQty">Maximum Quantity</option>
-                <option value="price">Price</option>
-              </Form.Control>
-            </Form.Group>
+              <Form.Group xs={12} className="p-2" as={Col}>
+                <Button
+                  variant="danger"
+                  className="w-100 rounded-3 "
+                  onClick={handleBulkEdit}
+                  disabled={selectedItems.length === 0 || bulkValue === ""}
+                >
+                  <i className="fas fa-save"></i> Apply Bulk Update
+                </Button>
+              </Form.Group>
+            </Row>
+          </div>
+        </Collapse>
 
-            <Form.Group md={2} as={Col}>
-              <Form.Control
-                type="number"
-                placeholder="Value"
-                value={bulkValue}
-                onChange={(e) => setBulkValue(e.target.value)}
-                className="rounded-3"
-              />
-            </Form.Group>
-
-            <Form.Group md={3} as={Col}>
-              <Button
-                variant="danger"
-                className="w-100 py-2 rounded-3 d-flex align-items-center justify-content-center gap-2"
-                onClick={handleBulkEdit}
-                disabled={selectedItems.length === 0 || bulkValue === ""}
-              >
-                <i className="fas fa-save"></i> Apply Bulk Update
-              </Button>
-            </Form.Group>
-          </Row>
-        </div>
-      </Collapse>
-
-      {/* Inventory Table */}
-      <Table hover responsive>
-        <thead className=" text-center">
-          <tr>
-            <th>Select</th>
-            <th>Name</th>
-            <th>Quantity</th>
-            <th>Unit</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody className="text-center">
-          {filteredInventory.length > 0 ? (
-            filteredInventory.map((item) => (
-              <tr key={item._id}>
-                <td>
-                  <Form.Check
-                    checked={selectedItems.includes(item._id)}
-                    onChange={() => handleSelect(item._id)}
-                  />
-                </td>
-                <td>{item.libelle}</td>
-                <td>{item.quantity}</td>
-                <td>{item.unit}</td>
-                <td className="text-center">
-                  <Button
-                    variant="outline-primary"
-                    size="sm"
-                    className="d-flex align-items-center gap-2 px-2 py-1 rounded-2 mx-auto"
-                    onClick={() => setShowComparison(item._id)}
-                  >
-                    <i className="fas fa-balance-scale"></i>
-                    <span className="d-none d-md-inline">Compare</span>
-                  </Button>
+        {/* Inventory Table */}
+        <Table hover responsive>
+          <thead className=" text-center">
+            <tr>
+              <th>Select</th>
+              <th>Name</th>
+              <th>Quantity</th>
+              <th>Unit</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody className="text-center">
+            {filteredInventory.length > 0 ? (
+              filteredInventory.map((item) => (
+                <tr key={item._id}>
+                  <td>
+                    <Form.Check
+                      checked={selectedItems.includes(item._id)}
+                      onChange={() => handleSelect(item._id)}
+                    />
+                  </td>
+                  <td>{item.libelle}</td>
+                  <td>{item.quantity}</td>
+                  <td>{item.unit}</td>
+                  <td className="text-center">
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      className="d-flex align-items-center gap-2 px-2 py-1 rounded-2 mx-auto"
+                      onClick={() => setShowComparison(item._id)}
+                    >
+                      <i className="fas fa-balance-scale"></i>
+                      <span className="d-none d-md-inline">Compare</span>
+                    </Button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5" className="text-muted">
+                  No stocks found.
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="5" className="text-muted">
-                No ingredients found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </Table>
+            )}
+          </tbody>
+        </Table>
 
-      {/* Supplier Comparison */}
-      {showComparison && (
-        <div className="mt-4">
-          <h3 className="mb-4 text-center">Supplier Comparison</h3>
-          <SupplierComparisonTable ingredientId={showComparison} />
-        </div>
-      )}
-    </Card>
+        {/* Supplier Comparison */}
+        {showComparison && (
+          <div className="mt-4">
+            <h3 className="mb-4 text-center">Supplier Comparison</h3>
+            <SupplierComparisonTable stockId={showComparison} />
+          </div>
+        )}
+      </Card.Body>
+    </div>
   );
 }

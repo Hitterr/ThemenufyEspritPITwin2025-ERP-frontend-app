@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { Col, Row, Button, Form, Badge } from "react-bootstrap";
 import Logo from "../../../assets/images/logo.png";
 import useInvoiceStore from "../../store/invoiceStore";
-import useIngredientStore from "../../store/ingredientStore";
+import useStockStore from "../../store/stockStore";
 import { useParams, useNavigate } from "react-router-dom"; // Ajout de useNavigate
 import useSupplierStore from "../../store/supplierStore";
 import { authStore } from "../../store/authStore";
@@ -18,11 +18,11 @@ export const ShowInvoice = () => {
     updatePaidInvoiceStatus,
   } = useInvoiceStore();
   const {
-    ingredients,
-    fetchIngredients,
-    loading: ingredientsLoading,
-    error: ingredientsError,
-  } = useIngredientStore();
+    stocks,
+    fetchStocks,
+    loading: stocksLoading,
+    error: stocksError,
+  } = useStockStore();
   const params = useParams();
   const navigate = useNavigate(); // Utilisation de useNavigate
   const { currentUser } = authStore();
@@ -38,8 +38,8 @@ export const ShowInvoice = () => {
     if (params.id) {
       fetchInvoiceById(params.id);
     }
-    fetchIngredients();
-  }, [params.id, fetchInvoiceById, fetchIngredients]);
+    fetchStocks();
+  }, [params.id, fetchInvoiceById, fetchStocks]);
 
   useEffect(() => {
     if (currentInvoice) {
@@ -76,12 +76,12 @@ export const ShowInvoice = () => {
     return <p>Loading Invoice...</p>;
   }
 
-  if (ingredientsLoading) {
-    return <p>Loading Ingredients...</p>;
+  if (stocksLoading) {
+    return <p>Loading Stocks...</p>;
   }
 
-  if (ingredientsError) {
-    return <p>Error loading ingredients: {ingredientsError}</p>;
+  if (stocksError) {
+    return <p>Error loading stocks: {stocksError}</p>;
   }
 
   return (
@@ -212,21 +212,18 @@ export const ShowInvoice = () => {
                   </thead>
                   <tbody>
                     {currentInvoice?.items?.map((item, index) => {
-                      const ingredientId =
-                        typeof item.ingredient === "object" &&
-                        item.ingredient?._id
-                          ? item.ingredient._id
-                          : item.ingredient;
+                      const stockId =
+                        typeof item.stock === "object" && item.stock?._id
+                          ? item.stock._id
+                          : item.stock;
 
-                      const ingredient = ingredients.find(
-                        (ing) => ing._id === ingredientId
-                      );
+                      const stock = stocks.find((ing) => ing._id === stockId);
 
                       return (
                         <tr key={index}>
                           <td className="center">{index + 1}</td>
                           <td className="left">
-                            {ingredient?.libelle || "Unknown Ingredient"}
+                            {stock?.libelle || "Unknown Stock"}
                           </td>
                           <td className="right">{item?.price} TND</td>
                           <td className="right">{item?.quantity} UNIT</td>
@@ -278,9 +275,7 @@ export const ShowInvoice = () => {
 
               <Button
                 variant="primary"
-                onClick={() =>
-                  generatePDF(currentInvoice, currentUser, ingredients)
-                }
+                onClick={() => generatePDF(currentInvoice, currentUser, stocks)}
               >
                 Download PDF
               </Button>

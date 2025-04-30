@@ -7,7 +7,7 @@ import AddInvoiceItem from "./components/AddInvoiceItem";
 import useInvoiceStore from "../../store/invoiceStore";
 import Logo from "../../../assets/images/logo.png";
 import Swal from "sweetalert2";
-import useIngredientStore from "../../store/ingredientStore";
+import useStockStore from "../../store/stockStore";
 import { addInvoiceSchema } from "./validators/addInvoiceSchema";
 import useSupplierStore from "../../store/supplierStore";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 export const AddInvoice = () => {
   const [supplier, setSupplier] = React.useState(null);
   const { currentUser } = authStore();
-  const { ingredients } = useIngredientStore();
+  const { stocks } = useStockStore();
   const { suppliers, fetchSuppliers } = useSupplierStore();
   const {
     currentInvoice,
@@ -180,9 +180,8 @@ export const AddInvoice = () => {
                         <td className="center">{index + 1}</td>
                         <td className="left">
                           {
-                            ingredients.find(
-                              (ing) => ing._id === item.ingredient
-                            )?.libelle
+                            stocks.find((ing) => ing._id === item.stock)
+                              ?.libelle
                           }
                         </td>
                         <td className="right">{item?.price} TND</td>
@@ -193,7 +192,7 @@ export const AddInvoice = () => {
                         <td className="right">
                           <Button
                             variant="danger"
-                            onClick={() => deleteInvoiceItem(item.ingredient)}
+                            onClick={() => deleteInvoiceItem(item.stock)}
                           >
                             <Trash size={20} />
                           </Button>

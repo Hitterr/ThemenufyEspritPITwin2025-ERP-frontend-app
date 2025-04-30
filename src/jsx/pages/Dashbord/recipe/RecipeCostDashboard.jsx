@@ -1,5 +1,15 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { Card, Table, Alert, Row, Col, Form, Button, Tab, Nav } from "react-bootstrap";
+import {
+  Card,
+  Table,
+  Alert,
+  Row,
+  Col,
+  Form,
+  Button,
+  Tab,
+  Nav,
+} from "react-bootstrap";
 import Swal from "sweetalert2";
 import useRecipeStore from "../../../store/useRecipeStore";
 import useConsumptionHistoryStore from "../../../store/useConsumptionHistoryStore";
@@ -7,20 +17,26 @@ import useSupplierStore from "../../../store/supplierStore";
 import useRestaurantStore from "../../../store/RestaurantStore"; // Your provided store
 import RadialBarChart from "../../../../jsx/components/Sego/Home/RadialBarChart";
 
-// Reusable component for displaying recipe summary (without Ingredient Costs and Historical Usage)
-const RecipeSummary = ({ recipe, suppliers, desiredMargin, suggestedPrices, setSuggestedPrices }) => {
+// Reusable component for displaying recipe summary (without Stock Costs and Historical Usage)
+const RecipeSummary = ({
+  recipe,
+  suppliers,
+  desiredMargin,
+  suggestedPrices,
+  setSuggestedPrices,
+}) => {
   const calculateRecipeCost = (items) => {
     let totalCost = 0;
-    const ingredientCosts = [];
+    const stockCosts = [];
 
     for (const item of items) {
-      const ingredientId = item.ingredientId._id.toString();
+      const stockId = item.stockId._id.toString();
       const quantity = item.quantity;
 
       let cheapestPrice = null;
       suppliers.forEach((supplier) => {
-        const supplierIng = supplier.ingredients.find(
-          (si) => si.ingredientId.toString() === ingredientId
+        const supplierIng = supplier.stocks.find(
+          (si) => si.stockId.toString() === stockId
         );
         if (supplierIng) {
           const price = supplierIng.pricePerUnit;
@@ -31,22 +47,26 @@ const RecipeSummary = ({ recipe, suppliers, desiredMargin, suggestedPrices, setS
       });
 
       if (cheapestPrice === null) {
-        return { error: `No supplier found for ingredient ID: ${ingredientId}`, totalCost: 0, ingredientCosts: [] };
+        return {
+          error: `No supplier found for stock ID: ${stockId}`,
+          totalCost: 0,
+          stockCosts: [],
+        };
       }
 
       const cost = cheapestPrice * quantity;
       totalCost += cost;
 
-      ingredientCosts.push({
-        ingredientName: item.ingredientId.libelle,
+      stockCosts.push({
+        stockName: item.stockId.libelle,
         quantity,
-        unit: item.ingredientId.unit,
+        unit: item.stockId.unit,
         pricePerUnit: cheapestPrice,
         totalCost: cost,
       });
     }
 
-    return { totalCost, ingredientCosts };
+    return { totalCost, stockCosts };
   };
 
   const suggestSalePrice = (recipeId, costPerServing) => {
@@ -76,7 +96,10 @@ const RecipeSummary = ({ recipe, suppliers, desiredMargin, suggestedPrices, setS
 
   const { totalCost, error: costError } = calculateRecipeCost(recipe.items);
   const costPerServing = (totalCost / recipe.servings).toFixed(2);
-  const profitMargin = (((recipe.salePrice - Number(costPerServing)) / recipe.salePrice) * 100).toFixed(2);
+  const profitMargin = (
+    ((recipe.salePrice - Number(costPerServing)) / recipe.salePrice) *
+    100
+  ).toFixed(2);
 
   return (
     <div className="mb-5">
@@ -88,13 +111,17 @@ const RecipeSummary = ({ recipe, suppliers, desiredMargin, suggestedPrices, setS
           <Col>
             <h5>Total Cost: ${totalCost.toFixed(2)}</h5>
             <h5>Cost per Serving: ${costPerServing}</h5>
-            <h5>Current Sale Price per Serving: ${recipe.salePrice.toFixed(2)}</h5>
+            <h5>
+              Current Sale Price per Serving: ${recipe.salePrice.toFixed(2)}
+            </h5>
             <h5>Current Profit Margin: ${profitMargin}%</h5>
             <p>Servings: {recipe.servings}</p>
             <Button
               variant="primary"
               className="light btn-rounded"
-              onClick={() => suggestSalePrice(recipe._id, Number(costPerServing))}
+              onClick={() =>
+                suggestSalePrice(recipe._id, Number(costPerServing))
+              }
             >
               Suggest New Sale Price
             </Button>
@@ -110,20 +137,27 @@ const RecipeSummary = ({ recipe, suppliers, desiredMargin, suggestedPrices, setS
   );
 };
 
-// Reusable component for displaying detailed recipe info (with Ingredient Costs and Historical Usage)
-const RecipeDetails = ({ recipe, suppliers, consumptionData, desiredMargin, suggestedPrices, setSuggestedPrices }) => {
+// Reusable component for displaying detailed recipe info (with Stock Costs and Historical Usage)
+const RecipeDetails = ({
+  recipe,
+  suppliers,
+  consumptionData,
+  desiredMargin,
+  suggestedPrices,
+  setSuggestedPrices,
+}) => {
   const calculateRecipeCost = (items) => {
     let totalCost = 0;
-    const ingredientCosts = [];
+    const stockCosts = [];
 
     for (const item of items) {
-      const ingredientId = item.ingredientId._id.toString();
+      const stockId = item.stockId._id.toString();
       const quantity = item.quantity;
 
       let cheapestPrice = null;
       suppliers.forEach((supplier) => {
-        const supplierIng = supplier.ingredients.find(
-          (si) => si.ingredientId.toString() === ingredientId
+        const supplierIng = supplier.stocks.find(
+          (si) => si.stockId.toString() === stockId
         );
         if (supplierIng) {
           const price = supplierIng.pricePerUnit;
@@ -134,38 +168,45 @@ const RecipeDetails = ({ recipe, suppliers, consumptionData, desiredMargin, sugg
       });
 
       if (cheapestPrice === null) {
-        return { error: `No supplier found for ingredient ID: ${ingredientId}`, totalCost: 0, ingredientCosts: [] };
+        return {
+          error: `No supplier found for stock ID: ${stockId}`,
+          totalCost: 0,
+          stockCosts: [],
+        };
       }
 
       const cost = cheapestPrice * quantity;
       totalCost += cost;
 
-      ingredientCosts.push({
-        ingredientName: item.ingredientId.libelle,
+      stockCosts.push({
+        stockName: item.stockId.libelle,
         quantity,
-        unit: item.ingredientId.unit,
+        unit: item.stockId.unit,
         pricePerUnit: cheapestPrice,
         totalCost: cost,
       });
     }
 
-    return { totalCost, ingredientCosts };
+    return { totalCost, stockCosts };
   };
 
-  const aggregateIngredientUsage = () => {
+  const aggregateStockUsage = () => {
     const usage = {};
 
     consumptionData.forEach((entry) => {
       if (
         entry.restaurantId?.toString() === recipe.restaurantId.toString() &&
-        entry.ingredientId?._id &&
+        entry.stockId?._id &&
         recipe.items.some(
-          (item) => item.ingredientId._id.toString() === entry.ingredientId._id.toString()
+          (item) => item.stockId._id.toString() === entry.stockId._id.toString()
         )
       ) {
-        const ingId = entry.ingredientId._id.toString();
+        const ingId = entry.stockId._id.toString();
         if (!usage[ingId]) {
-          usage[ingId] = { totalQty: 0, ingredientName: entry.ingredientId.libelle || "Unknown" };
+          usage[ingId] = {
+            totalQty: 0,
+            stockName: entry.stockId.libelle || "Unknown",
+          };
         }
         usage[ingId].totalQty += entry.qty;
       }
@@ -199,10 +240,17 @@ const RecipeDetails = ({ recipe, suppliers, consumptionData, desiredMargin, sugg
     });
   };
 
-  const { totalCost, ingredientCosts, error: costError } = calculateRecipeCost(recipe.items);
+  const {
+    totalCost,
+    stockCosts,
+    error: costError,
+  } = calculateRecipeCost(recipe.items);
   const costPerServing = (totalCost / recipe.servings).toFixed(2);
-  const profitMargin = (((recipe.salePrice - Number(costPerServing)) / recipe.salePrice) * 100).toFixed(2);
-  const usageData = aggregateIngredientUsage();
+  const profitMargin = (
+    ((recipe.salePrice - Number(costPerServing)) / recipe.salePrice) *
+    100
+  ).toFixed(2);
+  const usageData = aggregateStockUsage();
 
   return (
     <div className="mb-5">
@@ -215,29 +263,34 @@ const RecipeDetails = ({ recipe, suppliers, consumptionData, desiredMargin, sugg
             <Col>
               <h5>Total Cost: ${totalCost.toFixed(2)}</h5>
               <h5>Cost per Serving: ${costPerServing}</h5>
-              <h5>Current Sale Price per Serving: ${recipe.salePrice.toFixed(2)}</h5>
+              <h5>
+                Current Sale Price per Serving: ${recipe.salePrice.toFixed(2)}
+              </h5>
               <h5>Current Profit Margin: ${profitMargin}%</h5>
               <p>Servings: {recipe.servings}</p>
               <Button
                 variant="primary"
                 className="light btn-rounded"
-                onClick={() => suggestSalePrice(recipe._id, Number(costPerServing))}
+                onClick={() =>
+                  suggestSalePrice(recipe._id, Number(costPerServing))
+                }
               >
                 Suggest New Sale Price
               </Button>
               {suggestedPrices[recipe._id] && (
                 <Alert variant="info" className="mt-2">
-                  Suggested Sale Price per Serving: ${suggestedPrices[recipe._id]}
+                  Suggested Sale Price per Serving: $
+                  {suggestedPrices[recipe._id]}
                 </Alert>
               )}
             </Col>
           </Row>
 
-          <h5>Ingredient Costs</h5>
+          <h5>Stock Costs</h5>
           <Table striped bordered hover className="mb-4">
             <thead>
               <tr>
-                <th>Ingredient</th>
+                <th>Stock</th>
                 <th>Quantity</th>
                 <th>Unit</th>
                 <th>Price per Unit ($)</th>
@@ -245,9 +298,9 @@ const RecipeDetails = ({ recipe, suppliers, consumptionData, desiredMargin, sugg
               </tr>
             </thead>
             <tbody>
-              {ingredientCosts.map((ing, index) => (
+              {stockCosts.map((ing, index) => (
                 <tr key={index}>
-                  <td>{ing.ingredientName}</td>
+                  <td>{ing.stockName}</td>
                   <td>{ing.quantity}</td>
                   <td>{ing.unit}</td>
                   <td>{ing.pricePerUnit.toFixed(2)}</td>
@@ -257,19 +310,19 @@ const RecipeDetails = ({ recipe, suppliers, consumptionData, desiredMargin, sugg
             </tbody>
           </Table>
 
-          <h5>Historical Ingredient Usage</h5>
+          <h5>Historical Stock Usage</h5>
           {usageData.length > 0 ? (
             <Table striped bordered hover>
               <thead>
                 <tr>
-                  <th>Ingredient</th>
+                  <th>Stock</th>
                   <th>Total Quantity Used</th>
                 </tr>
               </thead>
               <tbody>
                 {usageData.map((usage, index) => (
                   <tr key={index}>
-                    <td>{usage.ingredientName}</td>
+                    <td>{usage.stockName}</td>
                     <td>{usage.totalQty}</td>
                   </tr>
                 ))}
@@ -285,7 +338,12 @@ const RecipeDetails = ({ recipe, suppliers, consumptionData, desiredMargin, sugg
 };
 
 const RecipeCostDashboard = () => {
-  const { recipes, loading: recipesLoading, error: recipesError, fetchRecipes } = useRecipeStore();
+  const {
+    recipes,
+    loading: recipesLoading,
+    error: recipesError,
+    fetchRecipes,
+  } = useRecipeStore();
   const { suppliers, fetchSuppliers } = useSupplierStore();
   const {
     consumptions: consumptionData,
@@ -317,7 +375,11 @@ const RecipeCostDashboard = () => {
         setSuppliersLoading(true);
         setSuppliersError(null);
         try {
-          await Promise.all([fetchRecipes(), fetchSuppliers(), fetchConsumptions()]);
+          await Promise.all([
+            fetchRecipes(),
+            fetchSuppliers(),
+            fetchConsumptions(),
+          ]);
         } catch (error) {
           setSuppliersError(error.message || "Failed to fetch data");
         } finally {
@@ -338,13 +400,13 @@ const RecipeCostDashboard = () => {
     const calculateCost = (items) => {
       let totalCost = 0;
       for (const item of items) {
-        const ingredientId = item.ingredientId._id.toString();
+        const stockId = item.stockId._id.toString();
         const quantity = item.quantity;
 
         let cheapestPrice = null;
         suppliers.forEach((supplier) => {
-          const supplierIng = supplier.ingredients.find(
-            (si) => si.ingredientId.toString() === ingredientId
+          const supplierIng = supplier.stocks.find(
+            (si) => si.stockId.toString() === stockId
           );
           if (supplierIng) {
             const price = supplierIng.pricePerUnit;
@@ -362,7 +424,9 @@ const RecipeCostDashboard = () => {
     };
 
     const filteredRecipes = selectedRestaurantId
-      ? recipes.filter((recipe) => recipe.restaurantId.toString() === selectedRestaurantId)
+      ? recipes.filter(
+          (recipe) => recipe.restaurantId.toString() === selectedRestaurantId
+        )
       : recipes;
 
     const totalRecipes = filteredRecipes.length;
@@ -379,32 +443,46 @@ const RecipeCostDashboard = () => {
 
     if (selectedRecipeId === "all") {
       totalCost = totalCostOfAllRecipes;
-      totalServings = filteredRecipes.reduce((sum, recipe) => sum + recipe.servings, 0);
+      totalServings = filteredRecipes.reduce(
+        (sum, recipe) => sum + recipe.servings,
+        0
+      );
 
       profitMargin = filteredRecipes.length
         ? filteredRecipes.reduce((sum, recipe) => {
             const cost = calculateCost(recipe.items);
             const costPerServing = cost / recipe.servings;
-            const margin = ((recipe.salePrice - costPerServing) / recipe.salePrice) * 100;
+            const margin =
+              ((recipe.salePrice - costPerServing) / recipe.salePrice) * 100;
             return sum + (isNaN(margin) ? 0 : margin);
           }, 0) / filteredRecipes.length
         : 0;
 
       radialValue = 100;
     } else {
-      const selectedRecipe = filteredRecipes.find((recipe) => recipe._id === selectedRecipeId);
+      const selectedRecipe = filteredRecipes.find(
+        (recipe) => recipe._id === selectedRecipeId
+      );
       if (selectedRecipe) {
         totalCost = calculateCost(selectedRecipe.items);
         totalServings = selectedRecipe.servings;
         const costPerServing = totalCost / selectedRecipe.servings;
-        profitMargin = ((selectedRecipe.salePrice - costPerServing) / selectedRecipe.salePrice) * 100;
+        profitMargin =
+          ((selectedRecipe.salePrice - costPerServing) /
+            selectedRecipe.salePrice) *
+          100;
         profitMargin = isNaN(profitMargin) ? 0 : profitMargin;
 
-        radialValue = totalCostOfAllRecipes > 0 ? ((totalCost / totalCostOfAllRecipes) * 100).toFixed(2) : 0;
+        radialValue =
+          totalCostOfAllRecipes > 0
+            ? ((totalCost / totalCostOfAllRecipes) * 100).toFixed(2)
+            : 0;
       }
     }
 
-    console.log(`Selected Restaurant ID: ${selectedRestaurantId}, Selected Recipe ID: ${selectedRecipeId}, Radial Value: ${radialValue}, Total Cost: ${totalCost}, Total Cost of All Recipes: ${totalCostOfAllRecipes}`);
+    console.log(
+      `Selected Restaurant ID: ${selectedRestaurantId}, Selected Recipe ID: ${selectedRecipeId}, Radial Value: ${radialValue}, Total Cost: ${totalCost}, Total Cost of All Recipes: ${totalCostOfAllRecipes}`
+    );
 
     return {
       totalRecipes,
@@ -418,17 +496,29 @@ const RecipeCostDashboard = () => {
 
   // Log when the chart's series prop changes
   useEffect(() => {
-    console.log(`RadialBarChart series updated to: ${recipeMetrics.radialValue}`);
+    console.log(
+      `RadialBarChart series updated to: ${recipeMetrics.radialValue}`
+    );
   }, [recipeMetrics.radialValue]);
 
   // Filter recipes based on selected restaurant and recipe
-  const displayedRecipes = selectedRecipeId === "all"
-    ? []
-    : recipes.filter((recipe) => recipe._id === selectedRecipeId && recipe.restaurantId.toString() === selectedRestaurantId);
+  const displayedRecipes =
+    selectedRecipeId === "all"
+      ? []
+      : recipes.filter(
+          (recipe) =>
+            recipe._id === selectedRecipeId &&
+            recipe.restaurantId.toString() === selectedRestaurantId
+        );
 
-  const selectedRecipe = selectedRecipeId === "all"
-    ? null
-    : recipes.find((recipe) => recipe._id === selectedRecipeId && recipe.restaurantId.toString() === selectedRestaurantId);
+  const selectedRecipe =
+    selectedRecipeId === "all"
+      ? null
+      : recipes.find(
+          (recipe) =>
+            recipe._id === selectedRecipeId &&
+            recipe.restaurantId.toString() === selectedRestaurantId
+        );
 
   const isLoading = recipesLoading || suppliersLoading || consumptionLoading;
   const error = recipesError || suppliersError || consumptionError;
@@ -456,8 +546,8 @@ const RecipeCostDashboard = () => {
                     </Nav.Link>
                   </Nav.Item>
                   <Nav.Item as="li" className="nav-item">
-                    <Nav.Link className="nav-link" eventKey="ingredients" role="tab">
-                      Ingredients
+                    <Nav.Link className="nav-link" eventKey="stocks" role="tab">
+                      Stocks
                     </Nav.Link>
                   </Nav.Item>
                 </Nav>
@@ -491,7 +581,11 @@ const RecipeCostDashboard = () => {
                     >
                       <option value="all">All Recipes</option>
                       {recipes
-                        .filter((recipe) => recipe.restaurantId.toString() === selectedRestaurantId)
+                        .filter(
+                          (recipe) =>
+                            recipe.restaurantId.toString() ===
+                            selectedRestaurantId
+                        )
                         .map((recipe) => (
                           <option key={recipe._id} value={recipe._id}>
                             {recipe.name}
@@ -502,8 +596,12 @@ const RecipeCostDashboard = () => {
                 </Col>
               </Row>
               <Tab.Content className="tab-content">
-                {["all", "ingredients"].map((tabKey) => (
-                  <Tab.Pane key={tabKey} eventKey={tabKey} className="tab-pane fade">
+                {["all", "stocks"].map((tabKey) => (
+                  <Tab.Pane
+                    key={tabKey}
+                    eventKey={tabKey}
+                    className="tab-pane fade"
+                  >
                     <div className="row align-items-center">
                       <div className="col-sm-6">
                         <RadialBarChart
@@ -516,13 +614,19 @@ const RecipeCostDashboard = () => {
                           ${recipeMetrics.totalCost.toFixed(2)}
                         </h3>
                         <span className="mb-1 d-block">
-                          {selectedRecipeId === "all" ? "Total Recipe Cost" : "Recipe Cost vs. Total"}
+                          {selectedRecipeId === "all"
+                            ? "Total Recipe Cost"
+                            : "Recipe Cost vs. Total"}
                         </span>
                         <p className="fs-14 mb-1">
-                          {recipeMetrics.radialValue}% of ${recipeMetrics.totalCostOfAllRecipes.toFixed(2)} total cost
+                          {recipeMetrics.radialValue}% of $
+                          {recipeMetrics.totalCostOfAllRecipes.toFixed(2)} total
+                          cost
                         </p>
                         <p className="fs-14">
-                          {selectedRecipeId === "all" ? "All recipes combined" : "Total cost of all recipes"}
+                          {selectedRecipeId === "all"
+                            ? "All recipes combined"
+                            : "Total cost of all recipes"}
                         </p>
                         <Button
                           variant="primary"
@@ -530,13 +634,22 @@ const RecipeCostDashboard = () => {
                           onClick={() => {
                             Swal.fire({
                               icon: "info",
-                              title: selectedRecipeId === "all" ? "Total Cost Analysis" : "Cost Analysis",
-                              html: selectedRecipeId === "all"
-                                ? `Total Cost of All Recipes: $${recipeMetrics.totalCostOfAllRecipes.toFixed(2)}<br>` +
-                                  `Percentage: 100% (All recipes)`
-                                : `Selected Recipe Cost: $${recipeMetrics.totalCost.toFixed(2)}<br>` +
-                                  `Total Cost of All Recipes: $${recipeMetrics.totalCostOfAllRecipes.toFixed(2)}<br>` +
-                                  `Percentage: ${recipeMetrics.radialValue}% of total`,
+                              title:
+                                selectedRecipeId === "all"
+                                  ? "Total Cost Analysis"
+                                  : "Cost Analysis",
+                              html:
+                                selectedRecipeId === "all"
+                                  ? `Total Cost of All Recipes: $${recipeMetrics.totalCostOfAllRecipes.toFixed(
+                                      2
+                                    )}<br>` + `Percentage: 100% (All recipes)`
+                                  : `Selected Recipe Cost: $${recipeMetrics.totalCost.toFixed(
+                                      2
+                                    )}<br>` +
+                                    `Total Cost of All Recipes: $${recipeMetrics.totalCostOfAllRecipes.toFixed(
+                                      2
+                                    )}<br>` +
+                                    `Percentage: ${recipeMetrics.radialValue}% of total`,
                             });
                           }}
                         >
@@ -550,7 +663,9 @@ const RecipeCostDashboard = () => {
                           <h3 className="fs-32 text-black font-w600 mb-1">
                             {recipeMetrics.totalRecipes}
                           </h3>
-                          <span className="fs-18 text-primary">Total Recipes</span>
+                          <span className="fs-18 text-primary">
+                            Total Recipes
+                          </span>
                         </div>
                       </div>
                       <div className="col-sm-4 mb-md-0 mb-3">
@@ -566,7 +681,9 @@ const RecipeCostDashboard = () => {
                           <h3 className="fs-32 text-black font-w600 mb-1">
                             {recipeMetrics.profitMargin.toFixed(2)}%
                           </h3>
-                          <span className="fs-18 text-primary">Profit Margin</span>
+                          <span className="fs-18 text-primary">
+                            Profit Margin
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -576,11 +693,15 @@ const RecipeCostDashboard = () => {
                           <Row className="mb-3">
                             <Col md={4}>
                               <Form.Group>
-                                <Form.Label>Desired Profit Margin (%)</Form.Label>
+                                <Form.Label>
+                                  Desired Profit Margin (%)
+                                </Form.Label>
                                 <Form.Control
                                   type="number"
                                   value={desiredMargin}
-                                  onChange={(e) => setDesiredMargin(Number(e.target.value))}
+                                  onChange={(e) =>
+                                    setDesiredMargin(Number(e.target.value))
+                                  }
                                   min="0"
                                   max="100"
                                 />
@@ -588,7 +709,7 @@ const RecipeCostDashboard = () => {
                             </Col>
                           </Row>
 
-                          {displayedRecipes.length > 0 && (
+                          {displayedRecipes.length > 0 &&
                             displayedRecipes.map((recipe) => (
                               <RecipeSummary
                                 key={recipe._id}
@@ -598,12 +719,11 @@ const RecipeCostDashboard = () => {
                                 suggestedPrices={suggestedPrices}
                                 setSuggestedPrices={setSuggestedPrices}
                               />
-                            ))
-                          )}
+                            ))}
                         </>
                       )}
 
-                      {tabKey === "ingredients" && (
+                      {tabKey === "stocks" && (
                         <div className="mb-5">
                           {selectedRecipe ? (
                             <RecipeDetails

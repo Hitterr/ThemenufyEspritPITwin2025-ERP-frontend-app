@@ -10,6 +10,10 @@ import {
   FaPizzaSlice,
   FaPercentage,
 } from "react-icons/fa";
+import { useQuery } from "@tanstack/react-query";
+import { apiRequest } from "../../utils/apiRequest";
+import { Button, Col, Form, Row } from "react-bootstrap";
+import { useRestaurantQuery, useStocksQuery } from "../storage/utils/queries";
 
 const Waste = () => {
   const {
@@ -23,31 +27,11 @@ const Waste = () => {
     isLoading,
     error,
   } = wasteStore();
+  const { data: restaurants, isLoading: loadingRestaurants } =
+    useRestaurantQuery();
 
-  const [restaurants, setRestaurants] = useState([]);
+  const { data: stocks, isLoading: loadingStocks } = useStocksQuery();
   const [restaurantName, setRestaurantName] = useState("");
-  const [loadingRestaurants, setLoadingRestaurants] = useState(false);
-
-  // Fetch restaurants
-  useEffect(() => {
-    const fetchRestaurants = async () => {
-      try {
-        setLoadingRestaurants(true);
-        const mockRestaurants = [
-          { _id: "67f3f0c563b6aae2e5036438", nameRes: "Le Petit Bistro" },
-          { _id: "67f3f0c563b6aae2e5036439", nameRes: "Sushi Master" },
-          { _id: "67f3f0c563b6aae2e503643a", nameRes: "Pizza Paradise" },
-        ];
-        setRestaurants(mockRestaurants);
-      } catch (error) {
-        console.error("Error fetching restaurants:", error);
-        setRestaurants([]);
-      } finally {
-        setLoadingRestaurants(false);
-      }
-    };
-    fetchRestaurants();
-  }, []);
 
   // Fetch both summary and percentage data when restaurantId changes
   useEffect(() => {
@@ -94,16 +78,16 @@ const Waste = () => {
     totalItems: <FaTrashAlt size={30} color="#EA7A9A" />,
     totalCost: <FaDollarSign size={30} color="#EA7A9A" />,
     totalQuantity: <FaWeight size={30} color="#EA7A9A" />,
-    ingredientType: <FaPizzaSlice size={30} color="#EA7A9A" />,
+    stockType: <FaPizzaSlice size={30} color="#EA7A9A" />,
     wastePercentage: <FaPercentage size={30} color="#EA7A9A" />,
   };
 
   // Cards configuration for summary view with percentage data
   const cards = [
     {
-      title: "Ingredient Type",
+      title: "Stock Type",
       value: wasteSummary[0]?.libelle || "N/A",
-      icon: icons.ingredientType,
+      icon: icons.stockType,
     },
     {
       title: "Total Waste Quantity",
@@ -139,10 +123,10 @@ const Waste = () => {
         <div className="card-body">
           <form onSubmit={handleSubmit}>
             <div className="row g-3 align-items-end">
-              <div className="col-md-3">
-                <label htmlFor="restaurantName" className="form-label">
+              <Form.Group className="col-md-3">
+                <Form.Label htmlFor="restaurantName" className="form-label">
                   Restaurant Name
-                </label>
+                </Form.Label>
                 {loadingRestaurants ? (
                   <div className="form-control">
                     <div
@@ -154,7 +138,8 @@ const Waste = () => {
                     <span className="ms-2">Loading restaurants...</span>
                   </div>
                 ) : (
-                  <select
+                  <Form.Control
+                    as="select"
                     id="restaurantName"
                     name="restaurantName"
                     className="form-select"
@@ -167,14 +152,14 @@ const Waste = () => {
                         {restaurant.nameRes}
                       </option>
                     ))}
-                  </select>
+                  </Form.Control>
                 )}
-              </div>
-              <div className="col-md-3">
-                <label htmlFor="startDate" className="form-label">
+              </Form.Group>
+              <Form.Group className="col-md-3">
+                <Form.Label htmlFor="startDate" className="form-label">
                   Start Date
-                </label>
-                <input
+                </Form.Label>
+                <Form.Control
                   type="date"
                   id="startDate"
                   name="startDate"
@@ -182,12 +167,12 @@ const Waste = () => {
                   value={filterCriteria.startDate || ""}
                   onChange={handleFilterChange}
                 />
-              </div>
-              <div className="col-md-3">
-                <label htmlFor="endDate" className="form-label">
+              </Form.Group>
+              <Form.Group className="col-md-3">
+                <Form.Label htmlFor="endDate" className="form-label">
                   End Date
-                </label>
-                <input
+                </Form.Label>
+                <Form.Control
                   type="date"
                   id="endDate"
                   name="endDate"
@@ -196,9 +181,9 @@ const Waste = () => {
                   onChange={handleFilterChange}
                   min={filterCriteria.startDate}
                 />
-              </div>
+              </Form.Group>
               <div className="col-md-3 d-flex align-items-end gap-2">
-                <button
+                <Button
                   type="submit"
                   className="btn flex-grow-1"
                   style={{
@@ -209,16 +194,16 @@ const Waste = () => {
                   disabled={isLoading || !filterCriteria.restaurantId}
                 >
                   {isLoading ? "Applying..." : "Apply Filters"}
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
-                  className="btn btn-outline-secondary"
+                  variant="secondary-outline"
                   onClick={handleReset}
                   title="Reset all filters"
                   style={{ borderColor: "#EA7A9A", color: "#EA7A9A" }}
                 >
                   <FaUndo />
-                </button>
+                </Button>
               </div>
             </div>
           </form>
@@ -252,9 +237,9 @@ const Waste = () => {
         </div>
       )}
 
-      <div className="row">
+      <Row className="">
         {cards.map((card, index) => (
-          <div key={index} className="col-xl-3 col-xxl-6 col-sm-6">
+          <Col key={index} xs={10} sm={5} lg={4}>
             <div
               className="card"
               style={{
@@ -292,9 +277,9 @@ const Waste = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </Col>
         ))}
-      </div>
+      </Row>
     </div>
   );
 };

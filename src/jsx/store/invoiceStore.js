@@ -253,7 +253,7 @@ const useInvoiceStore = create(
           const updatedInvoice = {
             ...state.currentInvoice,
             items: state.currentInvoice.items.filter(
-              (item) => item.ingredient !== itemId
+              (item) => item.stock !== itemId
             ),
           };
           return {

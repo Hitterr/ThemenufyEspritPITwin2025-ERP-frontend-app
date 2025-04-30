@@ -26,7 +26,10 @@ const SupplierStats = ({ showStats }) => {
 
   // Calculate restaurants linked percentage (assuming max 50 restaurants = 100%)
   const maxRestaurants = 50; // Explicit max for clarity
-  const restaurantsLinkedPercentage = calcPercentage(globalStats.totalRestaurantsLinked, maxRestaurants);
+  const restaurantsLinkedPercentage = calcPercentage(
+    globalStats.totalRestaurantsLinked,
+    maxRestaurants
+  );
 
   if (loading) {
     return <div>Loading stats...</div>;
@@ -35,9 +38,9 @@ const SupplierStats = ({ showStats }) => {
   return (
     <>
       {showStats && (
-        <Row className="mb-4">
+        <Row className="gap-4 p-5 justify-content-around">
           {/* Total Suppliers */}
-          <Col xs={12} sm={2} className="mb-sm-0 mb-3">
+          <Col xs={12} sm={4} lg={3} className="">
             <div className="media align-items-center">
               <div className="d-inline-block me-3 position-relative donut-chart-sale2">
                 <ChartDonught2
@@ -57,9 +60,9 @@ const SupplierStats = ({ showStats }) => {
               </div>
             </div>
           </Col>
-          
+
           {/* Active Suppliers */}
-          <Col xs={12} sm={2} className="mb-sm-0 mb-3">
+          <Col xs={12} sm={4} lg={3} className="">
             <div className="media align-items-center">
               <div className="d-inline-block me-3 position-relative donut-chart-sale2">
                 <ChartDonught2
@@ -83,7 +86,7 @@ const SupplierStats = ({ showStats }) => {
           </Col>
 
           {/* Pending Suppliers */}
-          <Col xs={12} sm={2} className="mb-sm-0 mb-3">
+          <Col xs={12} sm={4} lg={3} className="">
             <div className="media align-items-center">
               <div className="d-inline-block me-3 position-relative donut-chart-sale2">
                 <ChartDonught2
@@ -107,7 +110,7 @@ const SupplierStats = ({ showStats }) => {
           </Col>
 
           {/* Suspended Suppliers */}
-          <Col xs={12} sm={2} className="mb-sm-0 mb-3">
+          <Col xs={12} sm={4} lg={3} className="">
             <div className="media align-items-center">
               <div className="d-inline-block me-3 position-relative donut-chart-sale2">
                 <ChartDonught2
@@ -115,7 +118,10 @@ const SupplierStats = ({ showStats }) => {
                   backgroundColor2="#FAFAFA"
                   height="100"
                   width="100"
-                  value={calcPercentage(globalStats.suspended, globalStats.total)}
+                  value={calcPercentage(
+                    globalStats.suspended,
+                    globalStats.total
+                  )}
                 />
                 <small className="text-black">
                   {calcPercentage(globalStats.suspended, globalStats.total)}%
@@ -131,7 +137,7 @@ const SupplierStats = ({ showStats }) => {
           </Col>
 
           {/* Inactive Suppliers */}
-          <Col xs={12} sm={2} className="mb-sm-0 mb-3">
+          <Col xs={12} sm={4} lg={3} className="">
             <div className="media align-items-center">
               <div className="d-inline-block me-3 position-relative donut-chart-sale2">
                 <ChartDonught2
@@ -139,7 +145,10 @@ const SupplierStats = ({ showStats }) => {
                   backgroundColor2="#FAFAFA"
                   height="100"
                   width="100"
-                  value={calcPercentage(globalStats.inactive, globalStats.total)}
+                  value={calcPercentage(
+                    globalStats.inactive,
+                    globalStats.total
+                  )}
                 />
                 <small className="text-black">
                   {calcPercentage(globalStats.inactive, globalStats.total)}%
@@ -155,7 +164,7 @@ const SupplierStats = ({ showStats }) => {
           </Col>
 
           {/* Restaurants Linked */}
-          <Col xs={12} sm={2} className="mb-sm-0 mb-3">
+          <Col xs={12} sm={4} lg={3} className="">
             <div className="media align-items-center">
               <div className="d-inline-block me-3 position-relative donut-chart-sale2">
                 <ChartDonught2

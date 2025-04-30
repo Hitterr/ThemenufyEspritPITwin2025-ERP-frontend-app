@@ -35,14 +35,14 @@ const ShowCategory = () => {
   });
   const handleSubmit = (data) => {
     console.log(data);
-    // Make the API call to update the ingredient
+    // Make the API call to update the stock
     updateMutation.mutate({ id, data });
   };
   if (isLoading) {
     return <div>Loading...</div>;
   }
   if (!category) {
-    return <div>Ingredient not found</div>;
+    return <div>Stock not found</div>;
   }
   return (
     <Card>

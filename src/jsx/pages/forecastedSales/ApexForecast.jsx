@@ -3,13 +3,14 @@ import axios from "axios";
 import LoadingSpinner from "./LoadingSpinner";
 import ForecastFilters from "./ForecastFilters";
 import ForecastChart from "./ForecastChart";
+import { apiRequest } from "../../utils/apiRequest";
 
 const ApexForecast = () => {
   const [forecastData, setForecastData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [inputDays, setInputDays] = useState(7);
   const [days, setDays] = useState(7);
-  const [selectedIngredient, setSelectedIngredient] = useState("");
+  const [selectedStock, setSelectedStock] = useState("");
 
   useEffect(() => {
     loadForecast(days);
@@ -18,7 +19,10 @@ const ApexForecast = () => {
   const loadForecast = async (daysToLoad) => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:5000/api/ingredients/forecast-auto/auto?days=${daysToLoad}`);
+      const res = await apiRequest.get(
+        `http://localhost:5000/api/stocks/forecast-auto/auto?days=${daysToLoad}`
+      );
+
       setForecastData(res.data.data);
     } catch (error) {
       console.error("Error loading forecast:", error);
@@ -34,8 +38,8 @@ const ApexForecast = () => {
     setDays(inputDays);
   };
 
-  const filteredData = selectedIngredient
-    ? forecastData.filter(item => item.ingredient === selectedIngredient)
+  const filteredData = selectedStock
+    ? forecastData.filter((item) => item.stock === selectedStock)
     : forecastData;
 
   if (loading) return <LoadingSpinner />;
@@ -43,7 +47,7 @@ const ApexForecast = () => {
   return (
     <div className="container mt-4">
       <div className="d-flex justify-content-center align-items-center mb-3">
-        <h2>Ingredient Forecast</h2>
+        <h2>Stock Forecast</h2>
       </div>
 
       <ForecastFilters
@@ -51,13 +55,17 @@ const ApexForecast = () => {
         setInputDays={setInputDays}
         handleApply={handleApply}
         forecastData={forecastData}
-        selectedIngredient={selectedIngredient}
-        setSelectedIngredient={setSelectedIngredient}
+        selectedStock={selectedStock}
+        setSelectedStock={setSelectedStock}
       />
 
       {filteredData.length === 0 ? (
         <div className="text-center text-muted">
-          <i className="fas fa-box-open" style={{ fontSize: "50px", marginBottom: "10px" }}></i><br />
+          <i
+            className="fas fa-box-open"
+            style={{ fontSize: "50px", marginBottom: "10px" }}
+          ></i>
+          <br />
           No forecast data available.
         </div>
       ) : (

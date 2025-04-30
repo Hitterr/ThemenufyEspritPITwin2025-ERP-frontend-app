@@ -1,12 +1,11 @@
 import { Form, Row, Col, Card, Button } from "react-bootstrap";
 import { FaTimes } from "react-icons/fa";
-import useIngredientStore from "../../../store/ingredientStore";
+import useStockStore from "../../../store/stockStore";
 import { apiRequest } from "../../../utils/apiRequest";
 import { useEffect, useState } from "react";
-const IngredientFilters = ({ onClose }) => {
+const StockFilters = ({ onClose }) => {
   const [types, setTypes] = useState([]);
-  const { filterCriteria, setFilterCriteria, resetFilters } =
-    useIngredientStore();
+  const { filterCriteria, setFilterCriteria, resetFilters } = useStockStore();
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilterCriteria({ [name]: value });
@@ -127,4 +126,4 @@ const IngredientFilters = ({ onClose }) => {
     </Card>
   );
 };
-export default IngredientFilters;
+export default StockFilters;

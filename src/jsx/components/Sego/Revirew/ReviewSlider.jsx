@@ -46,7 +46,7 @@ const ReviewSlider = () => {
               <div className="">
                 <p className="mb-3">
                   “This was not just great cooking but exceptional cooking using
-                  only the best ingredients.
+                  only the best stocks.
                 </p>
                 <p className="mb-3">
                   Fast, professional and friendly service, we ordered the six
@@ -70,7 +70,7 @@ const ReviewSlider = () => {
               <div className="">
                 <p className="mb-3">
                   “This was not just great cooking but exceptional cooking using
-                  only the best ingredients.
+                  only the best stocks.
                 </p>
                 <p className="mb-3">
                   Fast, professional and friendly service, we ordered the six

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Spinner, Alert } from "react-bootstrap";
 import axios from "axios";
 
-export default function SupplierComparisonTable({ ingredientId }) {
+export default function SupplierComparisonTable({ stockId }) {
   const [suppliers, setSuppliers] = useState([]);
   const [sortConfig, setSortConfig] = useState({
     key: "price",
@@ -19,7 +19,7 @@ export default function SupplierComparisonTable({ ingredientId }) {
           "http://localhost:5000/api/suppliersComparaison/compare",
           {
             params: {
-              ingredientId,
+              stockId,
               sortBy: sortConfig.key,
               order: sortConfig.direction,
             },
@@ -43,7 +43,7 @@ export default function SupplierComparisonTable({ ingredientId }) {
       }
     };
     fetchComparison();
-  }, [ingredientId, sortConfig]);
+  }, [stockId, sortConfig]);
 
   const handleSort = (key) => {
     setSortConfig((prev) => ({

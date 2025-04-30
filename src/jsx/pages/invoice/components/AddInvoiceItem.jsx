@@ -10,16 +10,16 @@ import { addInvoiceSchema } from "../validators/addInvoiceSchema";
 import Modal from "react-bootstrap/Modal";
 import { useEffect, useState } from "react";
 import { Carrot, Plus } from "lucide-react";
-import useIngredientStore from "../../../store/ingredientStore";
+import useStockStore from "../../../store/stockStore";
 const AddInvoiceItem = () => {
   const [show, setShow] = useState(false);
-  const { fetchIngredients, ingredients } = useIngredientStore();
+  const { fetchStocks, stocks } = useStockStore();
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const navigate = useNavigate();
   const { addInvoiceItem } = useInvoiceStore();
   useEffect(() => {
-    fetchIngredients();
+    fetchStocks();
   }, []);
   const {
     register,
@@ -29,7 +29,7 @@ const AddInvoiceItem = () => {
     resolver: yupResolver(addInvoiceItemSchema),
     mode: "onChange",
     defaultValues: {
-      ingredient: "",
+      stock: "",
       quantity: 0,
       price: 0,
     },
@@ -41,14 +41,14 @@ const AddInvoiceItem = () => {
       Swal.fire({
         icon: "success",
         title: "Success!",
-        text: "Ingredient added successfully",
+        text: "Stock added successfully",
       });
       handleClose();
     } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Error!",
-        text: "Failed to add ingredient" + error.message,
+        text: "Failed to add stock" + error.message,
       });
     }
   };
@@ -71,15 +71,15 @@ const AddInvoiceItem = () => {
             <Row>
               <Col md={12}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Ingredient</Form.Label>
+                  <Form.Label>Stock</Form.Label>
                   <Form.Select
                     type="text"
-                    {...register("ingredient")}
+                    {...register("stock")}
                     isInvalid={!!errors.libelle}
                   >
-                    <option value="">Select an ingredient</option>
-                    {ingredients.length > 0 &&
-                      ingredients.map((ing) => (
+                    <option value="">Select an stock</option>
+                    {stocks.length > 0 &&
+                      stocks.map((ing) => (
                         <option value={ing._id} key={ing._id}>
                           {ing.libelle}
                         </option>
@@ -87,7 +87,7 @@ const AddInvoiceItem = () => {
                   </Form.Select>
 
                   <Form.Control.Feedback type="invalid">
-                    {errors.ingredient?.message}
+                    {errors.stock?.message}
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -121,7 +121,7 @@ const AddInvoiceItem = () => {
             <Row className="justify-content-around gap-2">
               <Col xs={12} sm={5}>
                 <Button variant="primary" type="submit" className="w-100">
-                  Add Ingredient
+                  Add Stock
                 </Button>
               </Col>
               <Col xs={12} sm={5}>

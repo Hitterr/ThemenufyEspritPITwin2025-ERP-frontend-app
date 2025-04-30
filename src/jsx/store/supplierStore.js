@@ -75,17 +75,17 @@ const useSupplierStore = create(
         });
       } catch (error) {
         console.error("Error fetching suppliers:", error);
-        set({ 
-          suppliers: [], 
-          filteredSuppliers: [], 
-          pagination: { 
-            total: 0, 
-            pages: 1, 
-            page: 1, 
-            limit: 10, 
-            hasNext: false, 
-            hasPrev: false 
-          } 
+        set({
+          suppliers: [],
+          filteredSuppliers: [],
+          pagination: {
+            total: 0,
+            pages: 1,
+            page: 1,
+            limit: 10,
+            hasNext: false,
+            hasPrev: false,
+          },
         });
       }
     },
@@ -93,7 +93,7 @@ const useSupplierStore = create(
     fetchGlobalStats: async () => {
       try {
         const { data } = await axios.get(`${API_URL}/stats`);
-        
+
         // Log the API response for debugging
         console.log("Global Stats API Response:", data);
 
@@ -103,34 +103,41 @@ const useSupplierStore = create(
           pending: 0,
           suspended: 0,
           inactive: 0,
-          totalRestaurantsLinked: 0
+          totalRestaurantsLinked: 0,
         };
 
         // Process API response
         if (Array.isArray(data.data)) {
-          data.data.forEach(stat => {
-            if (stat._id === 'active') defaultStats.active = stat.count;
-            else if (stat._id === 'pending') defaultStats.pending = stat.count;
-            else if (stat._id === 'suspended') defaultStats.suspended = stat.count;
-            else if (stat._id === 'inactive') defaultStats.inactive = stat.count;
+          data.data.forEach((stat) => {
+            if (stat._id === "active") defaultStats.active = stat.count;
+            else if (stat._id === "pending") defaultStats.pending = stat.count;
+            else if (stat._id === "suspended")
+              defaultStats.suspended = stat.count;
+            else if (stat._id === "inactive")
+              defaultStats.inactive = stat.count;
             // Check for both possible keys
-            else if (stat._id === 'totalRestaurantsLinked' || stat._id === 'restaurantsLinked') {
+            else if (
+              stat._id === "totalRestaurantsLinked" ||
+              stat._id === "restaurantsLinked"
+            ) {
               defaultStats.totalRestaurantsLinked = stat.count;
             }
           });
         }
 
         // Calculate total suppliers
-        const total = defaultStats.active + defaultStats.pending + 
-                      defaultStats.suspended + defaultStats.inactive;
+        const total =
+          defaultStats.active +
+          defaultStats.pending +
+          defaultStats.suspended +
+          defaultStats.inactive;
 
         set({
           globalStats: {
             ...defaultStats,
-            total
-          }
+            total,
+          },
         });
-
       } catch (error) {
         console.error("Error fetching stats:", error);
         set({
@@ -140,8 +147,8 @@ const useSupplierStore = create(
             suspended: 0,
             inactive: 0,
             total: 0,
-            totalRestaurantsLinked: 0
-          }
+            totalRestaurantsLinked: 0,
+          },
         });
       }
     },
@@ -151,19 +158,19 @@ const useSupplierStore = create(
         const { data: supplierData } = await axios.get(`${API_URL}/${id}`);
         const supplier = supplierData.data;
 
-        const { data: ingredientsData } = await axios.get(`${API_URL}/${id}/ingredients`);
-        const supplierIngredients = ingredientsData.data;
+        const { data: stocksData } = await axios.get(`${API_URL}/${id}/stocks`);
+        const supplierStocks = stocksData.data;
 
-        const ingredients = supplierIngredients.map((supplierIngredient) => ({
-          _id: supplierIngredient.ingredientId._id,
-          name: supplierIngredient.ingredientId.libelle,
-          pricePerUnit: supplierIngredient.pricePerUnit,
-          leadTimeDays: supplierIngredient.leadTimeDays,
-          type: supplierIngredient.ingredientId.type,
-          unit: supplierIngredient.ingredientId.unit,
+        const stocks = supplierStocks.map((supplierStock) => ({
+          _id: supplierStock.stockId._id,
+          name: supplierStock.stockId.libelle,
+          pricePerUnit: supplierStock.pricePerUnit,
+          leadTimeDays: supplierStock.leadTimeDays,
+          type: supplierStock.stockId.type,
+          unit: supplierStock.stockId.unit,
         }));
 
-        return { ...supplier, ingredients };
+        return { ...supplier, stocks };
       } catch (error) {
         console.error("Error fetching supplier:", error);
         return null;
@@ -200,24 +207,29 @@ const useSupplierStore = create(
       }
     },
 
-    linkIngredient: async (supplierId, data) => {
+    linkStock: async (supplierId, data) => {
       try {
-        const { data: responseData } = await axios.post(`${API_URL}/${supplierId}/link-ingredient`, data);
+        const { data: responseData } = await axios.post(
+          `${API_URL}/${supplierId}/link-stock`,
+          data
+        );
         if (responseData.success) {
-          const { data: ingredientsData } = await axios.get(`${API_URL}/${supplierId}/ingredients`);
-          const updatedIngredients = ingredientsData.data.map((supplierIngredient) => ({
-            _id: supplierIngredient.ingredientId._id,
-            name: supplierIngredient.ingredientId.libelle,
-            pricePerUnit: supplierIngredient.pricePerUnit,
-            leadTimeDays: supplierIngredient.leadTimeDays,
-            type: supplierIngredient.ingredientId.type,
-            unit: supplierIngredient.ingredientId.unit,
+          const { data: stocksData } = await axios.get(
+            `${API_URL}/${supplierId}/stocks`
+          );
+          const updatedStocks = stocksData.data.map((supplierStock) => ({
+            _id: supplierStock.stockId._id,
+            name: supplierStock.stockId.libelle,
+            pricePerUnit: supplierStock.pricePerUnit,
+            leadTimeDays: supplierStock.leadTimeDays,
+            type: supplierStock.stockId.type,
+            unit: supplierStock.stockId.unit,
           }));
 
           set((state) => ({
             suppliers: state.suppliers.map((supplier) =>
               supplier._id === supplierId
-                ? { ...supplier, ingredients: updatedIngredients }
+                ? { ...supplier, stocks: updatedStocks }
                 : supplier
             ),
           }));
@@ -225,29 +237,33 @@ const useSupplierStore = create(
         }
         return false;
       } catch (error) {
-        console.error("Error linking ingredient:", error);
+        console.error("Error linking stock:", error);
         return false;
       }
     },
 
-    unlinkIngredient: async (supplierId, ingredientId) => {
+    unlinkStock: async (supplierId, stockId) => {
       try {
-        const { data: responseData } = await axios.delete(`${API_URL}/${supplierId}/ingredients/${ingredientId}`);
+        const { data: responseData } = await axios.delete(
+          `${API_URL}/${supplierId}/stocks/${stockId}`
+        );
         if (responseData.success) {
-          const { data: ingredientsData } = await axios.get(`${API_URL}/${supplierId}/ingredients`);
-          const updatedIngredients = ingredientsData.data.map((supplierIngredient) => ({
-            _id: supplierIngredient.ingredientId._id,
-            name: supplierIngredient.ingredientId.libelle,
-            pricePerUnit: supplierIngredient.pricePerUnit,
-            leadTimeDays: supplierIngredient.leadTimeDays,
-            type: supplierIngredient.ingredientId.type,
-            unit: supplierIngredient.ingredientId.unit,
+          const { data: stocksData } = await axios.get(
+            `${API_URL}/${supplierId}/stocks`
+          );
+          const updatedStocks = stocksData.data.map((supplierStock) => ({
+            _id: supplierStock.stockId._id,
+            name: supplierStock.stockId.libelle,
+            pricePerUnit: supplierStock.pricePerUnit,
+            leadTimeDays: supplierStock.leadTimeDays,
+            type: supplierStock.stockId.type,
+            unit: supplierStock.stockId.unit,
           }));
-    
+
           set((state) => ({
             suppliers: state.suppliers.map((supplier) =>
               supplier._id === supplierId
-                ? { ...supplier, ingredients: updatedIngredients }
+                ? { ...supplier, stocks: updatedStocks }
                 : supplier
             ),
           }));
@@ -255,44 +271,52 @@ const useSupplierStore = create(
         }
         return false;
       } catch (error) {
-        console.error("Error unlinking ingredient:", error);
+        console.error("Error unlinking stock:", error);
         return false;
       }
     },
     getDeliveryStats: async (startDate, endDate) => {
       try {
         const { data } = await axios.get(`${API_URL}/delivery-stats`, {
-          params: { 
-            startDate: startDate.toISOString().split('T')[0],
-            endDate: endDate.toISOString().split('T')[0]
-          }
+          params: {
+            startDate: startDate.toISOString().split("T")[0],
+            endDate: endDate.toISOString().split("T")[0],
+          },
         });
         console.log("Delivery Stats API Response:", data); // Debug log
         return data.data || [];
       } catch (error) {
-        console.error("Error fetching delivery stats:", error.response?.data || error.message);
+        console.error(
+          "Error fetching delivery stats:",
+          error.response?.data || error.message
+        );
         return [];
       }
     },
 
-    bulkUpdateSupplierIngredients: async (supplierId, ingredients) => {
+    bulkUpdateSupplierStocks: async (supplierId, stocks) => {
       try {
-        const { data: responseData } = await axios.patch(`${API_URL}/${supplierId}/ingredients/bulk`, { ingredients });
+        const { data: responseData } = await axios.patch(
+          `${API_URL}/${supplierId}/stocks/bulk`,
+          { stocks }
+        );
         if (responseData.success) {
-          const { data: ingredientsData } = await axios.get(`${API_URL}/${supplierId}/ingredients`);
-          const updatedIngredients = ingredientsData.data.map((supplierIngredient) => ({
-            _id: supplierIngredient.ingredientId._id,
-            name: supplierIngredient.ingredientId.libelle,
-            pricePerUnit: supplierIngredient.pricePerUnit,
-            leadTimeDays: supplierIngredient.leadTimeDays,
-            type: supplierIngredient.ingredientId.type,
-            unit: supplierIngredient.ingredientId.unit,
+          const { data: stocksData } = await axios.get(
+            `${API_URL}/${supplierId}/stocks`
+          );
+          const updatedStocks = stocksData.data.map((supplierStock) => ({
+            _id: supplierStock.stockId._id,
+            name: supplierStock.stockId.libelle,
+            pricePerUnit: supplierStock.pricePerUnit,
+            leadTimeDays: supplierStock.leadTimeDays,
+            type: supplierStock.stockId.type,
+            unit: supplierStock.stockId.unit,
           }));
 
           set((state) => ({
             suppliers: state.suppliers.map((supplier) =>
               supplier._id === supplierId
-                ? { ...supplier, ingredients: updatedIngredients }
+                ? { ...supplier, stocks: updatedStocks }
                 : supplier
             ),
           }));
@@ -300,12 +324,11 @@ const useSupplierStore = create(
         }
         return false;
       } catch (error) {
-        console.error("Error bulk updating ingredients:", error);
+        console.error("Error bulk updating stocks:", error);
         return false;
       }
-    }
+    },
   }))
-  
 );
 
 export default useSupplierStore;

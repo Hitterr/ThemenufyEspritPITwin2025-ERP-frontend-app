@@ -10,8 +10,8 @@ const useConsumptionHistoryStore = create(
     dailyTrends: [],
     filterCriteria: {
       restaurantId: "",
-      ingredientId: "",
-      ordreId:"",
+      stockId: "",
+      ordreId: "",
     },
     isLoading: false,
     error: null,
@@ -22,7 +22,7 @@ const useConsumptionHistoryStore = create(
       get().fetchConsumptions();
     },
     resetFilters: () => {
-      set({ filterCriteria: { restaurantId: "", ingredientId: "" ,ordreId:""} });
+      set({ filterCriteria: { restaurantId: "", stockId: "", ordreId: "" } });
       get().fetchConsumptions();
     },
     fetchConsumptions: async () => {
@@ -30,30 +30,39 @@ const useConsumptionHistoryStore = create(
       console.log("Filter Criteria:", filterCriteria); // Debug log
       set({ isLoading: true, error: null });
       try {
-        const response = await axios.get(`${API_URL}/storage/history/consumptions`, {
-          params: {
-            restaurantId: filterCriteria.restaurantId || undefined,
-            ingredientId: filterCriteria.ingredientId || undefined,
-            ordreId:filterCriteria.ordreId||undefined,
-          },
-        });
+        const response = await axios.get(
+          `${API_URL}/storage/history/consumptions`,
+          {
+            params: {
+              restaurantId: filterCriteria.restaurantId || undefined,
+              stockId: filterCriteria.stockId || undefined,
+              ordreId: filterCriteria.ordreId || undefined,
+            },
+          }
+        );
         console.log("Fetch Consumptions Response:", response.data); // Debug log
         set({ consumptions: response.data, isLoading: false });
       } catch (error) {
         console.error("Fetch Consumptions Error:", error.response || error); // Debug log
-        set({ error: error.response?.data?.message || error.message, isLoading: false });
+        set({
+          error: error.response?.data?.message || error.message,
+          isLoading: false,
+        });
       }
     },
-    
-    createConsumption: async (ingredientId, restaurantId,ordreId, qty) => {
+
+    createConsumption: async (stockId, restaurantId, ordreId, qty) => {
       set({ isLoading: true, error: null });
       try {
-        const response = await axios.post(`${API_URL}/storage/history/consumptions`, {
-          ingredientId,
-          restaurantId,
-          ordreId,
-          qty,
-        });
+        const response = await axios.post(
+          `${API_URL}/storage/history/consumptions`,
+          {
+            stockId,
+            restaurantId,
+            ordreId,
+            qty,
+          }
+        );
         set((state) => ({
           consumptions: [response.data, ...state.consumptions],
           isLoading: false,

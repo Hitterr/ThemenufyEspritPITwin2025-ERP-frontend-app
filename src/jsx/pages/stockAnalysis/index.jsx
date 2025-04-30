@@ -19,7 +19,7 @@ import {
   X,
 } from "lucide-react";
 import ApexBar2 from "../../components/charts/apexcharts/Bar2";
-import StockPerCategory from "./components/stockPerCategory";
+import StockPerCategory from "./components/StockPerCategory";
 export const StockAnalysis = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,7 +27,7 @@ export const StockAnalysis = () => {
 
   useEffect(() => {
     apiRequest
-      .get("/ingredient/stats")
+      .get("/stock/stats")
       .then((res) => {
         if (res.data.success) {
           setStats(res.data.data);
@@ -69,7 +69,7 @@ export const StockAnalysis = () => {
                 <div className="media align-items-center">
                   <div className="media-body me-2">
                     <h2 className="text-white font-w600 fs-2 ">
-                      {stats?.totalIngredients || 0}
+                      {stats?.totalStocks || 0}
                     </h2>
                     <span className="text-white">Total Stock Count</span>
                   </div>
@@ -107,9 +107,7 @@ export const StockAnalysis = () => {
                       backgroundColor2="#FC9A83"
                       height="100"
                       width="100"
-                      value={
-                        (stats?.lowStockCount / stats?.totalIngredients) * 100
-                      }
+                      value={(stats?.lowStockCount / stats?.totalStocks) * 100}
                     />
                     <small className="text-primary">
                       <TriangleAlert size={40} color="#fff" />
@@ -137,7 +135,7 @@ export const StockAnalysis = () => {
                       height="100"
                       width="100"
                       value={
-                        (stats?.outOfStockCount / stats?.totalIngredients) * 100
+                        (stats?.outOfStockCount / stats?.totalStocks) * 100
                       }
                     />
                     <small className="text-primary">
@@ -165,7 +163,7 @@ export const StockAnalysis = () => {
                     </div>
                   ))}
                 </div>
-                <StockPerCategory data={stats?.ingredientPerCategory} />
+                <StockPerCategory data={stats?.stockPerCategory} />
               </Card.Body>
             </Card>
           </Col>

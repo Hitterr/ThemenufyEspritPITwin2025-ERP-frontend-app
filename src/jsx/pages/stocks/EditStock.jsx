@@ -1,76 +1,97 @@
+import { useEffect, useState } from "react";
 import { Form, Button, Row, Col, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import useIngredientStore from "../../store/ingredientStore";
+import useStockStore from "../../store/stockStore";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { addIngredientSchema } from "./validators/addIngredient";
+import { editStockSchema } from "./validators/editStock";
 import { units } from "./components/units";
 import { useCategories } from "./queries/categoriesQuery";
-import { useEffect, useState } from "react";
-import { Carrot, Check, Plus, X } from "lucide-react";
-const AddIngredient = () => {
+import { FaPencilAlt } from "react-icons/fa";
+import { Check, X } from "lucide-react";
+const EditStock = ({ idIng }) => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const navigate = useNavigate();
-  const { addIngredient } = useIngredientStore();
   const { data, isLoading } = useCategories();
+  const { updateStock, getStockById, stocks } = useStockStore();
   const {
     register,
     handleSubmit,
-    getValues,
     reset,
-    formState: { errors, touchedFields },
+    formState: { errors },
   } = useForm({
-    resolver: yupResolver(addIngredientSchema),
+    resolver: yupResolver(editStockSchema),
     mode: "onChange",
-    defaultValues: {
-      libelle: "",
-      type: "",
-      quantity: 0,
-      unit: "",
-      price: 0,
-      disponibility: true,
-      maxQty: 0,
-      minQty: 0,
-    },
+    valueAsNumber: true, // Add this to handle numbers properly
   });
   useEffect(() => {
-    console.log(errors);
-    console.log(getValues());
-  }, [getValues, errors, touchedFields]);
+    loadStock();
+  }, [idIng, show]);
+  const loadStock = async () => {
+    const stock = await getStockById(idIng);
+    console.log(stock);
+    if (stock) {
+      // Convert numeric strings to numbers
+      const formattedStock = {
+        ...stock,
+        quantity: Number(stock.quantity),
+        price: Number(stock.price),
+        maxQty: Number(stock.maxQty),
+        minQty: Number(stock.minQty),
+        type: stock.type._id,
+      };
+      reset(formattedStock);
+    } else {
+      navigate("/stock");
+    }
+  };
   const onSubmit = async (data) => {
-    console.log(data);
-    // Add the ingredient to the list of ingredients
-    const success = await addIngredient(data);
+    // Ensure numeric values
+    const formData = {
+      ...data,
+      quantity: Number(data.quantity),
+      price: Number(data.price),
+      maxQty: Number(data.maxQty),
+      minQty: Number(data.minQty),
+    };
+    const success = await updateStock(idIng, formData);
     if (success) {
       Swal.fire({
         icon: "success",
         title: "Success!",
-        text: "Ingredient added successfully",
+        text: "Stock updated successfully",
       });
-      navigate("/stock");
+      reset();
+
+      setShow(false);
     } else {
       Swal.fire({
         icon: "error",
         title: "Error!",
-        text: "Failed to add ingredient",
+        text: "Failed to update stock",
       });
     }
   };
   return (
     <>
-      <Button variant="success" className="w-100" onClick={handleShow}>
-        <Plus size={20} />
+      <Button
+        variant="warning"
+        size="sm"
+        className="w-100"
+        onClick={handleShow}
+      >
+        <FaPencilAlt size={15} />
       </Button>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header>
-          <Modal.Title>Add New Item</Modal.Title>
+          <Modal.Title>Edit Stock</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit(onSubmit)}>
-            <Row className="align-items-center">
+            <Row>
               <Form.Group xs={12} sm={6} as={Col} className="mb-3">
                 <Form.Label>Name</Form.Label>
                 <Form.Control
@@ -125,7 +146,7 @@ const AddIngredient = () => {
                 >
                   {units.map((u) => {
                     return (
-                      <option key={u} value={u}>
+                      <option key={u} value={u} className="capitalize">
                         {u}
                       </option>
                     );
@@ -174,22 +195,22 @@ const AddIngredient = () => {
                 <Form.Check type="checkbox" {...register("disponibility")} />
               </Form.Group>
             </Row>
-            <Row className="d-flex justify-content-between  p-2 w-100">
-              <Col sm={6}>
+            <Row className="d-flex justify-content-between  p-2">
+              <Col sm={5}>
+                {" "}
                 <Button
-                  className="w-100"
                   variant="secondary"
                   type="button"
+                  className="w-100 "
                   onClick={() => {
                     reset();
                     setShow(false);
-                    navigate("/stock");
                   }}
                 >
                   <X />
                 </Button>
               </Col>
-              <Col sm={6}>
+              <Col sm={5}>
                 <Button variant="primary" className="w-100" type="submit">
                   <Check />
                 </Button>
@@ -201,4 +222,4 @@ const AddIngredient = () => {
     </>
   );
 };
-export default AddIngredient;
+export default EditStock;

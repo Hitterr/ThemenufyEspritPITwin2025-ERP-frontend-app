@@ -1,5 +1,5 @@
 import * as yup from "yup";
-export const addIngredientSchema = yup.object().shape({
+export const editStockSchema = yup.object().shape({
   libelle: yup
     .string()
     .required("Name is required")
@@ -40,5 +40,5 @@ export const addIngredientSchema = yup.object().shape({
         return value <= this.parent.maxQty;
       }
     ),
-  disponibility: yup.boolean().default(true),
+  disponibility: yup.boolean(),
 });

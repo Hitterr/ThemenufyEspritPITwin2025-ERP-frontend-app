@@ -9,10 +9,10 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
   const { createPriceHistory } = usePriceHistoryStore();
   const [formData, setFormData] = useState({
     restaurantId: restaurantId,
-    ingredientId: "",
+    stockId: "",
     invoiceId: "",
     supplierId: "",
-    price: ""
+    price: "",
   });
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
@@ -30,33 +30,43 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
     setErrors(newErrors);
   };
 
-  const handleChange = (e) => {const { name, value } = e.target;setFormData({ ...formData, [name]: value });
-    validateField(name, value);};
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    validateField(name, value);
+  };
 
-  const handleBlur = (e) => {const { name, value } = e.target;validateField(name, value);};
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    validateField(name, value);
+  };
 
-  const handleSubmit = async (e) => {e.preventDefault();
-    
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     // Validate required fields
-    const requiredFields = ['restaurantId', 'ingredientId', 'invoiceId', 'price'];
+    const requiredFields = ["restaurantId", "stockId", "invoiceId", "price"];
     const newErrors = {};
-    requiredFields.forEach(field => {
+    requiredFields.forEach((field) => {
       if (!formData[field].toString().trim()) {
         newErrors[field] = `${field.replace(/Id$/, " ID")} is required`;
       }
     });
 
-    if (Object.keys(newErrors).length > 0) {setErrors(newErrors);return;}
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
     setIsSubmitting(true);
     setMessage("");
 
     try {
       const { success, error } = await createPriceHistory({
-        ingredientId: formData.ingredientId,
+        stockId: formData.stockId,
         restaurantId: formData.restaurantId,
         price: parseFloat(formData.price),
         invoiceId: formData.invoiceId,
-        supplierId: formData.supplierId || null
+        supplierId: formData.supplierId || null,
       });
 
       if (success) {
@@ -69,7 +79,7 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
         });
         setFormData({
           restaurantId: restaurantId,
-          ingredientId: "",
+          stockId: "",
           invoiceId: "",
           supplierId: "",
           price: "",
@@ -79,10 +89,11 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
         throw new Error(error);
       }
     } catch (error) {
-      const errorMsg = error.response?.data?.message || 
-                      error.response?.data?.error || 
-                      error.message || 
-                      "Failed to create price history";
+      const errorMsg =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Failed to create price history";
       setMessage(`Error: ${errorMsg}`);
       Swal.fire({
         icon: "error",
@@ -109,7 +120,10 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
         </Card.Header>
         <Card.Body className="p-6">
           {message && (
-            <Alert variant={message.includes("Error") ? "danger" : "success"} className="mb-4">
+            <Alert
+              variant={message.includes("Error") ? "danger" : "success"}
+              className="mb-4"
+            >
               {message}
             </Alert>
           )}
@@ -137,21 +151,21 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
 
             <Form.Group className="mb-4">
               <Form.Label className="font-semibold flex items-center">
-                <FaCarrot className="mr-2 text-blue-500" /> Ingredient ID
+                <FaCarrot className="mr-2 text-blue-500" /> Stock ID
               </Form.Label>
               <Form.Control
                 type="text"
-                name="ingredientId"
-                value={formData.ingredientId}
+                name="stockId"
+                value={formData.stockId}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                placeholder="Enter ingredient ID"
+                placeholder="Enter stock ID"
                 className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
-                isInvalid={!!errors.ingredientId}
+                isInvalid={!!errors.stockId}
                 required
               />
               <Form.Control.Feedback type="invalid">
-                {errors.ingredientId}
+                {errors.stockId}
               </Form.Control.Feedback>
             </Form.Group>
 
@@ -177,7 +191,8 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
 
             <Form.Group className="mb-4">
               <Form.Label className="font-semibold flex items-center">
-                <FaBoxes className="mr-2 text-blue-500" /> Supplier ID (Optional)
+                <FaBoxes className="mr-2 text-blue-500" /> Supplier ID
+                (Optional)
               </Form.Label>
               <Form.Control
                 type="text"
@@ -228,7 +243,9 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
                     <Spinner animation="border" size="sm" className="mr-2" />
                     Submitting...
                   </>
-                ) : "Submit"}
+                ) : (
+                  "Submit"
+                )}
               </Button>
               <Button
                 variant="secondary"

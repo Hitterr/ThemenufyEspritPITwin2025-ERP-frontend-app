@@ -8,38 +8,33 @@ import Swal from "sweetalert2";
 import io from "socket.io-client";
 import { useEffect } from "react";
 import { apiRequest } from "../../utils/apiRequest";
-import IngredientFilters from "./components/IngredientFilters";
-import AddIngredient from "./AddIngredient";
-import EditIngredient from "./EditIngredient";
-import useIngredientStore from "../../store/ingredientStore";
+import StockFilters from "./components/StockFilters";
+import AddStock from "./AddStock";
+import EditStock from "./EditStock";
+import useStockStore from "../../store/stockStore";
 import { BarChart, ChartArea, ChartColumnIncreasing, Eye } from "lucide-react";
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
 const ITEMS_PER_PAGE = 10;
-const Ingredients = () => {
+const Stocks = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
   const queryClient = useQueryClient();
-  const {
-    ingredients,
-    pagination,
-    filteredIngredients,
-    fetchIngredients,
-    loading,
-  } = useIngredientStore();
+  const { stocks, pagination, filteredStocks, fetchStocks, loading } =
+    useStockStore();
   // Socket connection for real-time updates
   useEffect(() => {
     const socket = io(SOCKET_URL);
-    socket.on("ingredient-update", () => {
-      fetchIngredients(page);
+    socket.on("stock-update", () => {
+      fetchStocks(page);
     });
-    socket.on("ingredient-alert", (data) => {
+    socket.on("stock-alert", (data) => {
       toast.warning(
         <div>
-          <strong>{data.ingredient.libelle}</strong>
+          <strong>{data.stock.libelle}</strong>
           <br />
-          Current Quantity: {data.ingredient.quantity} {data.ingredient.unit}
+          Current Quantity: {data.stock.quantity} {data.stock.unit}
           <br />
-          Min Quantity: {data.ingredient.minQty} {data.ingredient.unit}
+          Min Quantity: {data.stock.minQty} {data.stock.unit}
           <br />
           {data.message}
         </div>,
@@ -56,10 +51,10 @@ const Ingredients = () => {
     return () => socket.disconnect();
   }, []);
   useEffect(() => {
-    fetchIngredients(page);
-    console.log(ingredients); // Ajoutez cette ligne pour afficher les données dans la console
+    fetchStocks(page);
+    console.log(stocks); // Ajoutez cette ligne pour afficher les données dans la console
   }, [page]);
-  // Delete ingredient mutation
+  // Delete stock mutation
   const handleDelete = async (id) => {
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -72,12 +67,12 @@ const Ingredients = () => {
     });
     if (result.isConfirmed) {
       try {
-        await apiRequest.delete(`/ingredient/${id}`);
-        queryClient.invalidateQueries(["ingredients"]);
-        Swal.fire("Deleted!", "Ingredient has been deleted.", "success");
-        await fetchIngredients(page);
+        await apiRequest.delete(`/stock/${id}`);
+        queryClient.invalidateQueries(["stocks"]);
+        Swal.fire("Deleted!", "Stock has been deleted.", "success");
+        await fetchStocks(page);
       } catch (error) {
-        Swal.fire("Error!", "Failed to delete ingredient.", "error");
+        Swal.fire("Error!", "Failed to delete stock.", "error");
       }
     }
   };
@@ -93,7 +88,7 @@ const Ingredients = () => {
             className="justify-content-between align-items-center  mb-3 w-100"
           >
             <Col xs={5} sm={3} lg={1}>
-              <AddIngredient />
+              <AddStock />
             </Col>
 
             <Col xs={5} sm={5} lg={2}>
@@ -118,7 +113,7 @@ const Ingredients = () => {
               </Row>{" "}
             </Col>
             {showFilters && (
-              <IngredientFilters onClose={() => setShowFilters(false)} />
+              <StockFilters onClose={() => setShowFilters(false)} />
             )}
           </Row>
         </Card.Header>
@@ -138,21 +133,21 @@ const Ingredients = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredIngredients.map((ingredient) => (
-                  <tr key={ingredient._id}>
-                    <td>{ingredient.libelle}</td>
-                    <td>{ingredient?.type?.name || "-"}</td>
+                {filteredStocks.map((stock) => (
+                  <tr key={stock._id}>
+                    <td>{stock.libelle}</td>
+                    <td>{stock?.type?.name || "-"}</td>
                     <td className="text-capitalize">
-                      {ingredient.quantity} {ingredient.unit}
+                      {stock.quantity} {stock.unit}
                     </td>
-                    <td>${ingredient.price}</td>
+                    <td>${stock.price}</td>
                     <td>
                       <span
                         className={`badge ${
-                          ingredient.disponibility ? "bg-success" : "bg-danger"
+                          stock.disponibility ? "bg-success" : "bg-danger"
                         }`}
                       >
-                        {ingredient.disponibility ? "Available" : "Unavailable"}
+                        {stock.disponibility ? "Available" : "Unavailable"}
                       </span>
                     </td>
                     <td>
@@ -160,7 +155,7 @@ const Ingredients = () => {
                         <Col>
                           {" "}
                           <Link
-                            to={`/stock/${ingredient._id}`}
+                            to={`/stock/${stock._id}`}
                             style={{ color: "white" }}
                           >
                             <Button variant="info" size="sm">
@@ -170,7 +165,7 @@ const Ingredients = () => {
                         </Col>
                         <Col>
                           {" "}
-                          <EditIngredient idIng={ingredient._id} />
+                          <EditStock idIng={stock._id} />
                         </Col>
                         <Col>
                           {" "}
@@ -178,7 +173,7 @@ const Ingredients = () => {
                             variant="danger"
                             size="sm"
                             title="Delete"
-                            onClick={() => handleDelete(ingredient._id)}
+                            onClick={() => handleDelete(stock._id)}
                           >
                             <FaTrash size={15} />
                           </Button>
@@ -214,4 +209,4 @@ const Ingredients = () => {
     </>
   );
 };
-export default Ingredients;
+export default Stocks;

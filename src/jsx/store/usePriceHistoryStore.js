@@ -10,7 +10,7 @@ const usePriceHistoryStore = create(
     dailyPriceTrends: [],
     filterCriteria: {
       restaurantId: "",
-      ingredientId: "",
+      stockId: "",
       invoiceId: "",
       supplierId: "",
     },
@@ -25,7 +25,7 @@ const usePriceHistoryStore = create(
         const response = await axios.get(`${API_URL}/storage/history/trends`, {
           params: {
             restaurantId: filterCriteria.restaurantId || undefined,
-            ingredientId: filterCriteria.ingredientId || undefined,
+            stockId: filterCriteria.stockId || undefined,
             invoiceId: filterCriteria.invoiceId || undefined,
             supplierId: filterCriteria.supplierId || undefined,
           },
@@ -41,20 +41,26 @@ const usePriceHistoryStore = create(
     createPriceHistory: async (data) => {
       set({ isLoading: true, error: null });
       try {
-        const response = await axios.post(`${API_URL}/storage/history/Prices`, {
-          ingredientId: data.ingredientId,
-          restaurantId: data.restaurantId,
-          price: parseFloat(data.price),
-          invoiceId: data.invoiceId,
-          supplierId: data.supplierId || null,
-        }, {
-          headers: {
-            'Content-Type': 'application/json'
+        const response = await axios.post(
+          `${API_URL}/storage/history/Prices`,
+          {
+            stockId: data.stockId,
+            restaurantId: data.restaurantId,
+            price: parseFloat(data.price),
+            invoiceId: data.invoiceId,
+            supplierId: data.supplierId || null,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
           }
-        });
+        );
 
         if (response.status >= 400) {
-          throw new Error(response.data?.message || "Failed to create price history");
+          throw new Error(
+            response.data?.message || "Failed to create price history"
+          );
         }
 
         set((state) => ({
@@ -64,10 +70,11 @@ const usePriceHistoryStore = create(
 
         return { success: true, data: response.data };
       } catch (error) {
-        const errorMessage = error.response?.data?.message || 
-                           error.response?.data?.error || 
-                           error.message || 
-                           "Failed to create price history";
+        const errorMessage =
+          error.response?.data?.message ||
+          error.response?.data?.error ||
+          error.message ||
+          "Failed to create price history";
         set({ error: errorMessage, isLoading: false });
         return { success: false, error: errorMessage };
       }
@@ -85,7 +92,7 @@ const usePriceHistoryStore = create(
       set({
         filterCriteria: {
           restaurantId: "",
-          ingredientId: "",
+          stockId: "",
           invoiceId: "",
           supplierId: "",
         },
@@ -97,13 +104,16 @@ const usePriceHistoryStore = create(
       const { filterCriteria } = get();
       set({ isLoading: true, error: null });
       try {
-        const response = await axios.get(`${API_URL}/storage/history/daily-trends`, {
-          params: {
-            restaurantId: filterCriteria.restaurantId || undefined,
-            ingredientId: filterCriteria.ingredientId || undefined,
-            supplierId: filterCriteria.supplierId || undefined,
-          },
-        });
+        const response = await axios.get(
+          `${API_URL}/storage/history/daily-trends`,
+          {
+            params: {
+              restaurantId: filterCriteria.restaurantId || undefined,
+              stockId: filterCriteria.stockId || undefined,
+              supplierId: filterCriteria.supplierId || undefined,
+            },
+          }
+        );
         set({ dailyPriceTrends: response.data, isLoading: false });
       } catch (error) {
         const errorMessage = error.response?.data?.message || error.message;

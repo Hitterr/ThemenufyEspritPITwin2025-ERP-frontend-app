@@ -1,11 +1,11 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import axios from "axios";
-const API_URL = import.meta.env.VITE_BACKEND_URL + "/ingredient";
-const useIngredientStore = create(
+const API_URL = import.meta.env.VITE_BACKEND_URL + "/stock";
+const useStockStore = create(
   devtools((set, get) => ({
-    ingredients: [],
-    filteredIngredients: [],
+    stocks: [],
+    filteredStocks: [],
     filterCriteria: {
       search: "",
       type: "",
@@ -34,12 +34,12 @@ const useIngredientStore = create(
           minPrice: "",
           maxPrice: "",
         },
-        filteredIngredients: state.ingredients,
+        filteredStocks: state.stocks,
       }));
     },
     applyFilters: () => {
-      const { ingredients, filterCriteria } = get();
-      let filtered = [...ingredients];
+      const { stocks, filterCriteria } = get();
+      let filtered = [...stocks];
       // Search filter (name and type)
       if (filterCriteria.search) {
         const searchLower = filterCriteria.search.toLowerCase();
@@ -72,93 +72,93 @@ const useIngredientStore = create(
           (ing) => ing.price <= Number(filterCriteria.maxPrice)
         );
       }
-      set({ filteredIngredients: filtered });
+      set({ filteredStocks: filtered });
     },
-    // Modify fetchIngredients to initialize filteredIngredients
-    fetchIngredients: async (page = 1) => {
+    // Modify fetchStocks to initialize filteredStocks
+    fetchStocks: async (page = 1) => {
       try {
         const filters = get().filterCriteria;
         const { data } = await axios.get(API_URL, {
           params: { page: page, ...filters },
         });
         set({
-          ingredients: data.data,
-          filteredIngredients: data.data,
+          stocks: data.data,
+          filteredStocks: data.data,
           pagination: data.pagination,
         });
       } catch (error) {
-        console.error("Error fetching ingredients:", error.message);
+        console.error("Error fetching stocks:", error.message);
       }
     },
-    getIngredientById: async (id) => {
+    getStockById: async (id) => {
       try {
         const { data } = await axios.get(`${API_URL}/${id}`);
         return data.data;
       } catch (error) {
-        console.error("Error fetching ingredient:", error.message);
+        console.error("Error fetching stock:", error.message);
         return null;
       }
     },
-    addIngredient: async (ingredientData) => {
+    addStock: async (stockData) => {
       try {
-        const { data } = await axios.post(API_URL, ingredientData);
+        const { data } = await axios.post(API_URL, stockData);
         set((state) => {
-          const newIngredients = [...state.ingredients, data.data];
+          const newStocks = [...state.stocks, data.data];
           return {
-            ingredients: newIngredients,
-            filteredIngredients: newIngredients,
+            stocks: newStocks,
+            filteredStocks: newStocks,
           };
         });
         get().applyFilters(); // Reapply filters after adding
         return true;
       } catch (error) {
-        console.error("Error adding ingredient:", error.message);
+        console.error("Error adding stock:", error.message);
         return false;
       }
     },
-    updateIngredient: async (id, ingredientData) => {
+    updateStock: async (id, stockData) => {
       try {
         // Ensure numeric values before sending to API
         const dataToSend = {
-          ...ingredientData,
-          quantity: parseInt(ingredientData.quantity),
-          price: parseFloat(ingredientData.price),
-          maxQty: parseInt(ingredientData.maxQty),
-          minQty: parseInt(ingredientData.minQty),
+          ...stockData,
+          quantity: parseInt(stockData.quantity),
+          price: parseFloat(stockData.price),
+          maxQty: parseInt(stockData.maxQty),
+          minQty: parseInt(stockData.minQty),
         };
         const { data } = await axios.put(`${API_URL}/${id}`, dataToSend);
         set((state) => {
-          const updatedIngredients = state.ingredients.map((ingredient) =>
-            ingredient._id === id ? data.data : ingredient
+          const updatedStocks = state.stocks.map((stock) =>
+            stock._id === id ? data.data : stock
           );
           return {
-            ingredients: updatedIngredients,
-            filteredIngredients: updatedIngredients,
+            stocks: updatedStocks,
+            filteredStocks: updatedStocks,
           };
         });
         get().applyFilters();
         return true;
       } catch (error) {
-        console.error("Error updating ingredient:", error.message);
+        console.error("Error updating stock:", error.message);
         return false;
       }
     },
-    deleteIngredient: async (id) => {
+    deleteStock: async (id) => {
       try {
         await axios.delete(`${API_URL}/${id}`);
         set((state) => {
-          const remainingIngredients = state.ingredients.filter(
-            (ingredient) => ingredient._id !== id
+          const remainingStocks = state.stocks.filter(
+            (stock) => stock._id !== id
           );
           return {
-            ingredients: remainingIngredients,
-            filteredIngredients: remainingIngredients,
+            stocks: remainingStocks,
+            filteredStocks: remainingStocks,
           };
         });
         get().applyFilters(); // Reapply filters after deleting
         return true;
       } catch (error) {
-        console.error("Error deleting ingredient:", error.message);
+        console.error("Error deleting stock:", error.message);
         return false;
       }
     },
@@ -168,8 +168,8 @@ const useIngredientStore = create(
           amount,
         });
         set((state) => ({
-          ingredients: state.ingredients.map((ingredient) =>
-            ingredient._id === id ? data.data : ingredient
+          stocks: state.stocks.map((stock) =>
+            stock._id === id ? data.data : stock
           ),
         }));
         return true;
@@ -184,8 +184,8 @@ const useIngredientStore = create(
           amount,
         });
         set((state) => ({
-          ingredients: state.ingredients.map((ingredient) =>
-            ingredient._id === id ? data.data : ingredient
+          stocks: state.stocks.map((stock) =>
+            stock._id === id ? data.data : stock
           ),
         }));
         return true;
@@ -196,4 +196,4 @@ const useIngredientStore = create(
     },
   }))
 );
-export default useIngredientStore;
+export default useStockStore;

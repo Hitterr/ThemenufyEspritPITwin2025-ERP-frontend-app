@@ -4,11 +4,18 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaUtensils, FaCarrot, FaSortNumericUp } from "react-icons/fa";
 import Swal from "sweetalert2";
-const ConsumptionForm = () => {
+import { useQuery } from "@tanstack/react-query";
+import { apiRequest } from "../../utils/apiRequest";
+import { useRestaurantQuery, useStocksQuery } from "./utils/queries";
+const ConsumptionForm = ({ onCancel }) => {
   const navigate = useNavigate();
+  const { data: restaurants, isLoading: loadingRestaurants } =
+    useRestaurantQuery();
+
+  const { data: stocks, isLoading: loadingStocks } = useStocksQuery();
   const [formData, setFormData] = useState({
     restaurantId: "",
-    ingredientId: "",
+    stockId: "",
     qty: "",
   });
   const [errors, setErrors] = useState({});
@@ -31,7 +38,7 @@ const ConsumptionForm = () => {
     setFormData({ ...formData, [name]: value });
     validateField(name, value);
   };
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
     Object.keys(formData).forEach((key) => {
@@ -57,7 +64,7 @@ const handleSubmit = async (e) => {
         text: "Consumption recorded successfully",
         timer: 2000,
       });
-      setFormData({ restaurantId: "", ingredientId: "", ordreId:"",qty: "" });
+      setFormData({ restaurantId: "", stockId: "", ordreId: "", qty: "" });
       setErrors({});
       navigate("/storage");
     } catch (error) {
@@ -80,7 +87,8 @@ const handleSubmit = async (e) => {
         </Card.Header>
         <Card.Body className="p-6">
           {message && (
-            <Alert variant={message.includes("Error") ? "danger" : "success"}
+            <Alert
+              variant={message.includes("Error") ? "danger" : "success"}
               className="mb-4"
             >
               {message}
@@ -92,7 +100,7 @@ const handleSubmit = async (e) => {
                 <FaUtensils className="mr-2 text-blue-500" /> Restaurant ID
               </Form.Label>
               <Form.Control
-                type="text"
+                as="select"
                 name="restaurantId"
                 value={formData.restaurantId}
                 onChange={handleChange}
@@ -100,27 +108,45 @@ const handleSubmit = async (e) => {
                 className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
                 isInvalid={!!errors.restaurantId}
                 required
-              />
+              >
+                {restaurants &&
+                  restaurants.map((each) => {
+                    return (
+                      <option key={each._id} value={each._id}>
+                        {each.nameRes}
+                      </option>
+                    );
+                  })}
+              </Form.Control>
               <Form.Control.Feedback type="invalid">
                 {errors.restaurantId}
               </Form.Control.Feedback>
             </Form.Group>
             <Form.Group className="mb-4">
               <Form.Label className="font-semibold flex items-center">
-                <FaCarrot className="mr-2 text-blue-500" /> Ingredient ID
+                <FaUtensils className="mr-2 text-blue-500" /> Stock ID
               </Form.Label>
               <Form.Control
-                type="text"
-                name="ingredientId"
-                value={formData.ingredientId}
+                as="select"
+                name="stockId"
+                value={formData.stockId}
                 onChange={handleChange}
-                placeholder="Enter ingredient ID"
+                placeholder="Enter restaurant ID"
                 className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
-                isInvalid={!!errors.ingredientId}
+                isInvalid={!!errors.stockId}
                 required
-              />
+              >
+                {stocks &&
+                  stocks.map((each) => {
+                    return (
+                      <option key={each._id} value={each._id}>
+                        {each.libelle}
+                      </option>
+                    );
+                  })}
+              </Form.Control>
               <Form.Control.Feedback type="invalid">
-                {errors.ingredientId}
+                {errors.stockId}
               </Form.Control.Feedback>
             </Form.Group>
 
@@ -132,8 +158,9 @@ const handleSubmit = async (e) => {
                 type="text"
                 name="ordreId"
                 value={formData.ordreId}
+                defaultValue={"680c09fb195cebecf6b71273"}
                 onChange={handleChange}
-                placeholder="Enter ingredient ID"
+                placeholder="Enter stock ID"
                 className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
                 isInvalid={!!errors.ordreId}
                 required
@@ -172,7 +199,7 @@ const handleSubmit = async (e) => {
               <Button
                 variant="secondary"
                 type="button"
-                onClick={() => navigate("/storage")}
+                onClick={onCancel}
                 className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 flex-1"
               >
                 Cancel

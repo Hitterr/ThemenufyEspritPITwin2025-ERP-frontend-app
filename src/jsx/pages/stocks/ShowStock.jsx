@@ -1,23 +1,23 @@
 import { useEffect, useState } from "react";
 import { Card, Row, Col, Button } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
-import useIngredientStore from "../../store/ingredientStore";
+import useStockStore from "../../store/stockStore";
 import { FaPencilAlt } from "react-icons/fa";
 import { MoveLeft } from "lucide-react";
-import EditIngredient from "./EditIngredient";
-const ShowIngredient = () => {
+import EditStock from "./EditStock";
+const ShowStock = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getIngredientById, ingredients } = useIngredientStore();
-  const [ingredient, setIngredient] = useState(null);
+  const { getStockById, stocks } = useStockStore();
+  const [stock, setStock] = useState(null);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    loadIngredient();
-  }, [id, ingredients]);
-  const loadIngredient = () => {
-    const data = ingredients.find((ing) => ing._id === id);
+    loadStock();
+  }, [id, stocks]);
+  const loadStock = () => {
+    const data = stocks.find((ing) => ing._id === id);
     if (data) {
-      setIngredient(data);
+      setStock(data);
     } else {
       navigate("/stock");
     }
@@ -26,13 +26,13 @@ const ShowIngredient = () => {
   if (loading) {
     return <div>Loading...</div>;
   }
-  if (!ingredient) {
-    return <div>Ingredient not found</div>;
+  if (!stock) {
+    return <div>Stock not found</div>;
   }
   return (
     <Card>
       <Card.Header>
-        <Card.Title className="mb-0">{ingredient.libelle} Details</Card.Title>
+        <Card.Title className="mb-0">{stock.libelle} Details</Card.Title>
       </Card.Header>
       <Card.Body>
         <Row>
@@ -41,22 +41,22 @@ const ShowIngredient = () => {
               <h5 className="text-primary">Basic Information</h5>
               <hr />
               <div className="mb-3">
-                <strong>Name:</strong> {ingredient.libelle}
+                <strong>Name:</strong> {stock.libelle}
               </div>
               <div className="mb-3">
-                <strong>Type:</strong> {ingredient?.type?.name || "-"}
+                <strong>Type:</strong> {stock?.type?.name || "-"}
               </div>
               <div className="mb-3">
-                <strong>Price:</strong> ${ingredient.price}
+                <strong>Price:</strong> ${stock.price}
               </div>
               <div className="mb-3">
                 <strong>Status:</strong>{" "}
                 <span
                   className={`badge ${
-                    ingredient.disponibility ? "badge-success" : "badge-danger"
+                    stock.disponibility ? "badge-success" : "badge-danger"
                   }`}
                 >
-                  {ingredient.disponibility ? "Available" : "Unavailable"}
+                  {stock.disponibility ? "Available" : "Unavailable"}
                 </span>
               </div>
             </div>
@@ -66,28 +66,23 @@ const ShowIngredient = () => {
               <h5 className="text-primary">Quantity Management</h5>
               <hr />
               <div className="mb-3">
-                <strong>Current Quantity:</strong> {ingredient.quantity}{" "}
-                {ingredient.unit}
+                <strong>Current Quantity:</strong> {stock.quantity} {stock.unit}
               </div>
               <div className="mb-3">
-                <strong>Minimum Quantity:</strong> {ingredient.minQty}{" "}
-                {ingredient.unit}
+                <strong>Minimum Quantity:</strong> {stock.minQty} {stock.unit}
               </div>
               <div className="mb-3">
-                <strong>Maximum Quantity:</strong> {ingredient.maxQty}{" "}
-                {ingredient.unit}
+                <strong>Maximum Quantity:</strong> {stock.maxQty} {stock.unit}
               </div>
               <div className="mb-3">
                 <span
                   className={`badge ${
-                    ingredient.quantity > ingredient.minQty
+                    stock.quantity > stock.minQty
                       ? "badge-success"
                       : "badge-warning"
                   }`}
                 >
-                  {ingredient.quantity > ingredient.minQty
-                    ? "Stock OK"
-                    : "Low Stock"}
+                  {stock.quantity > stock.minQty ? "Stock OK" : "Low Stock"}
                 </span>
               </div>
             </div>
@@ -104,11 +99,11 @@ const ShowIngredient = () => {
             </Button>
           </Col>
           <Col lg={2} sm={4} xs={6}>
-            <EditIngredient idIng={id} />
+            <EditStock idIng={id} />
           </Col>
         </Row>
       </Card.Body>
     </Card>
   );
 };
-export default ShowIngredient;
+export default ShowStock;

@@ -2,7 +2,7 @@ import { jsPDF } from "jspdf";
 import { format } from "date-fns";
 import Logo from "../../../../assets/images/logo.png";
 
-const generatePDF = (currentInvoice, currentUser, ingredients) => {
+const generatePDF = (currentInvoice, currentUser, stocks) => {
   const doc = new jsPDF();
 
   const marginLeft = 15;
@@ -105,23 +105,23 @@ const generatePDF = (currentInvoice, currentUser, ingredients) => {
 
   doc.setFont("Helvetica", "normal");
   const sortedItems = currentInvoice?.items?.sort((a, b) => {
-    const ingredientA = ingredients.find((ing) => ing._id === a.ingredient);
-    const ingredientB = ingredients.find((ing) => ing._id === b.ingredient);
-    if (ingredientA && ingredientB) {
-      return ingredientA.libelle.localeCompare(ingredientB.libelle);
+    const stockA = stocks.find((ing) => ing._id === a.stock);
+    const stockB = stocks.find((ing) => ing._id === b.stock);
+    if (stockA && stockB) {
+      return stockA.libelle.localeCompare(stockB.libelle);
     }
     return 0;
   });
 
   sortedItems?.forEach((item, index) => {
-    const ingredient = ingredients.find((ing) => ing._id === item.ingredient);
+    const stock = stocks.find((ing) => ing._id === item.stock);
     const y = tableStartY + 10 + index * 10;
 
     if (index % 2 === 0) {
       doc.setFillColor(255, 230, 240);
       doc.rect(15, y - 6, 180, 8, "F");
     }
-    doc.text(`${item?.ingredient?.libelle || "Unknown"}`, 20, y);
+    doc.text(`${item?.stock?.libelle || "Unknown"}`, 20, y);
     doc.text(`${item?.price} TND`, 100, y);
     doc.text(`${item?.quantity}`, 140, y);
     doc.text(`${(item?.price * item?.quantity).toFixed(3)} TND`, 170, y);
