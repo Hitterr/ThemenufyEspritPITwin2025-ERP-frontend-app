@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from "react";
 import wasteStore from "../../store/wasteStore";
 import ChartDonught3 from "../../components/Sego/Home/donught";
-import { FaTrashAlt, FaDollarSign, FaWeight, FaFilter, FaUndo, FaPizzaSlice, FaPercentage } from "react-icons/fa";
-import "bootstrap/dist/css/bootstrap.min.css";
+import {
+  FaTrashAlt,
+  FaDollarSign,
+  FaWeight,
+  FaFilter,
+  FaUndo,
+  FaPizzaSlice,
+  FaPercentage,
+} from "react-icons/fa";
 
 const Waste = () => {
   const {
@@ -53,7 +60,9 @@ const Waste = () => {
   const handleRestaurantChange = (e) => {
     const selectedName = e.target.value;
     setRestaurantName(selectedName);
-    const selectedRestaurant = restaurants.find((r) => r.nameRes === selectedName);
+    const selectedRestaurant = restaurants.find(
+      (r) => r.nameRes === selectedName
+    );
     setFilterCriteria({
       ...filterCriteria,
       restaurantId: selectedRestaurant?._id || "",
@@ -108,9 +117,10 @@ const Waste = () => {
     },
     {
       title: "Global Waste Percentage",
-      value: `${(wastePercentage?.summary?.globalWastePercentage || 0).toFixed(2)}%`,
+      value: `${(wastePercentage?.summary?.globalWastePercentage || 0).toFixed(
+        2
+      )}%`,
       icon: icons.wastePercentage,
-        
     },
   ];
 
@@ -135,7 +145,10 @@ const Waste = () => {
                 </label>
                 {loadingRestaurants ? (
                   <div className="form-control">
-                    <div className="spinner-border spinner-border-sm" role="status">
+                    <div
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                    >
                       <span className="visually-hidden">Loading...</span>
                     </div>
                     <span className="ms-2">Loading restaurants...</span>
@@ -188,7 +201,11 @@ const Waste = () => {
                 <button
                   type="submit"
                   className="btn flex-grow-1"
-                  style={{ backgroundColor: "#EA7A9A", borderColor: "#EA7A9A", color: "white" }}
+                  style={{
+                    backgroundColor: "#EA7A9A",
+                    borderColor: "#EA7A9A",
+                    color: "white",
+                  }}
                   disabled={isLoading || !filterCriteria.restaurantId}
                 >
                   {isLoading ? "Applying..." : "Apply Filters"}
@@ -210,14 +227,21 @@ const Waste = () => {
 
       {isLoading && (
         <div className="text-center py-4">
-          <div className="spinner-border" style={{ color: "#EA7A9A" }} role="status">
+          <div
+            className="spinner-border"
+            style={{ color: "#EA7A9A" }}
+            role="status"
+          >
             <span className="visually-hidden">Loading...</span>
           </div>
         </div>
       )}
 
       {error && (
-        <div className="alert alert-danger d-flex align-items-center" role="alert">
+        <div
+          className="alert alert-danger d-flex align-items-center"
+          role="alert"
+        >
           <div className="flex-grow-1">{error}</div>
           <button
             type="button"
@@ -246,7 +270,9 @@ const Waste = () => {
                   <div className="media-body me-2">
                     <h2 className="text-white font-w600">{card.value}</h2>
                     <span className="text-white">{card.title}</span>
-                    {card.subText && <p className="text-white mb-0 small">{card.subText}</p>}
+                    {card.subText && (
+                      <p className="text-white mb-0 small">{card.subText}</p>
+                    )}
                   </div>
                   <div className="d-inline-block position-relative donut-chart-sale">
                     <ChartDonught3
@@ -254,7 +280,11 @@ const Waste = () => {
                       backgroundColor2="#F6B4AF"
                       height="100"
                       width="100"
-                      value={card.value.includes("%") ? parseFloat(card.value) || 0 : 0}
+                      value={
+                        card.value.includes("%")
+                          ? parseFloat(card.value) || 0
+                          : 0
+                      }
                     />
                     <small className="text-white">{card.icon}</small>
                     <span className="circle bg-white" />
