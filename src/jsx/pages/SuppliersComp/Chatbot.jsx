@@ -52,7 +52,7 @@ const Chatbot = ({ show, onHide }) => {
 
   return (
     <Modal show={show} onHide={onHide} centered size="lg">
-      <Modal.Header closeButton className="bg-primary text-white">
+      <Modal.Header closeButton className=" text-white">
         <Modal.Title>
           <i className="fas fa-robot me-2"></i>Assistant Fournisseur
         </Modal.Title>
@@ -72,7 +72,7 @@ const Chatbot = ({ show, onHide }) => {
               className={`p-3 rounded-4 shadow-sm ${
                 msg.isUser
                   ? "align-self-end bg-primary text-white"
-                  : "align-self-start bg-light text-dark"
+                  : "align-self-start bg-secondary text-white"
               }`}
               style={{ maxWidth: "75%" }}
             >

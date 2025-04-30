@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Table, Button, Form, Row, Col, Collapse } from "react-bootstrap";
+import { Table, Button, Form, Row, Col, Collapse, Card } from "react-bootstrap";
 import axios from "axios";
 import SupplierComparisonTable from "./SupplierComparisonTable";
 import Chatbot from "./Chatbot";
@@ -18,7 +18,9 @@ export default function InventorySupplierManager() {
   useEffect(() => {
     const fetchInventory = async () => {
       try {
-        const { data } = await axios.get("http://localhost:5000/api/ingredient");
+        const { data } = await axios.get(
+          "http://localhost:5000/api/ingredient"
+        );
         if (data.success) setInventory(data.data);
         else console.error("API error:", data.message);
       } catch (error) {
@@ -61,7 +63,9 @@ export default function InventorySupplierManager() {
       if (response.data.success) {
         setInventory((prev) =>
           prev.map((item) =>
-            selectedItems.includes(item._id) ? { ...item, ...payload.update } : item
+            selectedItems.includes(item._id)
+              ? { ...item, ...payload.update }
+              : item
           )
         );
         setSelectedItems([]);
@@ -77,8 +81,12 @@ export default function InventorySupplierManager() {
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="mb-4 text-center">Inventory and Supplier Management</h2>
+    <Card className="container mt-5 p-5">
+      <Card.Header className="mb-3">
+        <Card.Title className="text-xl font-bold flex items-center">
+          Inventory and Supplier Management
+        </Card.Title>
+      </Card.Header>
 
       {/* Chatbot and Filters Button */}
       <div className="mb-4 d-flex justify-content-between align-items-center">
@@ -87,7 +95,8 @@ export default function InventorySupplierManager() {
           onClick={() => setShowFilters(!showFilters)}
           className="d-flex align-items-center gap-2 rounded-3"
         >
-          <i className="fas fa-filter"></i> {showFilters ? "Hide Filters" : "Show Filters"}
+          <i className="fas fa-filter"></i>{" "}
+          {showFilters ? "Hide Filters" : "Show Filters"}
         </Button>
 
         <Button
@@ -169,7 +178,7 @@ export default function InventorySupplierManager() {
 
       {/* Inventory Table */}
       <Table hover responsive>
-        <thead className="table-primary text-center" >
+        <thead className=" text-center">
           <tr>
             <th>Select</th>
             <th>Name</th>
@@ -178,7 +187,7 @@ export default function InventorySupplierManager() {
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody className="text-center" >
+        <tbody className="text-center">
           {filteredInventory.length > 0 ? (
             filteredInventory.map((item) => (
               <tr key={item._id}>
@@ -191,18 +200,17 @@ export default function InventorySupplierManager() {
                 <td>{item.libelle}</td>
                 <td>{item.quantity}</td>
                 <td>{item.unit}</td>
-				<td className="text-center">
-  <Button
-    variant="outline-primary"
-    size="sm"
-    className="d-flex align-items-center gap-2 px-2 py-1 rounded-2 mx-auto"
-    onClick={() => setShowComparison(item._id)}
-  >
-    <i className="fas fa-balance-scale"></i>
-    <span className="d-none d-md-inline">Compare</span>
-  </Button>
-</td>
-
+                <td className="text-center">
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    className="d-flex align-items-center gap-2 px-2 py-1 rounded-2 mx-auto"
+                    onClick={() => setShowComparison(item._id)}
+                  >
+                    <i className="fas fa-balance-scale"></i>
+                    <span className="d-none d-md-inline">Compare</span>
+                  </Button>
+                </td>
               </tr>
             ))
           ) : (
@@ -218,10 +226,10 @@ export default function InventorySupplierManager() {
       {/* Supplier Comparison */}
       {showComparison && (
         <div className="mt-4">
-          <h3 className="mb-4 text-center" >Supplier Comparison</h3>
+          <h3 className="mb-4 text-center">Supplier Comparison</h3>
           <SupplierComparisonTable ingredientId={showComparison} />
         </div>
       )}
-    </div>
+    </Card>
   );
 }

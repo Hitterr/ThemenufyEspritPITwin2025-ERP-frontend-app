@@ -57,8 +57,8 @@ export default function SupplierComparisonTable({ ingredientId }) {
   if (error) return <Alert variant="danger">{error}</Alert>;
 
   return (
-    <Table striped bordered hover className="text-center shadow-sm">
-      <thead className="table-primary text-white">
+    <Table hover className="text-center shadow-sm">
+      <thead className=" text-white">
         <tr>
           <th
             onClick={() => handleSort("supplierName")}
