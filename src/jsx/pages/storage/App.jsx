@@ -1,6 +1,6 @@
 // src/App.jsx
 import { useEffect, useState } from "react";
-import { Card, Button, Row, Col, Nav, Tab } from "react-bootstrap";
+import { Button, Row, Col, Nav, Tab, Modal } from "react-bootstrap";
 import { FaChartLine, FaUtensils } from "react-icons/fa";
 import ConsumptionForm from "./ConsumptionForm";
 import ConsumptionList from "./ConsumptionList";
@@ -62,39 +62,34 @@ const App = ({ restaurantId = "" }) => {
 				<Tab.Content>
 					<Tab.Pane eventKey="consumption">
 						{showConsumptionForm && (
-							<Card className="mb-4 shadow-sm">
-								<Card.Body>
-									<ConsumptionForm
-										restaurantId={restaurantId}
-										onSuccess={() => {
-											setShowConsumptionForm(false);
-											fetchConsumptions(restaurantId);
-										}}
-										onCancel={() => setShowConsumptionForm(false)}
-									/>
-								</Card.Body>
-							</Card>
+							<Modal
+								show={showConsumptionForm}
+								onHide={() => setShowConsumptionForm(false)}
+							>
+								<ConsumptionForm
+									restaurantId={restaurantId}
+									onSuccess={() => {
+										setShowConsumptionForm(false);
+										fetchConsumptions(restaurantId);
+									}}
+									onCancel={() => setShowConsumptionForm(false)}
+								/>
+							</Modal>
 						)}
-						<Card className="shadow-sm">
-							<Card.Body>
-								<ConsumptionList restaurantId={restaurantId} />
-							</Card.Body>
-						</Card>
+						<ConsumptionList restaurantId={restaurantId} />
 					</Tab.Pane>
 					<Tab.Pane eventKey="prices">
 						{showPriceForm && (
-							<Card className="mb-4 shadow-sm">
-								<Card.Body>
-									<PriceHistoryForm
-										restaurantId={restaurantId}
-										onSuccess={() => {
-											setShowPriceForm(false);
-											fetchPriceHistories(restaurantId);
-										}}
-										onCancel={() => setShowPriceForm(false)}
-									/>
-								</Card.Body>
-							</Card>
+							<Modal show={showPriceForm} onHide={() => setShowPriceForm(false)}>
+								<PriceHistoryForm
+									restaurantId={restaurantId}
+									onSuccess={() => {
+										setShowPriceForm(false);
+										fetchPriceHistories(restaurantId);
+									}}
+									onCancel={() => setShowPriceForm(false)}
+								/>
+							</Modal>
 						)}
 						<PriceHistoryList />
 					</Tab.Pane>

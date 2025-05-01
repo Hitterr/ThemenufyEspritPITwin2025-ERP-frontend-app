@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Card, Form, Button, Alert } from "react-bootstrap";
+import { Card, Form, Button, Alert, Col } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaUtensils, FaCarrot, FaSortNumericUp } from "react-icons/fa";
@@ -72,137 +72,138 @@ const ConsumptionForm = ({ onCancel }) => {
 		}
 	};
 	return (
-		<div className="container mx-auto p-4">
-			<Card className="shadow-lg rounded-lg max-w-lg mx-auto bg-white">
-				<Card.Header className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
-					<Card.Title className="text-xl font-bold flex items-center">
-						<FaUtensils className="mr-2" /> Record Consumption
-					</Card.Title>
-				</Card.Header>
-				<Card.Body className="p-6">
-					{message && (
-						<Alert
-							variant={message.includes("Error") ? "danger" : "success"}
-							className="mb-4"
+		<>
+			<Card.Header className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
+				<Card.Title className="text-xl font-bold flex items-center">
+					<FaUtensils className="mr-2" /> Record Consumption
+				</Card.Title>
+			</Card.Header>
+			<Card.Body className="p-6">
+				{message && (
+					<Alert
+						variant={message.includes("Error") ? "danger" : "success"}
+						className="mb-4"
+					>
+						{message}
+					</Alert>
+				)}
+				<Form onSubmit={handleSubmit}>
+					<Form.Group className="mb-4">
+						<Form.Label className="font-semibold flex items-center">
+							<FaUtensils className="mr-2 text-blue-500" /> Restaurant ID
+						</Form.Label>
+						<Form.Control
+							as="select"
+							name="restaurantId"
+							value={formData.restaurantId}
+							onChange={handleChange}
+							placeholder="Enter restaurant ID"
+							className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
+							isInvalid={!!errors.restaurantId}
+							required
 						>
-							{message}
-						</Alert>
-					)}
-					<Form onSubmit={handleSubmit}>
-						<Form.Group className="mb-4">
-							<Form.Label className="font-semibold flex items-center">
-								<FaUtensils className="mr-2 text-blue-500" /> Restaurant ID
-							</Form.Label>
-							<Form.Control
-								as="select"
-								name="restaurantId"
-								value={formData.restaurantId}
-								onChange={handleChange}
-								placeholder="Enter restaurant ID"
-								className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
-								isInvalid={!!errors.restaurantId}
-								required
-							>
-								<option value="">-- Select a restaurant --</option>
-								{restaurants &&
-									restaurants.map((each) => {
-										return (
-											<option key={each._id} value={each._id}>
-												{each.nameRes}
-											</option>
-										);
-									})}
-							</Form.Control>
-							<Form.Control.Feedback type="invalid">
-								{errors.restaurantId}
-							</Form.Control.Feedback>
-						</Form.Group>
-						<Form.Group className="mb-4">
-							<Form.Label className="font-semibold flex items-center">
-								<FaUtensils className="mr-2 text-blue-500" /> Stock ID
-							</Form.Label>
-							<Form.Control
-								as="select"
-								name="stockId"
-								value={formData.stockId}
-								onChange={handleChange}
-								placeholder="Enter restaurant ID"
-								className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
-								isInvalid={!!errors.stockId}
-								required
-							>
-								<option value="">-- Select a stock --</option>
-								{stocks &&
-									stocks.map((each) => {
-										return (
-											<option key={each._id} value={each._id}>
-												{each.libelle}
-											</option>
-										);
-									})}
-							</Form.Control>
-							<Form.Control.Feedback type="invalid">
-								{errors.stockId}
-							</Form.Control.Feedback>
-						</Form.Group>
-						<Form.Group className="mb-4">
-							<Form.Label className="font-semibold flex items-center">
-								<FaCarrot className="mr-2 text-blue-500" /> Ordre ID
-							</Form.Label>
-							<Form.Control
-								type="text"
-								name="ordreId"
-								value={formData.ordreId}
-								defaultValue={"680c09fb195cebecf6b71273"}
-								onChange={handleChange}
-								placeholder="Enter stock ID"
-								className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
-								isInvalid={!!errors.ordreId}
-								required
-							/>
-							<Form.Control.Feedback type="invalid">
-								{errors.ordreId}
-							</Form.Control.Feedback>
-						</Form.Group>
-						<Form.Group className="mb-4">
-							<Form.Label className="font-semibold flex items-center">
-								<FaSortNumericUp className="mr-2 text-blue-500" /> Quantity
-							</Form.Label>
-							<Form.Control
-								type="number"
-								name="qty"
-								value={formData.qty}
-								onChange={handleChange}
-								placeholder="Enter quantity"
-								className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
-								isInvalid={!!errors.qty}
-								required
-							/>
-							<Form.Control.Feedback type="invalid">
-								{errors.qty}
-							</Form.Control.Feedback>
-						</Form.Group>
-						<div className="flex gap-3">
-							<Button
-								variant="primary"
-								type="submit"
-								className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300 flex-1"
-							>
-								Submit
-							</Button>
+							<option value="">-- Select a restaurant --</option>
+							{restaurants &&
+								restaurants.map((each) => {
+									return (
+										<option key={each._id} value={each._id}>
+											{each.nameRes}
+										</option>
+									);
+								})}
+						</Form.Control>
+						<Form.Control.Feedback type="invalid">
+							{errors.restaurantId}
+						</Form.Control.Feedback>
+					</Form.Group>
+					<Form.Group className="mb-4">
+						<Form.Label className="font-semibold flex items-center">
+							<FaUtensils className="mr-2 text-blue-500" /> Stock ID
+						</Form.Label>
+						<Form.Control
+							as="select"
+							name="stockId"
+							value={formData.stockId}
+							onChange={handleChange}
+							placeholder="Enter restaurant ID"
+							className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
+							isInvalid={!!errors.stockId}
+							required
+						>
+							<option value="">-- Select a stock --</option>
+							{stocks &&
+								stocks.map((each) => {
+									return (
+										<option key={each._id} value={each._id}>
+											{each.libelle}
+										</option>
+									);
+								})}
+						</Form.Control>
+						<Form.Control.Feedback type="invalid">
+							{errors.stockId}
+						</Form.Control.Feedback>
+					</Form.Group>
+					<Form.Group className="mb-4">
+						<Form.Label className="font-semibold flex items-center">
+							<FaCarrot className="mr-2 text-blue-500" /> Ordre ID
+						</Form.Label>
+						<Form.Control
+							type="text"
+							name="ordreId"
+							value={formData.ordreId}
+							defaultValue={"680c09fb195cebecf6b71273"}
+							onChange={handleChange}
+							placeholder="Enter stock ID"
+							className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
+							isInvalid={!!errors.ordreId}
+							required
+						/>
+						<Form.Control.Feedback type="invalid">
+							{errors.ordreId}
+						</Form.Control.Feedback>
+					</Form.Group>
+					<Form.Group className="mb-4">
+						<Form.Label className="font-semibold flex items-center">
+							<FaSortNumericUp className="mr-2 text-blue-500" /> Quantity
+						</Form.Label>
+						<Form.Control
+							type="number"
+							name="qty"
+							value={formData.qty}
+							onChange={handleChange}
+							placeholder="Enter quantity"
+							className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
+							isInvalid={!!errors.qty}
+							required
+						/>
+						<Form.Control.Feedback type="invalid">{errors.qty}</Form.Control.Feedback>
+					</Form.Group>
+					<Card.Footer className="row justify-content-between w-100 gap-3">
+						<Col>
 							<Button
 								variant="secondary"
 								type="button"
 								onClick={onCancel}
-								className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 flex-1"
+								className="bg-gray-500 w-100 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 flex-1"
 							>
 								Cancel
 							</Button>
-						</div>
-					</Form>
-				</Card.Body>
-			</Card>
-		</div>
+						</Col>{" "}
+						<Col>
+							{" "}
+							<Button
+								variant="primary"
+								type="submit"
+								className="bg-blue-600 w-100 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300 flex-1"
+							>
+								Submit
+							</Button>
+						</Col>
+					</Card.Footer>
+				</Form>
+			</Card.Body>
+		</>
 	);
 };
 export default ConsumptionForm;

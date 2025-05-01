@@ -1,40 +1,38 @@
-import React, { useEffect, useState, useMemo } from "react";
-import {
-  Card,
-  Form,
-  Button,
-  Alert,
-  Spinner,
-  InputGroup,
-  Row,
-  Col,
-  OverlayTrigger,
-  Tooltip,
-} from "react-bootstrap";
-import {
-  FaSearch,
-  FaTimesCircle,
-  FaDollarSign,
-  FaStore,
-  FaCarrot,
-  FaBoxes,
-  FaCalendarAlt,
-} from "react-icons/fa";
-import Swal from "sweetalert2";
+import { Card, Table } from "react-bootstrap";
 import "animate.css";
-import usePriceHistoryStore from "../../store/usePriceHistoryStore";
-
+import { usePriceHistoryQuery } from "./utils/queries";
 const PriceHistoryList = () => {
-  return (
-    <Card>
-      <Card.Header>
-        <div className="d-flex align-items-center">
-          <h5 className="mb-0">Price History</h5>
-        </div>
-      </Card.Header>
-      <Card.Body></Card.Body>
-    </Card>
-  );
+	const { data: priceHistory, isFetched, isLoading } = usePriceHistoryQuery();
+	if (isLoading) return <div>Loading...</div>;
+	return (
+		<Card>
+			<Card.Body>
+				<Table>
+					<thead>
+						<tr>
+							<th>Date</th>
+							<th>Stock</th>
+							<th>Price History</th>
+							<th>Restaurant</th>
+							<th>Supplier</th>
+						</tr>
+					</thead>
+					<tbody>
+						{isFetched &&
+							priceHistory &&
+							priceHistory.map((each) => (
+								<tr key={each._id}>
+									<td>{new Date(each?.createdAt).toLocaleDateString()}</td>
+									<td>{each?.stockId?.libelle}</td>
+									<td>{each?.price}</td>
+									<td>{each?.restaurantId?.nameRes}</td>
+									<td>{each?.supplierId?.name}</td>
+								</tr>
+							))}
+					</tbody>
+				</Table>
+			</Card.Body>
+		</Card>
+	);
 };
-
 export default PriceHistoryList;
