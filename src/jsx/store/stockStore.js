@@ -1,8 +1,7 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import axios from "axios";
 import { apiRequest } from "../utils/apiRequest";
-const API_URL = import.meta.env.VITE_BACKEND_URL + "/stock";
+const API_URL = "/stock";
 const useStockStore = create(
 	devtools((set, get) => ({
 		stocks: [],
@@ -101,7 +100,7 @@ const useStockStore = create(
 		},
 		addStock: async (stockData) => {
 			try {
-				const { data } = await axios.post(API_URL, stockData);
+				const { data } = await apiRequest.post(API_URL, stockData);
 				set((state) => {
 					const newStocks = [...state.stocks, data.data];
 					return {
@@ -126,7 +125,7 @@ const useStockStore = create(
 					maxQty: parseInt(stockData.maxQty),
 					minQty: parseInt(stockData.minQty),
 				};
-				const { data } = await axios.put(`${API_URL}/${id}`, dataToSend);
+				const { data } = await apiRequest.put(`${API_URL}/${id}`, dataToSend);
 				set((state) => {
 					const updatedStocks = state.stocks.map((stock) =>
 						stock._id === id ? data.data : stock
@@ -145,7 +144,7 @@ const useStockStore = create(
 		},
 		deleteStock: async (id) => {
 			try {
-				await axios.delete(`${API_URL}/${id}`);
+				await apiRequest.delete(`${API_URL}/${id}`);
 				set((state) => {
 					const remainingStocks = state.stocks.filter((stock) => stock._id !== id);
 					return {
@@ -162,7 +161,7 @@ const useStockStore = create(
 		},
 		increaseQuantity: async (id, amount) => {
 			try {
-				const { data } = await axios.patch(`${API_URL}/${id}/increase`, {
+				const { data } = await apiRequest.patch(`${API_URL}/${id}/increase`, {
 					amount,
 				});
 				set((state) => ({
@@ -178,7 +177,7 @@ const useStockStore = create(
 		},
 		decreaseQuantity: async (id, amount) => {
 			try {
-				const { data } = await axios.patch(`${API_URL}/${id}/decrease`, {
+				const { data } = await apiRequest.patch(`${API_URL}/${id}/decrease`, {
 					amount,
 				});
 				set((state) => ({

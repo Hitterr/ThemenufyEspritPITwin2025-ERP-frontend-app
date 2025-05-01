@@ -10,7 +10,7 @@ const useRecipeStore = create(
 		fetchRecipes: async () => {
 			set({ loading: true, error: null });
 			try {
-				const { data } = await apiRequest.get(`${API_URL}/recipe`);
+				const { data } = await apiRequest.get(`/recipe`);
 				if (data.success) {
 					set({ recipes: data.data, loading: false });
 				} else {

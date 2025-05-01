@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Table, Button, Form, Row, Col, Collapse, Card } from "react-bootstrap";
-import axios from "axios";
 import SupplierComparisonTable from "./SupplierComparisonTable";
 import Chatbot from "./Chatbot";
 import { apiRequest } from "../../utils/apiRequest";
@@ -17,7 +16,7 @@ export default function InventorySupplierManager() {
 	useEffect(() => {
 		const fetchInventory = async () => {
 			try {
-				const { data } = await apiRequest.get("http://localhost:5000/api/stock");
+				const { data } = await apiRequest.get("/stock");
 				if (data.success) setInventory(data.data);
 				else console.error("API error:", data.message);
 			} catch (error) {
@@ -50,10 +49,7 @@ export default function InventorySupplierManager() {
 			update: { [bulkField]: Number(bulkValue) },
 		};
 		try {
-			const response = await axios.patch(
-				"http://localhost:5000/api/stock/bulk",
-				payload
-			);
+			const response = await apiRequest.patch("/stock/bulk", payload);
 			if (response.data.success) {
 				setInventory((prev) =>
 					prev.map((item) =>

@@ -28,16 +28,13 @@ const useConsumptionHistoryStore = create(
 			console.log("Filter Criteria:", filterCriteria); // Debug log
 			set({ isLoading: true, error: null });
 			try {
-				const response = await apiRequest.get(
-					`${API_URL}/storage/history/consumptions`,
-					{
-						params: {
-							restaurantId: filterCriteria.restaurantId || undefined,
-							stockId: filterCriteria.stockId || undefined,
-							ordreId: filterCriteria.ordreId || undefined,
-						},
-					}
-				);
+				const response = await apiRequest.get(`/storage/history/consumptions`, {
+					params: {
+						restaurantId: filterCriteria.restaurantId || undefined,
+						stockId: filterCriteria.stockId || undefined,
+						ordreId: filterCriteria.ordreId || undefined,
+					},
+				});
 				console.log("Fetch Consumptions Response:", response.data); // Debug log
 				set({ consumptions: response.data, isLoading: false });
 			} catch (error) {
@@ -51,15 +48,12 @@ const useConsumptionHistoryStore = create(
 		createConsumption: async (stockId, restaurantId, ordreId, qty) => {
 			set({ isLoading: true, error: null });
 			try {
-				const response = await apiRequest.post(
-					`${API_URL}/storage/history/consumptions`,
-					{
-						stockId,
-						restaurantId,
-						ordreId,
-						qty,
-					}
-				);
+				const response = await apiRequest.post(`/storage/history/consumptions`, {
+					stockId,
+					restaurantId,
+					ordreId,
+					qty,
+				});
 				set((state) => ({
 					consumptions: [response.data, ...state.consumptions],
 					isLoading: false,
@@ -80,7 +74,7 @@ const useConsumptionHistoryStore = create(
 			set({ isLoading: true, error: null });
 			try {
 				const response = await apiRequest.get(
-					`${API_URL}/storage/history/trends/daily/${restaurantId}`,
+					`/storage/history/trends/daily/${restaurantId}`,
 					{
 						params: { days },
 					}

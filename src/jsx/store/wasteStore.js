@@ -39,7 +39,7 @@ const wasteStore = create(
 			const { filterCriteria } = get();
 			set({ isLoading: true, error: null });
 			try {
-				const response = await apiRequest.get(`${API_URL}/waste/summary`, {
+				const response = await apiRequest.get(`/waste/summary`, {
 					params: {
 						restaurantId: filterCriteria.restaurantId,
 						startDate: filterCriteria.startDate || undefined,
@@ -57,7 +57,7 @@ const wasteStore = create(
 			const { filterCriteria } = get();
 			set({ isLoading: true, error: null });
 			try {
-				const response = await apiRequest.get(`${API_URL}/waste/percentage`, {
+				const response = await apiRequest.get(`/waste/percentage`, {
 					params: {
 						restaurantId: filterCriteria.restaurantId,
 						startDate: filterCriteria.startDate || undefined,
@@ -87,7 +87,7 @@ const wasteStore = create(
 			}
 			set({ isLoading: true, error: null });
 			try {
-				const response = await apiRequest.get(`${API_URL}/waste/trends/daily`, {
+				const response = await apiRequest.get(`/waste/trends/daily`, {
 					params: {
 						restaurantId,
 						days,

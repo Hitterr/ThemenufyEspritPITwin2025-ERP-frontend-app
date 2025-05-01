@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Card, Form, Button, Alert, Col } from "react-bootstrap";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaUtensils, FaCarrot, FaSortNumericUp } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { useRestaurantQuery, useStocksQuery } from "./utils/queries";
+import { apiRequest } from "../../utils/apiRequest";
 const ConsumptionForm = ({ onCancel }) => {
 	const navigate = useNavigate();
 	const { data: restaurants, isLoading: loadingRestaurants } =
@@ -47,7 +47,7 @@ const ConsumptionForm = ({ onCancel }) => {
 			return;
 		}
 		try {
-			await axios.post(
+			await apiRequest.post(
 				"http://localhost:5000/api/storage/history/consumptions",
 				formData
 			);

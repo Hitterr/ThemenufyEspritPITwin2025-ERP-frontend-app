@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Table, Spinner, Alert, Button, Modal } from "react-bootstrap";
-import axios from "axios";
 import {
 	LineChart,
 	Line,
@@ -18,7 +17,7 @@ export default function TurnoverTable() {
 	const [chartData, setChartData] = useState([]);
 	const [selectedStock, setSelectedStock] = useState("");
 	useEffect(() => {
-		axios
+		apiRequest
 			.get("http://localhost:5000/api/inventory/turnover")
 			.then((res) => {
 				setData(res.data.data);
@@ -34,7 +33,7 @@ export default function TurnoverTable() {
 		const newMax = prompt("Nouveau maxQty :", max);
 		if (!newMin || !newMax) return;
 		try {
-			await axios.patch(`http://localhost:5000/api/stock/${id}`, {
+			await apiRequest.patch(`/stock/${id}`, {
 				minQty: Number(newMin),
 				maxQty: Number(newMax),
 			});
@@ -45,9 +44,7 @@ export default function TurnoverTable() {
 	};
 	const handleShowGraph = async (id, name) => {
 		try {
-			const res = await apiRequest.get(
-				`http://localhost:5000/api/inventory/turnover/history/${id}`
-			);
+			const res = await apiRequest.get(`/inventory/turnover/history/${id}`);
 			setChartData(res.data.data);
 			setSelectedStock(name);
 			setShowChart(true);

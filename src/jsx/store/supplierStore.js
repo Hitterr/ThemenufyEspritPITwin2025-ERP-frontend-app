@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { apiRequest } from "../utils/apiRequest";
-const API_URL = import.meta.env.VITE_BACKEND_URL + "/supplier";
+const API_URL = "/supplier";
 const useSupplierStore = create(
 	devtools((set, get) => ({
 		suppliers: [],

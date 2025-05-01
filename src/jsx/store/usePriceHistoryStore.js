@@ -19,7 +19,7 @@ const usePriceHistoryStore = create(
 			const { filterCriteria } = get();
 			set({ isLoading: true, error: null });
 			try {
-				const response = await apiRequest.get(`${API_URL}/storage/history/trends`, {
+				const response = await apiRequest.get(`/storage/history/trends`, {
 					params: {
 						restaurantId: filterCriteria.restaurantId || undefined,
 						stockId: filterCriteria.stockId || undefined,
@@ -38,7 +38,7 @@ const usePriceHistoryStore = create(
 			set({ isLoading: true, error: null });
 			try {
 				const response = await apiRequest.post(
-					`${API_URL}/storage/history/Prices`,
+					`/storage/history/Prices`,
 					{
 						stockId: data.stockId,
 						restaurantId: data.restaurantId,
@@ -94,16 +94,13 @@ const usePriceHistoryStore = create(
 			const { filterCriteria } = get();
 			set({ isLoading: true, error: null });
 			try {
-				const response = await apiRequest.get(
-					`${API_URL}/storage/history/daily-trends`,
-					{
-						params: {
-							restaurantId: filterCriteria.restaurantId || undefined,
-							stockId: filterCriteria.stockId || undefined,
-							supplierId: filterCriteria.supplierId || undefined,
-						},
-					}
-				);
+				const response = await apiRequest.get(`/storage/history/daily-trends`, {
+					params: {
+						restaurantId: filterCriteria.restaurantId || undefined,
+						stockId: filterCriteria.stockId || undefined,
+						supplierId: filterCriteria.supplierId || undefined,
+					},
+				});
 				set({ dailyPriceTrends: response.data, isLoading: false });
 			} catch (error) {
 				const errorMessage = error.response?.data?.message || error.message;

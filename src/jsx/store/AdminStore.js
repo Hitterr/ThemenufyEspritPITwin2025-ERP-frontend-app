@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { apiRequest } from "../utils/apiRequest";
-const API_URL = "http://localhost:5000/api/superadmins";
+const API_URL = "/superadmins";
 const useAdminStore = create((set) => ({
 	admins: [],
 	fetchAdmins: async () => {

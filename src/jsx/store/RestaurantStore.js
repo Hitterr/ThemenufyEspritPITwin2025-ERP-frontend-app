@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import axios from "axios";
 import { apiRequest } from "../utils/apiRequest";
 const API_URL = "http://localhost:5000/api/restaurant";
 const useRestaurantStore = create((set) => ({
@@ -40,7 +39,7 @@ const useRestaurantStore = create((set) => ({
 	},
 	deleteRestaurant: async (id) => {
 		try {
-			await axios.delete(`${API_URL}/${id}`);
+			await apiRequest.delete(`${API_URL}/${id}`);
 			set((state) => ({
 				restaurants: state.restaurants.filter(
 					(restaurant) => restaurant._id !== id

@@ -13,16 +13,13 @@ export default function SupplierComparisonTable({ stockId }) {
 		const fetchComparison = async () => {
 			setLoading(true);
 			try {
-				const res = await apiRequest.get(
-					"http://localhost:5000/api/suppliersComparaison/compare",
-					{
-						params: {
-							stockId,
-							sortBy: sortConfig.key,
-							order: sortConfig.direction,
-						},
-					}
-				);
+				const res = await apiRequest.get("/suppliersComparaison/compare", {
+					params: {
+						stockId,
+						sortBy: sortConfig.key,
+						order: sortConfig.direction,
+					},
+				});
 				if (res.data.success) {
 					// Ensure price and deliveryTime have default values
 					const enrichedData = res.data.data.map((supplier) => ({
