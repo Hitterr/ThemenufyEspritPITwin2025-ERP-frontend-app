@@ -22,6 +22,10 @@ export const MenuList = [
 				to: "ForecastChart",
 			},
 			{
+				title: "ForecastWithIA",
+				to: "IAForecastChart",
+			},
+			{
 				title: "Suppliers Dashboard",
 				to: "suppliers-dashboard",
 			},
