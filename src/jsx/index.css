@@ -12,7 +12,7 @@ body {
   cursor: pointer;
 }
 .btn.tp-btn-light.btn-primary {
-  color: #ea7a9a;
+  color: #f58275;
   background: #fff !important;
 }
 .btn-primary.dropdown-toggle:hover {
@@ -50,17 +50,17 @@ body {
 /* segiWizerd */
 .step-form-horizontal ol li.go767851704 span {
   color: #fff;
-  background: #ea7a9a !important;
+  background: #f58275 !important;
   border-color: transparent;
 }
 .step-form-horizontal ol li:before {
-  background: #ea7a9a !important;
+  background: #f58275 !important;
 }
 .step-form-horizontal ol li.active span,
 .step-form-horizontal ol li.go2478912419 span {
-  color: #ea7a9a !important;
+  color: #f58275 !important;
   background: #fff;
-  border: 2px solid #ea7a9a !important;
+  border: 2px solid #f58275 !important;
 }
 /* ////////////////////////fixed */
 .fc-toolbar-chunk {
@@ -137,7 +137,7 @@ label.mailclinet {
   margin: auto;
 }
 .wizard-four-color {
-  color: #ea7a9a;
+  color: #f58275;
   text-decoration: underline;
 }
 .redio-false {
@@ -254,7 +254,7 @@ a:focus {
 }
 .dd .nestable-item-name {
   color: #fff;
-  background: #ea7a9a;
+  background: #f58275;
   display: block;
   height: auto;
   margin: 5px 0;
@@ -473,16 +473,16 @@ button.react-calendar__navigation__label {
 }
 button.react-calendar__navigation__label:hover {
   color: white !important;
-  background: #ea7a9a !important;
+  background: #f58275 !important;
 }
 button.react-calendar__navigation__label:hover > span {
   color: white !important;
-  /* background: #ea7a9a !important; */
+  /* background: #f58275 !important; */
 }
 .react-calendar__navigation button:enabled:hover,
 .react-calendar__navigation button:enabled:focus,
 .react-calendar__navigation__label:hover > span {
-  background-color: #ea7a9a !important;
+  background-color: #f58275 !important;
   color: white;
   border-radius: 50%;
 }
@@ -491,14 +491,14 @@ button.react-calendar__navigation__label:hover > span {
 .react-calendar__tile--hasActive,
 .react-calendar__navigation button[disabled],
 .react-calendar__navigation button[disabled] > span {
-  background-color: #ea7a9a !important;
+  background-color: #f58275 !important;
   color: white;
 }
 button.react-calendar__tile.react-calendar__tile--now.react-calendar__month-view__days__day,
 button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--range.react-calendar__tile--rangeStart.react-calendar__tile--rangeEnd.react-calendar__tile--rangeBothEnds.react-calendar__month-view__days__day,
 button.react-calendar__tile.react-calendar__month-view__days__day:hover {
   position: relative;
-  background: #ea7a9a !important;
+  background: #f58275 !important;
   box-shadow: none;
   color: white !important;
   border-radius: 10px;

@@ -1,10 +1,10 @@
 import * as yup from "yup";
 
-export const linkIngredientSchema = yup.object().shape({
-  ingredientId: yup
+export const linkStockSchema = yup.object().shape({
+  stockId: yup
     .string()
-    .required("Ingredient is required")
-    .matches(/^[0-9a-fA-F]{24}$/, "Invalid Ingredient ID format"),
+    .required("Stock is required")
+    .matches(/^[0-9a-fA-F]{24}$/, "Invalid Stock ID format"),
   pricePerUnit: yup
     .number()
     .required("Price per unit is required")

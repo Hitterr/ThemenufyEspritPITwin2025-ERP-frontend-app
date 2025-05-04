@@ -7,7 +7,7 @@ import AddInvoiceItem from "./components/AddInvoiceItem";
 import useInvoiceStore from "../../store/invoiceStore";
 import Logo from "../../../assets/images/logo.png";
 import Swal from "sweetalert2";
-import useIngredientStore from "../../store/ingredientStore";
+import useStockStore from "../../store/stockStore";
 import { addInvoiceSchema } from "./validators/addInvoiceSchema";
 import useSupplierStore from "../../store/supplierStore";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 export const AddInvoice = () => {
   const [supplier, setSupplier] = React.useState(null);
   const { currentUser } = authStore();
-  const { ingredients } = useIngredientStore();
+  const { stocks } = useStockStore();
   const { suppliers, fetchSuppliers } = useSupplierStore();
   const {
     currentInvoice,
@@ -39,10 +39,6 @@ export const AddInvoice = () => {
   const handleChangeSupplier = (e) => {
     setSupplier(e.target.value);
     setInvoiceSupplier(e.target.value);
-  };
-
-  const handleStatusChange = (e) => {
-    setInvoiceStatus(e.target.value);
   };
 
   const handleSubmit = async (e) => {
@@ -96,22 +92,8 @@ export const AddInvoice = () => {
               <ArrowRight size={20} />
             </Button>
           </Col>
-
-          {/* 👇 Select Status ici */}
-          <Col xs="12" sm={4} className="mt-2">
-            <FormSelect
-              onChange={handleStatusChange}
-              value={currentInvoice?.status}
-              required
-            >
-              <option value="pending">Pending</option>
-              <option value="delivered">Delivered</option>
-              <option value="cancelled">Cancelled</option>
-            </FormSelect>
-          </Col>
         </Row>
       </Row>
-
       <div className="row">
         <div className="col-lg-12">
           <div className="card">
@@ -120,7 +102,6 @@ export const AddInvoice = () => {
                 <img src={Logo} className="thumbnail w-100" />
               </Col>
             </Row>
-
             <div className="card-header">
               <strong> Invoice : {"#12345678"}</strong>{" "}
               <strong>{format(new Date(), "dd/MM/yyyy")}</strong>
@@ -199,9 +180,8 @@ export const AddInvoice = () => {
                         <td className="center">{index + 1}</td>
                         <td className="left">
                           {
-                            ingredients.find(
-                              (ing) => ing._id === item.ingredient
-                            )?.libelle
+                            stocks.find((ing) => ing._id === item.stock)
+                              ?.libelle
                           }
                         </td>
                         <td className="right">{item?.price} TND</td>
@@ -212,7 +192,7 @@ export const AddInvoice = () => {
                         <td className="right">
                           <Button
                             variant="danger"
-                            onClick={() => deleteInvoiceItem(item.ingredient)}
+                            onClick={() => deleteInvoiceItem(item.stock)}
                           >
                             <Trash size={20} />
                           </Button>
@@ -222,7 +202,6 @@ export const AddInvoice = () => {
                   </tbody>
                 </table>
               </div>
-
               {/* Invoice Totals */}
               <div className="row">
                 <div className="col-lg-4 col-sm-5"> </div>

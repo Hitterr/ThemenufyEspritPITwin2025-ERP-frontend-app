@@ -1,50 +1,101 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { format } from "date-fns";
-import { Col, Row, Button, Form } from "react-bootstrap";
+import { Col, Row, Button, Form, Badge } from "react-bootstrap";
 import Logo from "../../../assets/images/logo.png";
 import useInvoiceStore from "../../store/invoiceStore";
-import useIngredientStore from "../../store/ingredientStore";
-import { useParams } from "react-router-dom";
+import useStockStore from "../../store/stockStore";
+import { useParams, useNavigate } from "react-router-dom"; // Ajout de useNavigate
 import useSupplierStore from "../../store/supplierStore";
 import { authStore } from "../../store/authStore";
+import generatePDF from "./components/InvoicePdf";
 
 export const ShowInvoice = () => {
-  const { invoices, currentInvoice, fetchInvoiceById, updateInvoiceStatus } =
-    useInvoiceStore();
-  const { ingredients } = useIngredientStore();
+  const {
+    invoices,
+    currentInvoice,
+    fetchInvoiceById,
+    updateInvoiceStatus,
+    updatePaidInvoiceStatus,
+  } = useInvoiceStore();
+  const {
+    stocks,
+    fetchStocks,
+    loading: stocksLoading,
+    error: stocksError,
+  } = useStockStore();
   const params = useParams();
-  const { currentUser } = authStore(); // Utilisation de authStore ici
+  const navigate = useNavigate(); // Utilisation de useNavigate
+  const { currentUser } = authStore();
   const { suppliers, fetchSuppliers } = useSupplierStore();
 
   const [status, setStatus] = useState(currentInvoice?.status || "");
+  const [paidStatus, setPaidStatus] = useState(
+    currentInvoice?.paidStatus || ""
+  );
 
   // Récupération des données de la facture via le paramètre ID
   useEffect(() => {
     if (params.id) {
       fetchInvoiceById(params.id);
     }
-  }, [params.id, fetchInvoiceById]);
+    fetchStocks();
+  }, [params.id, fetchInvoiceById, fetchStocks]);
 
   useEffect(() => {
     if (currentInvoice) {
       setStatus(currentInvoice.status);
+      setPaidStatus(currentInvoice.paidStatus);
     }
   }, [currentInvoice]);
 
   const handleStatusChange = (e) => {
     const newStatus = e.target.value;
     setStatus(newStatus);
-    updateInvoiceStatus(currentInvoice._id, newStatus); // Appeler la méthode pour mettre à jour le statut de la facture
+    updateInvoiceStatus(currentInvoice._id, newStatus);
+  };
+
+  const handlePaidStatusChange = async (e) => {
+    const newPaidStatus = e.target.value;
+    if (newPaidStatus !== paidStatus) {
+      setPaidStatus(newPaidStatus);
+      try {
+        const response = await updatePaidInvoiceStatus(
+          currentInvoice._id,
+          newPaidStatus
+        );
+        if (response.success) {
+          await fetchInvoiceById(currentInvoice._id);
+        }
+      } catch (error) {
+        console.error("Error updating paid status", error);
+      }
+    }
   };
 
   if (!currentInvoice._id) {
-    return <p>Loading ...</p>;
+    return <p>Loading Invoice...</p>;
+  }
+
+  if (stocksLoading) {
+    return <p>Loading Stocks...</p>;
+  }
+
+  if (stocksError) {
+    return <p>Error loading stocks: {stocksError}</p>;
   }
 
   return (
     <Fragment>
+      <Button
+        variant="secondary"
+        size="sm"
+        className="mb-3"
+        onClick={() => navigate("/invoices")}
+      >
+        &#8592;
+      </Button>
       <Row className="my-4 gap-y-2">
-        <Col xs="12" className="">
+        <Col xs="12">
           <h1 className="page-title">Invoice Details</h1>
         </Col>
       </Row>
@@ -77,18 +128,39 @@ export const ShowInvoice = () => {
                 </span>
               </div>
 
-              {/* Status Dropdown */}
               <Form.Group className="mt-2">
                 <Form.Label>Change Status</Form.Label>
                 <Form.Control
                   as="select"
                   value={status}
                   onChange={handleStatusChange}
-                  disabled={currentInvoice?.status === "delivered"} // Disable if already delivered
+                  disabled={currentInvoice?.status === "delivered"}
                 >
                   <option value="pending">Pending</option>
                   <option value="delivered">Delivered</option>
                   <option value="cancelled">Cancelled</option>
+                </Form.Control>
+              </Form.Group>
+
+              <div className="mt-2">
+                <strong>Paid Status: </strong>
+                {paidStatus === "paid" ? (
+                  <Badge bg="success">Paid</Badge>
+                ) : (
+                  <Badge bg="danger">Not Paid</Badge>
+                )}
+              </div>
+
+              {/* Paid Status Dropdown */}
+              <Form.Group className="mt-2">
+                <Form.Label>Change Paid Status</Form.Label>
+                <Form.Control
+                  as="select"
+                  value={paidStatus}
+                  onChange={handlePaidStatusChange}
+                >
+                  <option value="nopaid">Not Paid</option>
+                  <option value="paid">Paid</option>
                 </Form.Control>
               </Form.Group>
             </div>
@@ -105,7 +177,7 @@ export const ShowInvoice = () => {
                     {currentInvoice?.created_by?.lastName}
                   </div>
                   <div>Email: {currentInvoice?.created_by?.email}</div>
-                  <div>Address:{currentUser?.user?.address || "N/A"}</div>
+                  <div>Address: {currentUser?.user?.address || "N/A"}</div>
                   <div>Phone: {currentUser?.user?.phone || "N/A"}</div>
                 </Col>
                 <Col xs={6} md={4} className="mb-3">
@@ -139,29 +211,34 @@ export const ShowInvoice = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {currentInvoice?.items?.map((item, index) => (
-                      <tr key={index}>
-                        <td className="center">{index + 1}</td>
-                        <td className="left">
-                          {
-                            ingredients.find(
-                              (ing) => ing._id === item.ingredient
-                            )?.libelle
-                          }
-                        </td>
-                        <td className="right">{item?.price} TND</td>
-                        <td className="right">{item?.quantity} UNIT</td>
-                        <td className="right">
-                          {item?.price * item?.quantity} TND
-                        </td>
-                      </tr>
-                    ))}
+                    {currentInvoice?.items?.map((item, index) => {
+                      const stockId =
+                        typeof item.stock === "object" && item.stock?._id
+                          ? item.stock._id
+                          : item.stock;
+
+                      const stock = stocks.find((ing) => ing._id === stockId);
+
+                      return (
+                        <tr key={index}>
+                          <td className="center">{index + 1}</td>
+                          <td className="left">
+                            {stock?.libelle || "Unknown Stock"}
+                          </td>
+                          <td className="right">{item?.price} TND</td>
+                          <td className="right">{item?.quantity} UNIT</td>
+                          <td className="right">
+                            {(item?.price * item?.quantity).toFixed(2)} TND
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
 
               <div className="row">
-                <div className="col-lg-4 col-sm-5"> </div>
+                <div className="col-lg-4 col-sm-5"></div>
                 <div className="col-lg-4 col-sm-5 ms-auto">
                   <table className="table table-clear">
                     <tbody>
@@ -175,7 +252,7 @@ export const ShowInvoice = () => {
                       </tr>
                       <tr>
                         <td className="left">
-                          <strong>VAT (19%)</strong>
+                          <strong>TVA (19%)</strong>
                         </td>
                         <td className="right">
                           {(currentInvoice?.total * 0.19)?.toFixed(3)} TND
@@ -195,6 +272,13 @@ export const ShowInvoice = () => {
                   </table>
                 </div>
               </div>
+
+              <Button
+                variant="primary"
+                onClick={() => generatePDF(currentInvoice, currentUser, stocks)}
+              >
+                Download PDF
+              </Button>
             </div>
           </div>
         </div>

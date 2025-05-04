@@ -99,11 +99,10 @@ import Profile from "./pages/auth/profile/Profile";
 import SuperDb from "./pages/Dashbord/SuperAdmin/SuperAdminDash";
 import ArchivedSup from "./pages/Dashbord/SuperAdmin/ArchiverSuperAdmine";
 import RestoDb from "./pages/Dashbord/Restaurant/DashRestaurants";
-import InventorySupplierManager from "./pages/SuppliersComp/InventorySupplierManager";
-import Ingredients from "./pages/ingredients";
-import AddIngredient from "./pages/ingredients/AddIngredient";
-import EditIngredient from "./pages/ingredients/EditIngredient";
-import ShowIngredient from "./pages/ingredients/ShowIngredient";
+import Stocks from "./pages/stocks";
+import AddStock from "./pages/stocks/AddStock";
+import EditStock from "./pages/stocks/EditStock";
+import ShowStock from "./pages/stocks/ShowStock";
 import AddInvoice from "./pages/invoice/AddInvoice";
 import { InvoicesPage } from "./pages/invoice";
 import ShowInvoice from "./pages/invoice/ShowInvoice";
@@ -112,9 +111,15 @@ import Suppliers from "./pages/suppliers/index";
 import AddSupplier from "./pages/suppliers/AddSupplier";
 import EditSupplier from "./pages/suppliers/EditSupplier";
 import ShowSupplier from "./pages/suppliers/ShowSupplier";
-import LinkIngredient from "./pages/suppliers/LinkIngredient";
+import LinkStock from "./pages/suppliers/LinkStock";
 import StorageApp from "./pages/storage/App";
-import RecipeCostDashboard from './pages/Dashbord/recipe/RecipeCostDashboard';
+import StockAnalysis from "./pages/stockAnalysis";
+import ShowCategory from "./pages/categories/ShowCategory";
+import InvoiceStats from "./pages/invoice/components/InvoiceStats";
+import TurnoverTable from "./pages/Turnover/TurnoverTable";
+import ApexForecast from "./pages/forecastedSales/ApexForecast";
+import Waste from "./pages/waste/waste";
+import RecipeCostDashboard from "./pages/Dashbord/recipe/RecipeCostDashboard";
 const Markup = () => {
 	const allroutes = [
 		/// Dashboard
@@ -126,8 +131,6 @@ const Markup = () => {
 		{ url: "analytics", component: <Analytics /> },
 		{ url: "review", component: <Reviews /> },
 		{ url: "task", component: <Task /> },
-		{ url: "suppliers-dashboard", component: <SuppliersDashboard /> }, 
-    { url: "Recipes-dashboard", component: <RecipeCostDashboard /> }, 
 		{ url: "content", component: <Content /> },
 		{ url: "menu", component: <Menu /> },
 		{ url: "email-template", component: <EmailTemplate /> },
@@ -202,22 +205,30 @@ const Markup = () => {
 		{ url: "suppliers/add", component: <AddSupplier /> },
 		{ url: "suppliers/edit/:id", component: <EditSupplier /> },
 		{ url: "suppliers/:id", component: <ShowSupplier /> },
-		{ url: "suppliers/:id/link-ingredient", component: <LinkIngredient /> },
+		{ url: "suppliers/:id/link-stock", component: <LinkStock /> },
+		{ url: "suppliers-performance", component: <SuppliersDashboard /> },
+		{ url: "recipes-dashboard", component: <RecipeCostDashboard /> },
 		{ url: "super-admins", component: <SuperDb /> },
 		{ url: "stock-history", component: <StorageApp /> },
 		{ url: "archived", component: <ArchivedSup /> },
 		{ url: "restaurants", component: <RestoDb /> },
-		{ url: "suppliers-comp", component: <InventorySupplierManager /> },
-		{ url: "ingredients", component: <Ingredients /> },
-		{ url: "ingredients/add", component: <AddIngredient /> },
-		{ url: "ingredients/edit/:id", component: <EditIngredient /> },
-		{ url: "ingredients/:id", component: <ShowIngredient /> },
+		{ url: "stock", component: <Stocks /> },
+		{ url: "stock/add", component: <AddStock /> },
+		{ url: "stock/edit/:id", component: <EditStock /> },
+		{ url: "stock/:id", component: <ShowStock /> },
+		{ url: "stock-analysis", component: <StockAnalysis /> },
 		// ----------------------- invoice -----------------------------
 		{ url: "invoices", component: <InvoicesPage /> },
 		{ url: "invoices/add", component: <AddInvoice /> },
 		{ url: "invoices/:id", component: <ShowInvoice /> },
 		// ----------------------- invoice -----------------------------
 		{ url: "categories", component: <CategoriesPage /> },
+		{ url: "categories/:id", component: <ShowCategory /> },
+		{ url: "invoices/stats", component: <InvoiceStats /> },
+		{ url: "turnover", component: <TurnoverTable /> },
+		{ url: "stock-forecast", component: <ApexForecast /> },
+		{ url: "waste", component: <Waste /> },
+		{ url: "storage", component: <StorageApp /> },
 	];
 	return (
 		<>
