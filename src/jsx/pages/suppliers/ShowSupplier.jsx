@@ -3,15 +3,16 @@ import { Card, Row, Col, Button, Table } from "react-bootstrap";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import useSupplierStore from "../../store/supplierStore";
 import Swal from "sweetalert2";
-import { Stepper, Step } from 'react-form-stepper';
-import BulkUpdateFormStep from './components/BulkUpdateFormStep';
-import BulkUpdateStatsStep from './components/BulkUpdateStatsStep';
+import { Stepper, Step } from "react-form-stepper";
+import BulkUpdateFormStep from "./components/BulkUpdateFormStep";
+import BulkUpdateStatsStep from "./components/BulkUpdateStatsStep";
 import { FaEye, FaPencilAlt, FaTrash } from "react-icons/fa";
 
 const ShowSupplier = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getSupplierById, unlinkIngredient, bulkUpdateSupplierIngredients } = useSupplierStore();
+  const { getSupplierById, unlinkStock, bulkUpdateSupplierStocks } =
+    useSupplierStore();
   const [supplier, setSupplier] = useState(null);
   const [loading, setLoading] = useState(true);
   const [step, setStep] = useState(0);
@@ -35,13 +36,13 @@ const ShowSupplier = () => {
       console.log("Fetched supplier data:", data);
       if (data) {
         setSupplier(data);
-        const ingredientsData = (data.ingredients || []).map(ing => ({
-          ingredientId: ing._id,
+        const stocksData = (data.stocks || []).map((ing) => ({
+          stockId: ing._id,
           pricePerUnit: ing.pricePerUnit || 0,
           leadTimeDays: ing.leadTimeDays || 1,
         }));
-        setBulkUpdateData(ingredientsData);
-        setOriginalData(ingredientsData);
+        setBulkUpdateData(stocksData);
+        setOriginalData(stocksData);
       } else {
         throw new Error("Supplier not found");
       }
@@ -58,10 +59,10 @@ const ShowSupplier = () => {
     }
   };
 
-  const handleUnlinkIngredient = async (ingredientId, ingredientName) => {
+  const handleUnlinkStock = async (stockId, stockName) => {
     const result = await Swal.fire({
       title: "Are you sure?",
-      text: `Do you want to unlink ${ingredientName} from this supplier?`,
+      text: `Do you want to unlink ${stockName} from this supplier?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -70,19 +71,20 @@ const ShowSupplier = () => {
     });
     if (result.isConfirmed) {
       try {
-        const success = await unlinkIngredient(id, ingredientId);
+        const success = await unlinkStock(id, stockId);
         if (success) {
           Swal.fire({
             icon: "success",
             title: "Success!",
-            text: `${ingredientName} has been unlinked from the supplier.`,
+            text: `${stockName} has been unlinked from the supplier.`,
           });
           await loadSupplier();
         } else {
-          throw new Error("Failed to unlink the ingredient");
+          throw new Error("Failed to unlink the stock");
         }
       } catch (error) {
-        const errorMessage = error.response?.data?.message || "Failed to unlink the ingredient";
+        const errorMessage =
+          error.response?.data?.message || "Failed to unlink the stock";
         Swal.fire({
           icon: "error",
           title: "Error!",
@@ -102,19 +104,37 @@ const ShowSupplier = () => {
     if (bulkUpdateData.length === 0) {
       Swal.fire({
         icon: "warning",
-        title: "No Ingredients",
-        text: "There are no ingredients to update.",
+        title: "No Stocks",
+        text: "There are no stocks to update.",
       });
       return;
     }
     try {
-      const success = await bulkUpdateSupplierIngredients(id, bulkUpdateData);
+      const success = await bulkUpdateSupplierStocks(id, bulkUpdateData);
       if (success) {
         const updatedCount = bulkUpdateData.length;
-        const avgPriceAfterUpdate = (bulkUpdateData.reduce((sum, ing) => sum + ing.pricePerUnit, 0) / updatedCount).toFixed(2);
-        const avgLeadTimeAfterUpdate = (bulkUpdateData.reduce((sum, ing) => sum + ing.leadTimeDays, 0) / updatedCount).toFixed(2);
-        const totalPriceChange = bulkUpdateData.reduce((sum, ing, index) => sum + (ing.pricePerUnit - originalData[index].pricePerUnit), 0).toFixed(2);
-        const totalLeadTimeChange = bulkUpdateData.reduce((sum, ing, index) => sum + (ing.leadTimeDays - originalData[index].leadTimeDays), 0).toFixed(2);
+        const avgPriceAfterUpdate = (
+          bulkUpdateData.reduce((sum, ing) => sum + ing.pricePerUnit, 0) /
+          updatedCount
+        ).toFixed(2);
+        const avgLeadTimeAfterUpdate = (
+          bulkUpdateData.reduce((sum, ing) => sum + ing.leadTimeDays, 0) /
+          updatedCount
+        ).toFixed(2);
+        const totalPriceChange = bulkUpdateData
+          .reduce(
+            (sum, ing, index) =>
+              sum + (ing.pricePerUnit - originalData[index].pricePerUnit),
+            0
+          )
+          .toFixed(2);
+        const totalLeadTimeChange = bulkUpdateData
+          .reduce(
+            (sum, ing, index) =>
+              sum + (ing.leadTimeDays - originalData[index].leadTimeDays),
+            0
+          )
+          .toFixed(2);
         setBulkUpdateStats({
           updatedCount,
           avgPriceAfterUpdate,
@@ -125,10 +145,11 @@ const ShowSupplier = () => {
         setStep(2);
         await loadSupplier();
       } else {
-        throw new Error("Failed to update ingredients");
+        throw new Error("Failed to update stocks");
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Failed to update ingredients";
+      const errorMessage =
+        error.response?.data?.message || "Failed to update stocks";
       Swal.fire({
         icon: "error",
         title: "Error!",
@@ -160,7 +181,8 @@ const ShowSupplier = () => {
                 <strong>Phone:</strong> {supplier.contact.phone || "N/A"}
               </div>
               <div className="mb-3">
-                <strong>Representative:</strong> {supplier.contact.representative || "N/A"}
+                <strong>Representative:</strong>{" "}
+                {supplier.contact.representative || "N/A"}
               </div>
               <div className="mb-3">
                 <strong>Status:</strong>{" "}
@@ -173,7 +195,9 @@ const ShowSupplier = () => {
                       : supplier.status === "suspended"
                       ? "bg-danger"
                       : "bg-secondary"
-                  }`}>{supplier.status}
+                  }`}
+                >
+                  {supplier.status}
                 </span>
               </div>
               <div className="mb-3">
@@ -195,7 +219,8 @@ const ShowSupplier = () => {
                 <strong>State:</strong> {supplier.address.state || "N/A"}
               </div>
               <div className="mb-3">
-                <strong>Postal Code:</strong> {supplier.address.postalCode || "N/A"}
+                <strong>Postal Code:</strong>{" "}
+                {supplier.address.postalCode || "N/A"}
               </div>
               <div className="mb-3">
                 <strong>Country:</strong> {supplier.address.country || "N/A"}
@@ -258,56 +283,62 @@ const ShowSupplier = () => {
           </Col>
         </Row>
         <Row>
-        <Col>
-          <div className="mb-4">
-            <h5 className="text-primary">Linked Ingredients</h5>
-            <div className="mb-2">
-              <Button
-                variant="warning"
-                onClick={() => setStep(1)}
-                disabled={!(supplier.ingredients && supplier.ingredients.length > 0)}
-              >
-                Bulk Update Ingredients
-              </Button>
-            </div>
-            {step === 0 ? (
-              supplier.ingredients && supplier.ingredients.length > 0 ? (
-                <div className="table-responsive">
-                  <Table className="table-hover">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Price per Unit</th>
-                        <th>Lead Time (Days)</th>
-                        <th className="text-center" style={{ width: "100px" }}>Unlink</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {supplier.ingredients.map((ingredient) => (
-                        <tr key={ingredient._id}>
-                          <td>{ingredient.name}</td>
-                          <td>{ingredient.pricePerUnit || "N/A"}</td>
-                          <td>{ingredient.leadTimeDays || "N/A"}</td>
-                          <td className="text-center">
-                            <Button
-                              variant="danger"
-                              size="sm"
-                              title="Unlink"
-                              onClick={() => handleUnlinkIngredient(ingredient._id, ingredient.name)}
-                            >
-                            <FaTrash className="me-1" /> 
-                            </Button>
-                          </td>
+          <Col>
+            <div className="mb-4">
+              <h5 className="text-primary">Linked Stocks</h5>
+              <div className="mb-2">
+                <Button
+                  variant="warning"
+                  onClick={() => setStep(1)}
+                  disabled={!(supplier.stocks && supplier.stocks.length > 0)}
+                >
+                  Bulk Update Stocks
+                </Button>
+              </div>
+              {step === 0 ? (
+                supplier.stocks && supplier.stocks.length > 0 ? (
+                  <div className="table-responsive">
+                    <Table className="table-hover">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Price per Unit</th>
+                          <th>Lead Time (Days)</th>
+                          <th
+                            className="text-center"
+                            style={{ width: "100px" }}
+                          >
+                            Unlink
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                </div>
+                      </thead>
+                      <tbody>
+                        {supplier.stocks.map((stock) => (
+                          <tr key={stock._id}>
+                            <td>{stock.name}</td>
+                            <td>{stock.pricePerUnit || "N/A"}</td>
+                            <td>{stock.leadTimeDays || "N/A"}</td>
+                            <td className="text-center">
+                              <Button
+                                variant="danger"
+                                size="sm"
+                                title="Unlink"
+                                onClick={() =>
+                                  handleUnlinkStock(stock._id, stock.name)
+                                }
+                              >
+                                <FaTrash className="me-1" />
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  </div>
+                ) : (
+                  <p>No stocks linked to this supplier.</p>
+                )
               ) : (
-                <p>No ingredients linked to this supplier.</p>
-              )
-            ) : (
-
                 <div className="form-wizard">
                   <style>
                     {`
@@ -330,7 +361,11 @@ const ShowSupplier = () => {
                       }
                     `}
                   </style>
-                  <Stepper className="nav-wizard" activeStep={step - 1} label={false}>
+                  <Stepper
+                    className="nav-wizard"
+                    activeStep={step - 1}
+                    label={false}
+                  >
                     <Step className="nav-link" onClick={() => setStep(1)} />
                     <Step className="nav-link" onClick={() => setStep(2)} />
                   </Stepper>
@@ -366,15 +401,19 @@ const ShowSupplier = () => {
           <Button
             variant="primary"
             className="me-2"
-            onClick={() => navigate(`/suppliers/edit/${supplier._id}`, { state: { redirectTo: `/suppliers/${supplier._id}` } })}
+            onClick={() =>
+              navigate(`/suppliers/edit/${supplier._id}`, {
+                state: { redirectTo: `/suppliers/${supplier._id}` },
+              })
+            }
           >
             Edit Supplier
           </Button>
           <Button
             variant="success"
-            onClick={() => navigate(`/suppliers/${supplier._id}/link-ingredient`)}
+            onClick={() => navigate(`/suppliers/${supplier._id}/link-stock`)}
           >
-            Link Ingredient
+            Link Stock
           </Button>
         </div>
       </Card.Body>

@@ -1,6 +1,6 @@
 import * as yup from "yup";
 export const addInvoiceItemSchema = yup.object().shape({
-  ingredient: yup.string().required("Ingredient ID is required"),
+  stock: yup.string().required("Stock ID is required"),
 
   quantity: yup
     .number()

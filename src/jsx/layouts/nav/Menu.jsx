@@ -10,53 +10,87 @@ export const MenuList = [
 				to: "dashboard",
 			},
 			{
-				title: "Our Suppliers",
-				to: "suppliers",
+				title: "Suppliers",
+				classsChange: "mm-collapse",
+				hasMenu: true,
+				content: [
+					{
+						title: "Suppliers Management",
+						to: "suppliers",
+					},
+					{
+						title: "Suppliers Performance",
+						to: "suppliers-performance",
+					},
+				],
 			},
 			{
-				title: "Suppliers Comparison",
-				to: "suppliers-comp",
+				title: "Accounts",
+				classsChange: "mm-collapse",
+				hasMenu: true,
+				content: [
+					{
+						title: "Super Admins",
+						to: "super-admins",
+					},
+					{
+						title: "Archived",
+						to: "Archived",
+					},
+					{
+						title: "Restaurants",
+						to: "restaurants",
+					},
+				],
+			},
+			,
+			{
+				title: "Stock",
+				hasMenu: true,
+				classsChange: "mm-collapse",
+				content: [
+					{
+						title: "Stock Management",
+						to: "stock",
+					},
+					{
+						title: "Stock History",
+						to: "stock-history",
+					},
+					{
+						title: "Stock Forecast",
+						to: "IAForecastChart",
+					},
+					{
+						title: "Purchase Forecast",
+						to: "WeeklyPurchaseForecast",
+					},
+					{
+						title: "Categories",
+						to: "categories",
+					},
+					{
+						title: "Invoices",
+						to: "invoices",
+					},
+					{
+						title: "Waste",
+						to: "waste",
+					},
+				],
 			},
 			{
-				title: "Forecast",
-				to: "ForecastChart",
+				title: "Recipes Dashboard",
+				to: "recipes-dashboard",
 			},
-			{
-				title: "ForecastWithIA",
-				to: "IAForecastChart",
-			},
-			{
-				title: "Suppliers Dashboard",
-				to: "suppliers-dashboard",
-			},
-			{
-				title: "Invoices",
-				to: "invoices",
-			},
-			{
-				title: "Super Admin",
-				to: "super-admins",
-			},
-			{
-				title: "Archive",
-				to: "Archived",
-			},
-			{
-				title: "Restaurant",
-				to: "restaurants",
-			},
-			{
-				title: "Ingredients",
-				to: "ingredients",
-			},
-			{
-				title: "categories",
-				to: "categories",
-			},
-			{
-				title: "Stock History",
-				to: "stock-history",
-			},
+		],
+	},
+	//Apps
+	{
+		title: "Apps",
+		classsChange: "mm-collapse",
+		iconStyle: <i className="flaticon-381-television" />,
+		content: [
 			{
 				title: "Orders",
 				to: "orders",
@@ -69,14 +103,6 @@ export const MenuList = [
 				title: "Customers",
 				to: "general-customers",
 			},
-		],
-	},
-	//Apps
-	{
-		title: "Apps",
-		classsChange: "mm-collapse",
-		iconStyle: <i className="flaticon-381-television" />,
-		content: [
 			{
 				title: "Analytics",
 				to: "analytics",
