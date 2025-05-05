@@ -17,11 +17,17 @@ const wasteStore = create(
 		error: null,
 		// Méthode existante inchangée
 		setFilterCriteria: (criteria) => {
-			set((state) => ({
-				filterCriteria: { ...state.filterCriteria, ...criteria },
-			}));
-			get().fetchWasteSummary();
+			const updatedCriteria = {
+				...get().filterCriteria,
+				...criteria,
+			};
+			set({ filterCriteria: updatedCriteria });
+		
+			if (updatedCriteria.restaurantId) {
+				get().fetchWasteSummary(); 
+			}
 		},
+		
 		// Méthode existante inchangée
 		resetFilters: () => {
 			set({
@@ -32,11 +38,17 @@ const wasteStore = create(
 					category: "",
 				},
 			});
-			get().fetchWasteSummary();
 		},
+		
 		// Méthode existante inchangée
 		fetchWasteSummary: async () => {
 			const { filterCriteria } = get();
+		
+			if (!filterCriteria.restaurantId) {
+				console.warn("No restaurantId provided to fetchWasteSummary. Skipping request.");
+				return;
+			}
+		
 			set({ isLoading: true, error: null });
 			try {
 				const response = await apiRequest.get(`/waste/summary`, {
@@ -52,6 +64,7 @@ const wasteStore = create(
 				set({ error: error.message, isLoading: false });
 			}
 		},
+		
 		// Nouvelle méthode pour récupérer les pourcentages de gaspillage
 		fetchWastePercentage: async () => {
 			const { filterCriteria } = get();
