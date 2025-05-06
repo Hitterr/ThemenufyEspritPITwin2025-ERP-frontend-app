@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import pMinDelay from "p-min-delay";
 import loadable from "@loadable/component";
-import { Dropdown, Nav, Tab } from "react-bootstrap";
+import { Dropdown, Nav, Tab, Row, Col } from "react-bootstrap";
 import ChartDonught2 from "../Sego/Home/donught2";
 import ChartDonught3 from "../Sego/Home/donught3";
 import ActivityLineChart from "../Sego/Home/ActivityLineChart";
