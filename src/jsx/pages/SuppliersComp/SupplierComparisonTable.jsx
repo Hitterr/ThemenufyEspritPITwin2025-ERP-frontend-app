@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { Table, Spinner, Alert } from "react-bootstrap";
 import { apiRequest } from "../../utils/apiRequest";
 export default function SupplierComparisonTable({ stockId }) {

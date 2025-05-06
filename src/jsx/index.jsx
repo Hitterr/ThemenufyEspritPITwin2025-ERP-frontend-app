@@ -120,8 +120,9 @@ import TurnoverTable from "./pages/Turnover/TurnoverTable";
 import ApexForecast from "./pages/forecastedSales/ApexForecast";
 import Waste from "./pages/waste/waste";
 import RecipeCostDashboard from "./pages/Dashbord/recipe/RecipeCostDashboard";
-import { components } from "react-select";
-import ReorderDashboard from './pages/Dashbord/reorder/ReorderDashboard';
+import InvoiceTimeline from "./pages/invoice/components/InvoiceTimeline";
+import AIIngredientForecast from "./pages/forecastedSalesIA/AIIngredientForecast";
+import WeeklyPurchaseForecast from "./pages/WeeklyPurchaseForecast/WeeklyPurchaseForecast";
 const Markup = () => {
 	const allroutes = [
 		/// Dashboard
@@ -227,11 +228,14 @@ const Markup = () => {
 		{ url: "categories", component: <CategoriesPage /> },
 		{ url: "categories/:id", component: <ShowCategory /> },
 		{ url: "invoices/stats", component: <InvoiceStats /> },
+		{ url: "invoices/:id/timeline", component: <InvoiceTimeline /> },
 		{ url: "turnover", component: <TurnoverTable /> },
 		{ url: "stock-forecast", component: <ApexForecast /> },
 		{ url: "waste", component: <Waste /> },
 		{ url: "storage", component: <StorageApp /> },
-		{url:"reorder",component: <ReorderDashboard/>}
+		{ url: "reorder", component: <ReorderDashboard /> },
+		{ url: "IAForecastChart", component: <AIIngredientForecast /> },
+		{ url: "WeeklyPurchaseForecast", component: <WeeklyPurchaseForecast /> },
 	];
 	return (
 		<>
