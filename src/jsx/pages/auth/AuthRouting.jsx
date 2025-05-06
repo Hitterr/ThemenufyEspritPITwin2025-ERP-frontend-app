@@ -6,6 +6,7 @@ import ForgotPassword from "./reset-password/ForgotPassword";
 import DeviceVerification from "./login/DeviceVerification";
 import Terms from "./login/components/Terms";
 import { Signup } from "./signup/Signup";
+import FaceRecognition from "./face-recognition/FaceRecognition";
 export default function AuthRouting() {
   const { currentUser, verifyDevice, getProfile, logout } = authStore();
   const location = useLocation();
@@ -58,6 +59,7 @@ export default function AuthRouting() {
         path="verify-device/:token"
         element={<DeviceVerification />}
       ></Route>
+      <Route path="face-recognition" element={<FaceRecognition />}></Route>
     </Routes>
   );
 }
