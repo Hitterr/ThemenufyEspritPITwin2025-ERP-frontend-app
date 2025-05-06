@@ -1,20 +1,17 @@
 import React, { useState, useRef } from "react";
-import { Modal, Button, Spinner, Alert } from "react-bootstrap";
-import { FaCamera, FaUpload, FaUser } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Modal, Button, Spinner, Alert, Form } from "react-bootstrap";
+import { FaCamera, FaUpload, FaUser, FaSave } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { authStore } from "../../../store/authStore";
-import { getDeviceInfo } from "../../../utils/deviceInfo";
 import "./FaceRecognition.css";
 
-const FaceRecognition = ({ show, onHide }) => {
+const RegisterFace = ({ show, onHide }) => {
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const fileInputRef = useRef(null);
-  const navigate = useNavigate();
-  const { verifyDevice } = authStore();
+  const { currentUser } = authStore();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -35,16 +32,21 @@ const FaceRecognition = ({ show, onHide }) => {
       return;
     }
 
+    if (!currentUser?.user?._id) {
+      setError("User information not found. Please log in again.");
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
     const formData = new FormData();
     formData.append("image", image);
-    formData.append("deviceId", getDeviceInfo());
+    formData.append("user_id", currentUser.user._id);
 
     try {
       const response = await fetch(
-        import.meta.env.VITE_FACE_BACKEND_URL + "/recognize",
+        import.meta.env.VITE_FACE_BACKEND_URL + "/register",
         {
           method: "POST",
           body: formData,
@@ -53,42 +55,29 @@ const FaceRecognition = ({ show, onHide }) => {
 
       const data = await response.json();
 
-      if (response.ok && data.status === "recognized") {
+      if (response.ok) {
         onHide(); // Close the modal first
 
         Swal.fire({
           icon: "success",
-          title: "Face Recognized!",
-          text: `Welcome back, ${data.firstName} ${data.lastName}!`,
+          title: "Face Registered!",
+          text: "Your face has been successfully registered for future logins.",
           timer: 2000,
           showConfirmButton: false,
         });
-
-        // Store authentication data
-        verifyDevice({
-          token: data.token,
-          user: {
-            _id: data.user_id,
-            firstName: data.firstName,
-            lastName: data.lastName,
-          },
-        });
-
-        // Navigate to dashboard after successful recognition
-        setTimeout(() => navigate("/dashboard"), 2000);
       } else {
-        throw new Error(data.message || "Face recognition failed");
+        throw new Error(data.message || "Face registration failed");
       }
     } catch (error) {
-      console.error("Face recognition error:", error);
-      setError(error.message || "Failed to recognize face. Please try again.");
+      console.error("Face registration error:", error);
+      setError(error.message || "Failed to register face. Please try again.");
 
       Swal.fire({
         icon: "error",
-        title: "Recognition Failed",
+        title: "Registration Failed",
         text:
           error.message ||
-          "We couldn't recognize your face. Please try again or use another login method.",
+          "We couldn't register your face. Please try again with a clearer photo.",
       });
     } finally {
       setIsLoading(false);
@@ -113,9 +102,9 @@ const FaceRecognition = ({ show, onHide }) => {
     >
       <Modal.Header closeButton className="border-0 pb-0">
         <Modal.Title className="w-100 text-center">
-          <h4>Face Recognition Login</h4>
+          <h4>Register Your Face</h4>
           <p className="text-muted small mb-0">
-            Login with your face to access your account
+            Add facial recognition to your account for faster login
           </p>
         </Modal.Title>
       </Modal.Header>
@@ -142,6 +131,18 @@ const FaceRecognition = ({ show, onHide }) => {
               </div>
             )}
           </div>
+
+          <Form.Group className="mb-3">
+            <Form.Label className="text-start d-block">
+              Photo Guidelines:
+            </Form.Label>
+            <ul className="text-start text-muted small ps-3">
+              <li>Make sure your face is clearly visible</li>
+              <li>Good lighting conditions</li>
+              <li>Neutral expression</li>
+              <li>No sunglasses or face coverings</li>
+            </ul>
+          </Form.Group>
 
           <input
             type="file"
@@ -179,8 +180,8 @@ const FaceRecognition = ({ show, onHide }) => {
                 </>
               ) : (
                 <>
-                  <FaCamera className="me-2" />
-                  Recognize Me
+                  <FaSave className="me-2" />
+                  Register Face
                 </>
               )}
             </Button>
@@ -189,18 +190,13 @@ const FaceRecognition = ({ show, onHide }) => {
       </Modal.Body>
 
       <Modal.Footer className="border-0 pt-0 justify-content-center">
-        <p className="text-muted mb-0">
-          <Button
-            variant="link"
-            onClick={handleClose}
-            className="text-decoration-none p-0"
-          >
-            Use another login method
-          </Button>
+        <p className="text-muted small mb-0">
+          Your facial data is securely stored and used only for authentication
+          purposes.
         </p>
       </Modal.Footer>
     </Modal>
   );
 };
 
-export default FaceRecognition;
+export default RegisterFace;
