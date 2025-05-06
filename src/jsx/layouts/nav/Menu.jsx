@@ -22,6 +22,10 @@ export const MenuList = [
 						title: "Suppliers Performance",
 						to: "suppliers-performance",
 					},
+					{
+						title: "Reorder",
+						to: "reorder",
+					},
 				],
 			},
 			{
