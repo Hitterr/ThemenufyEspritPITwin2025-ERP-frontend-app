@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import useReorderStore from '../stores/reorderStore';
+import useReorderStore from '../../../store/useReorderStore';
 
 const ReorderChart = () => {
   const { consumptionData, forecastData, loading, error, fetchConsumptionData, fetchForecastData } = useReorderStore();

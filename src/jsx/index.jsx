@@ -120,6 +120,8 @@ import TurnoverTable from "./pages/Turnover/TurnoverTable";
 import ApexForecast from "./pages/forecastedSales/ApexForecast";
 import Waste from "./pages/waste/waste";
 import RecipeCostDashboard from "./pages/Dashbord/recipe/RecipeCostDashboard";
+import { components } from "react-select";
+import ReorderDashboard from './pages/Dashbord/reorder/ReorderDashboard';
 const Markup = () => {
 	const allroutes = [
 		/// Dashboard
@@ -229,6 +231,7 @@ const Markup = () => {
 		{ url: "stock-forecast", component: <ApexForecast /> },
 		{ url: "waste", component: <Waste /> },
 		{ url: "storage", component: <StorageApp /> },
+		{url:"reorder",component: <ReorderDashboard/>}
 	];
 	return (
 		<>
