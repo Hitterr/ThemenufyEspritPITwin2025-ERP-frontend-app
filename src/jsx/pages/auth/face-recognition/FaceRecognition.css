@@ -53,23 +53,3 @@
     height: 220px;
   }
 }
-
-.btn-primary {
-  background-color: #3a86ff;
-  border-color: #3a86ff;
-}
-
-.btn-primary:hover {
-  background-color: #2a75f0;
-  border-color: #2a75f0;
-}
-
-.btn-outline-primary {
-  color: #3a86ff;
-  border-color: #3a86ff;
-}
-
-.btn-outline-primary:hover {
-  background-color: #3a86ff;
-  color: white;
-}
