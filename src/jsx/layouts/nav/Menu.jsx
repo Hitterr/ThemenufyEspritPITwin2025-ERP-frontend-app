@@ -22,6 +22,10 @@ export const MenuList = [
 						title: "Suppliers Performance",
 						to: "suppliers-performance",
 					},
+					{
+						title: "Reorder",
+						to: "reorder",
+					},
 				],
 			},
 			{
@@ -59,7 +63,7 @@ export const MenuList = [
 					},
 					{
 						title: "Stock Forecast",
-						to: "IAForecastChart",
+						to: "stock-forecast",
 					},
 					{
 						title: "Purchase Forecast",

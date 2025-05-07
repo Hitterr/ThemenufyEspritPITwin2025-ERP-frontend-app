@@ -118,8 +118,9 @@ import ShowCategory from "./pages/categories/ShowCategory";
 import InvoiceStats from "./pages/invoice/components/InvoiceStats";
 import TurnoverTable from "./pages/Turnover/TurnoverTable";
 import ApexForecast from "./pages/forecastedSales/ApexForecast";
-import Waste from "./pages/waste/waste";
+import Waste from "./pages/waste/Waste";
 import RecipeCostDashboard from "./pages/Dashbord/recipe/RecipeCostDashboard";
+import InvoiceTimeline from "./pages/invoice/components/InvoiceTimeline";
 import AIIngredientForecast from "./pages/forecastedSalesIA/AIIngredientForecast";
 import WeeklyPurchaseForecast from "./pages/WeeklyPurchaseForecast/WeeklyPurchaseForecast";
 const Markup = () => {
@@ -227,14 +228,14 @@ const Markup = () => {
 		{ url: "categories", component: <CategoriesPage /> },
 		{ url: "categories/:id", component: <ShowCategory /> },
 		{ url: "invoices/stats", component: <InvoiceStats /> },
+		{ url: "invoices/:id/timeline", component: <InvoiceTimeline /> },
 		{ url: "turnover", component: <TurnoverTable /> },
-		// ----------------------- forecast -----------------------------
 		{ url: "stock-forecast", component: <ApexForecast /> },
-		{ url: "IAForecastChart", component: <AIIngredientForecast /> },
-		{ url: "WeeklyPurchaseForecast", component: <WeeklyPurchaseForecast /> },
-
 		{ url: "waste", component: <Waste /> },
 		{ url: "storage", component: <StorageApp /> },
+		{ url: "reorder", component: <ReorderDashboard /> },
+		{ url: "IAForecastChart", component: <AIIngredientForecast /> },
+		{ url: "WeeklyPurchaseForecast", component: <WeeklyPurchaseForecast /> },
 	];
 	return (
 		<>

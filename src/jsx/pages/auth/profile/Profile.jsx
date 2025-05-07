@@ -6,6 +6,7 @@ import EditForm from "./components/EditForm";
 import { ToastContainer } from "react-toastify";
 import { BsPersonCircle, BsBriefcaseFill, BsShop } from "react-icons/bs"; // Icônes Bootstrap
 import UpdatePassword from "./components/UpdatePassword";
+import RegisterFaceButton from "../face-recognition/RegisterFaceButton";
 const Profile = () => {
   const { currentUser, profile, setActiveTab } = authStore();
   const hiddenFields = [
@@ -92,7 +93,6 @@ const Profile = () => {
 
                 {/* 🧑 User Info */}
                 <Card
-
                   className="mb-4  p-3 rounded"
                   style={{ borderRadius: "10px", border: "1px solid #EA7B9B" }}
                 >
@@ -106,7 +106,6 @@ const Profile = () => {
                         if (hiddenFields.includes(field)) return null;
 
                         return (
-
                           <Col key={field} className="my-2">
                             <label className="text-capitalize text-primary mb-1">
                               {field}:
