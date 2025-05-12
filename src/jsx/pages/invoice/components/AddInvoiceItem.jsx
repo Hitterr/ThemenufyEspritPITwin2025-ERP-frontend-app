@@ -11,15 +11,13 @@ import Modal from "react-bootstrap/Modal";
 import { useEffect, useState } from "react";
 import { Carrot, Plus } from "lucide-react";
 import useStockStore from "../../../store/stockStore";
-import { apiRequest } from "../../../utils/apiRequest";
-const SMART_INVOICE_API = "http://127.0.0.1:5000/api/detect_spike";
 const AddInvoiceItem = () => {
   const [show, setShow] = useState(false);
   const { fetchStocks, stocks } = useStockStore();
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const navigate = useNavigate();
-  const { addInvoiceItem, addSpike } = useInvoiceStore();
+  const { addInvoiceItem } = useInvoiceStore();
   useEffect(() => {
     fetchStocks();
   }, []);
@@ -36,19 +34,9 @@ const AddInvoiceItem = () => {
       price: 0,
     },
   });
+
   const onSubmit = async (data) => {
     try {
-      const { data: detectionResult } = await apiRequest.post(
-        SMART_INVOICE_API,
-        {
-          stockId: data.stock,
-          price: data.price,
-        }
-      );
-      console.log(detectionResult);
-      if (detectionResult && detectionResult.isSpike == true) {
-        addSpike(data.stock);
-      }
       addInvoiceItem(data);
       Swal.fire({
         icon: "success",

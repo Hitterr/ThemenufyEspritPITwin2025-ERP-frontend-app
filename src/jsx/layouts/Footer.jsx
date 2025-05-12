@@ -6,9 +6,9 @@ const Footer = () => {
     <div className="footer">
       <div className="copyright">
         <p>
-          Copyright © Made With ♡ &amp; Developed by{" "}
+          Copyright © Designed &amp; Developed by{" "}
           <a href="http://dexignzone.com/" target="_blank"  rel="noreferrer">
-            TheFinals
+            DexignZone
           </a>{" "}
           {year}
         </p>

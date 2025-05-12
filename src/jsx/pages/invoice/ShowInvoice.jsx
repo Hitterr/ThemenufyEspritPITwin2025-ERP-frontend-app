@@ -8,7 +8,6 @@ import { useParams, useNavigate } from "react-router-dom"; // Ajout de useNaviga
 import useSupplierStore from "../../store/supplierStore";
 import { authStore } from "../../store/authStore";
 import generatePDF from "./components/InvoicePdf";
-import InvoiceTimeline from "./components/InvoiceTimeline";
 
 export const ShowInvoice = () => {
   const {
@@ -102,7 +101,7 @@ export const ShowInvoice = () => {
       </Row>
 
       <div className="row">
-        <div className="col-12">
+        <div className="col-lg-12">
           <div className="card">
             <Row className="justify-content-around">
               <Col xs={8} className="mb-3 p-5">
@@ -283,7 +282,6 @@ export const ShowInvoice = () => {
             </div>
           </div>
         </div>
-        <InvoiceTimeline />
       </div>
     </Fragment>
   );

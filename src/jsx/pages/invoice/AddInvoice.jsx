@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect } from "react";
 import { format } from "date-fns";
-import { ArrowRight, Trash, TriangleAlert } from "lucide-react";
-import { Badge, Button, Col, FormSelect, Row } from "react-bootstrap";
+import { ArrowRight, Trash } from "lucide-react";
+import { Button, Col, FormSelect, Row } from "react-bootstrap";
 import { authStore } from "../../store/authStore";
 import AddInvoiceItem from "./components/AddInvoiceItem";
 import useInvoiceStore from "../../store/invoiceStore";
@@ -26,10 +26,9 @@ export const AddInvoice = () => {
     deleteInvoiceItem,
     updateInvoiceStatus,
     setInvoiceStatus,
-    spikes,
   } = useInvoiceStore();
   const navigate = useNavigate();
-  console.log(spikes);
+
   useEffect(() => {
     if (currentUser?.user?.restaurant?._id) {
       setInvoiceRestaurant(currentUser?.user?.restaurant?._id);
@@ -184,14 +183,6 @@ export const AddInvoice = () => {
                             stocks.find((ing) => ing._id === item.stock)
                               ?.libelle
                           }
-                          {spikes.find((each) => each == item.stock) ? (
-                            <TriangleAlert
-                              size={20}
-                              className="text-danger mx-2"
-                            />
-                          ) : (
-                            ""
-                          )}
                         </td>
                         <td className="right">{item?.price} TND</td>
                         <td className="right">{item?.quantity} UNIT</td>

@@ -20,15 +20,6 @@ const useInvoiceStore = create(
       invoiceNumber: "",
     },
     invoiceStats: [],
-    spikes: [],
-    addSpike: (stockId) => {
-      set((state) => ({ spikes: [...state.spikes, stockId] }));
-    },
-    removeSpike: (stockId) => {
-      set((state) => ({
-        spikes: state.spikes.filter((each) => each != stockId),
-      }));
-    },
 
     // === SETTERS ===
     setInvoiceStatus: (status) => {
@@ -258,9 +249,7 @@ const useInvoiceStore = create(
     deleteInvoiceItem: (itemId) => {
       try {
         set({ loading: true, error: null });
-
         set((state) => {
-          state.removeSpike(itemId);
           const updatedInvoice = {
             ...state.currentInvoice,
             items: state.currentInvoice.items.filter(

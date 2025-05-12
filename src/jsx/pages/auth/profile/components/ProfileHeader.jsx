@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { Button, Card, Col, Row, Stack } from "react-bootstrap";
+import { Button, Card, Stack } from "react-bootstrap";
 import backgroundImage from "@assets/images/backgroundRestaurant.jpg";
 import { authStore } from "../../../../store/authStore";
 import { BiCamera } from "react-icons/bi"; // Import de l'icône de caméra
 import { toast } from "react-toastify";
-import RegisterFaceButton from "../../face-recognition/RegisterFaceButton";
 const ProfileHeader = () => {
   const { currentUser, updateProfile } = authStore();
   const [previewImage, setPreviewImage] = useState(
@@ -106,15 +105,6 @@ const ProfileHeader = () => {
             </div>
           </div>
         </div>
-        <Row className="align-items-center p-2">
-          <Col xs={12} className="text-center">
-            <RegisterFaceButton
-              buttonText="Set Up Face Recognition"
-              variant="outline-secondary"
-              className="w-100 text-start text-center"
-            />
-          </Col>
-        </Row>
       </Card>
     </div>
   );
