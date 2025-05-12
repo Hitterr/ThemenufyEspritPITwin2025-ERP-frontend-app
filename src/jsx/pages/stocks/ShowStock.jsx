@@ -5,11 +5,20 @@ import useStockStore from "../../store/stockStore";
 import { FaPencilAlt } from "react-icons/fa";
 import { MoveLeft } from "lucide-react";
 import EditStock from "./EditStock";
+import PriceForecasting from "./PriceForecasting";
+import StockVolatility from "./StockVolatility";
 
 const ShowStock = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getStockById, stocks, fetchSuppliersForStock, suppliersComparison, fetchError, clearSuppliersComparison } = useStockStore();
+  const {
+    getStockById,
+    stocks,
+    fetchSuppliersForStock,
+    suppliersComparison,
+    fetchError,
+    clearSuppliersComparison,
+  } = useStockStore();
   const [stock, setStock] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showSuppliers, setShowSuppliers] = useState(false);
@@ -37,7 +46,8 @@ const ShowStock = () => {
   };
 
   // Check if stock is close to minQty (within 10% or equal/less)
-  const isLowStockWarning = stock && stock.quantity <= stock.minQty * 1.1 && stock.quantity > 0;
+  const isLowStockWarning =
+    stock && stock.quantity <= stock.minQty * 1.1 && stock.quantity > 0;
 
   if (loading) {
     return <div>Loading...</div>;
@@ -111,6 +121,22 @@ const ShowStock = () => {
             </div>
           </Col>
         </Row>
+        <Row>
+          <h5 className="text-primary">Price Prediction & Volatility</h5>
+          <hr />
+          <Col lg={3} sm={4} xs={6}>
+            <PriceForecasting
+              stockId={stock._id}
+              restaurantId="68125850927f1a9b436e3444"
+            />
+          </Col>
+          <Col lg={3} sm={4} xs={6}>
+            <StockVolatility
+              stockId={stock._id}
+              restaurantId="68125850927f1a9b436e3444"
+            />
+          </Col>
+        </Row>
         {/* Supplier Comparison Section */}
         <Row className="mt-4">
           <Col>
@@ -129,11 +155,13 @@ const ShowStock = () => {
                   {fetchError}
                 </div>
               )}
-              {showSuppliers && suppliersComparison.length === 0 && !fetchError && (
-                <div className="alert alert-info" role="alert">
-                  No active suppliers found for this stock.
-                </div>
-              )}
+              {showSuppliers &&
+                suppliersComparison.length === 0 &&
+                !fetchError && (
+                  <div className="alert alert-info" role="alert">
+                    No active suppliers found for this stock.
+                  </div>
+                )}
               {showSuppliers && suppliersComparison.length > 0 && (
                 <div className="table-responsive">
                   <Table className="table-hover">
