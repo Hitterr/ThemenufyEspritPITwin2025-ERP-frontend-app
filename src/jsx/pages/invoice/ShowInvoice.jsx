@@ -9,7 +9,7 @@ import useSupplierStore from "../../store/supplierStore";
 import { authStore } from "../../store/authStore";
 import generatePDF from "./components/InvoicePdf";
 import InvoiceTimeline from "./components/InvoiceTimeline";
-
+import { FileText } from "lucide-react";
 export const ShowInvoice = () => {
   const {
     invoices,
@@ -278,7 +278,7 @@ export const ShowInvoice = () => {
                 variant="primary"
                 onClick={() => generatePDF(currentInvoice, currentUser, stocks)}
               >
-                Download PDF
+                <FileText className="mr-2 h-4 w-4" />
               </Button>
             </div>
           </div>
