@@ -121,6 +121,9 @@ import ApexForecast from "./pages/forecastedSales/ApexForecast";
 import Waste from "./pages/waste/waste";
 import RecipeCostDashboard from "./pages/Dashbord/recipe/RecipeCostDashboard";
 import InvoiceTimeline from "./pages/invoice/components/InvoiceTimeline";
+import AIIngredientForecast from "./pages/forecastedSalesIA/AIIngredientForecast";
+import WeeklyPurchaseForecast from "./pages/WeeklyPurchaseForecast/WeeklyPurchaseForecast";
+import ReorderDashboard from "./pages/Dashbord/reorder/ReorderDashboard";
 const Markup = () => {
   const allroutes = [
     /// Dashboard
@@ -231,6 +234,9 @@ const Markup = () => {
     { url: "stock-forecast", component: <ApexForecast /> },
     { url: "waste", component: <Waste /> },
     { url: "storage", component: <StorageApp /> },
+    { url: "reorder", component: <ReorderDashboard /> },
+    { url: "IAForecastChart", component: <AIIngredientForecast /> },
+    { url: "WeeklyPurchaseForecast", component: <WeeklyPurchaseForecast /> },
   ];
   return (
     <>

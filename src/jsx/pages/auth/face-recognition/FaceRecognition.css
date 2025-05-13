@@ -1,0 +1,55 @@
+.face-recognition-container {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.face-preview {
+  width: 280px;
+  height: 280px;
+  margin: 0 auto;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.face-preview:hover {
+  box-shadow: 0 0 0 4px rgba(58, 134, 255, 0.3);
+}
+
+.placeholder-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+}
+
+.face-recognition-modal .modal-content {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.face-recognition-modal .modal-header {
+  padding-top: 1.5rem;
+}
+
+.face-recognition-modal .modal-footer {
+  padding-bottom: 1.5rem;
+}
+
+@media (max-width: 576px) {
+  .face-preview {
+    width: 220px;
+    height: 220px;
+  }
+}
