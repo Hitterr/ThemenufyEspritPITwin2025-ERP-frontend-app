@@ -53,12 +53,12 @@ const UpdatePassword = () => {
   return (
     <Card
       className="p-4 shadow-sm"
-      style={{ borderRadius: "10px", border: "1px solid #EA7B9B" }}
+      style={{ borderRadius: "10px", border: "1px solid #F47F72" }}
     >
       <h3
         className="text-secondary mb-4"
         style={{
-          borderBottom: "2px solid #EA7B9B",
+          borderBottom: "2px solid #F47F72",
           paddingBottom: "10px",
           display: "inline-block",
           width: "fit-content",
@@ -80,7 +80,7 @@ const UpdatePassword = () => {
         <Row className="g-3">
           <Col md={4}>
             <Form.Group>
-              <Form.Label>Current Password</Form.Label>
+              <Form.Label className="secondary">Current Password</Form.Label>
               <Form.Control
                 type="password"
                 value={passwordData.currentPassword}
@@ -91,13 +91,14 @@ const UpdatePassword = () => {
                   })
                 }
                 required
-                className="border-primary rounded-3"
+                className="rounded-3"
+                style={{ border: "1px solid #F47F72" }}
               />
             </Form.Group>
           </Col>
           <Col md={4}>
             <Form.Group>
-              <Form.Label>New Password</Form.Label>
+              <Form.Label className="secondary">New Password</Form.Label>
               <InputGroup>
                 <Form.Control
                   type={showNewPassword ? "text" : "password"}
@@ -109,7 +110,8 @@ const UpdatePassword = () => {
                     })
                   }
                   required
-                  className="border-primary rounded-3"
+                  className="rounded-3"
+                  style={{ border: "1px solid #F47F72" }}
                 />
                 <Button
                   variant="outline-primary"
@@ -123,7 +125,10 @@ const UpdatePassword = () => {
           </Col>
           <Col md={4}>
             <Form.Group>
-              <Form.Label>Confirm New Password</Form.Label>
+              <Form.Label className="secondary">
+                Confirm New Password
+              </Form.Label>
+
               <InputGroup>
                 <Form.Control
                   type={showConfirmPassword ? "text" : "password"}
@@ -135,7 +140,8 @@ const UpdatePassword = () => {
                     })
                   }
                   required
-                  className="border-primary rounded-3"
+                  className="rounded-3"
+                  style={{ border: "1px solid #F47F72" }}
                 />
                 <Button
                   variant="outline-primary"
@@ -151,7 +157,7 @@ const UpdatePassword = () => {
         <Button
           type="submit"
           style={{
-            backgroundColor: "#EA7B9B",
+            backgroundColor: "#F47F72",
             border: "none",
             color: "white",
           }}
