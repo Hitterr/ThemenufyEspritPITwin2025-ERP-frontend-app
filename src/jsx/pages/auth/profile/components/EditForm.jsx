@@ -8,6 +8,7 @@ import "react-phone-input-2/lib/style.css";
 import { editFormSchema } from "./validators/EditFormValidator";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+
 const EditForm = () => {
   const navigate = useNavigate();
   try {
@@ -47,14 +48,13 @@ const EditForm = () => {
     const onSubmit = async (values) => {
       try {
         await updateProfile(currentUser.token, values);
+
         Swal.fire({
           icon: "success",
           title: "Success!",
           text: "Profile Updated",
         });
-        setTimeout(() => {
-          setActiveTab("About");
-        }, 500);
+        setActiveTab("About");
       } catch (error) {
         Swal.fire({
           icon: "error",
