@@ -236,6 +236,11 @@ const useInvoiceStore = create(
     // === INVOICE ITEMS ===
     addInvoiceItem: (item) => {
       try {
+        if (!item || Object.keys(item).length === 0) {
+          set({ error: "L'article de facture est vide.", loading: false });
+          return;
+        }
+
         set({ loading: true, error: null });
         set((state) => {
           const updatedInvoice = {
@@ -254,7 +259,6 @@ const useInvoiceStore = create(
         });
       }
     },
-
     deleteInvoiceItem: (itemId) => {
       try {
         set({ loading: true, error: null });
