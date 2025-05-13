@@ -8,7 +8,8 @@ import { useParams, useNavigate } from "react-router-dom"; // Ajout de useNaviga
 import useSupplierStore from "../../store/supplierStore";
 import { authStore } from "../../store/authStore";
 import generatePDF from "./components/InvoicePdf";
-
+import InvoiceTimeline from "./components/InvoiceTimeline";
+import { FileText } from "lucide-react";
 export const ShowInvoice = () => {
   const {
     invoices,
@@ -101,7 +102,7 @@ export const ShowInvoice = () => {
       </Row>
 
       <div className="row">
-        <div className="col-lg-12">
+        <div className="col-12">
           <div className="card">
             <Row className="justify-content-around">
               <Col xs={8} className="mb-3 p-5">
@@ -277,11 +278,12 @@ export const ShowInvoice = () => {
                 variant="primary"
                 onClick={() => generatePDF(currentInvoice, currentUser, stocks)}
               >
-                Download PDF
+                <FileText className="mr-2 h-4 w-4" />
               </Button>
             </div>
           </div>
         </div>
+        <InvoiceTimeline />
       </div>
     </Fragment>
   );

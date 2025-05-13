@@ -16,45 +16,69 @@ const InvoiceFilters = ({ onClose }) => {
   };
 
   return (
-    <Card className="mb-3">
+    <Card
+      className="mb-3 mx-auto shadow"
+      style={{
+        width: "600px",
+        maxWidth: "100%",
+        borderRadius: "15px",
+        border: "1px solid #F47F72",
+      }}
+    >
       <Card.Body>
-        <div className="d-flex justify-content-between mb-3">
-          <h5 className="mb-0">Filters</h5>
-          <div>
-            <Button
-              variant="secondary"
-              size="sm"
-              className="me-2"
-              onClick={handleReset}
-            >
-              <FaTimes className="me-1" /> Reset
-            </Button>
-            <Button variant="light" size="sm" onClick={onClose}>
-              Close
-            </Button>
-          </div>
+        <div className="d-flex justify-content-between mb-4 align-items-center">
+          <h5 className="mb-0" style={{ color: "#F47F72" }}>
+            Filters
+          </h5>
+          <Button
+            style={{
+              backgroundColor: "#2E2E6A",
+              border: "none",
+              borderRadius: "8px",
+              width: "32px",
+              height: "32px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "0",
+            }}
+            onClick={handleReset}
+          >
+            <FaTimes color="white" />
+          </Button>
         </div>
+
         <Row>
-          <Col md={3}>
+          <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label>Search by Invoice Number</Form.Label>
+              <Form.Label style={{ color: "#F47F72" }}>
+                Invoice Number
+              </Form.Label>
               <Form.Control
                 type="text"
                 name="invoiceNumber"
                 value={filterCriteria.invoiceNumber || ""}
                 onChange={handleFilterChange}
                 placeholder="Search by invoice number..."
+                style={{
+                  border: "1px solid #F47F72",
+                  borderRadius: "8px",
+                }}
               />
             </Form.Group>
           </Col>
-          <Col md={3}>
+          <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label>Status</Form.Label>
+              <Form.Label style={{ color: "#F47F72" }}>Status</Form.Label>
               <Form.Control
                 as="select"
                 name="status"
                 value={filterCriteria.status || "all"}
                 onChange={handleFilterChange}
+                style={{
+                  border: "1px solid #F47F72",
+                  borderRadius: "8px",
+                }}
               >
                 <option value="all">All Statuses</option>
                 <option value="pending">Pending</option>

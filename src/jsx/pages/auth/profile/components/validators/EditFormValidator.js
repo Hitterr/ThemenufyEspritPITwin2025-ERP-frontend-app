@@ -45,45 +45,4 @@ export const editFormSchema = yup.object().shape({
     .date()
     .max(new Date(), "Birthday cannot be in the future")
     .optional(),
-
-  restaurant: yup.object().shape({
-    name: yup
-      .string()
-      .strict()
-      .trim()
-      .matches(/^[A-Za-z\s]+$/, "Restaurant name must contain only letters")
-      .min(5, "Restaurant name must be more than 4 characters")
-      .optional(),
-
-    address: yup
-      .string()
-      .strict()
-      .trim()
-      .min(5, "Address must be at least 5 characters")
-      .optional(),
-
-    cuisineType: yup
-      .string()
-      .strict()
-      .trim()
-      .matches(/^[A-Za-z\s]+$/, "Cuisine type must contain only letters")
-      .optional(),
-
-    taxeTPS: yup
-      .string()
-      .strict()
-      .trim()
-      .matches(/^\d+(\.\d{1,2})?$/, "TPS tax must be a valid number")
-      .optional(),
-
-    taxeTVQ: yup
-      .string()
-      .strict()
-      .trim()
-      .matches(/^\d+(\.\d{1,2})?$/, "TVQ tax must be a valid number")
-      .optional(),
-
-    promotion: yup.string().strict().trim(),
-    payCashMethod: yup.boolean().strict().optional(),
-  }),
 });
