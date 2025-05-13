@@ -213,7 +213,7 @@ class InvoiceStats extends Component {
             </Dropdown.Menu>
           </Dropdown>
 
-          <div className="input-group ">
+          <div className="input-group">
             <label className="input-group-text bg-primary text-white">
               Start Date
             </label>
@@ -251,28 +251,84 @@ class InvoiceStats extends Component {
 
         {/* Card-Based Status Counts */}
         <div className="row">
-          <div className="col-sm-4 mb-md-0 mb-3">
-            <div className="p-3 border rounded">
-              <h3 className="fs-32 text-black font-w600 mb-1">
-                {statusCounts.pending}
-              </h3>
-              <span className="fs-18 text-primary">Pending</span>
+          {/* Pending Card */}
+          <div className="col-xl-3 col-xxl-4 col-lg-6 col-sm-6 mb-3">
+            <div className="widget-stat card bg-warning">
+              <div className="card-body p-4">
+                <div className="media">
+                  <span className="me-3">
+                    <i className="la la-hourglass-start"></i>
+                  </span>
+                  <div className="media-body text-white">
+                    <p className="mb-1">Pending</p>
+                    <h3 className="text-white">{statusCounts.pending}</h3>
+                    <div className="progress mb-2 bg-primary">
+                      <div
+                        className="progress-bar progress-animated bg-light"
+                        style={{
+                          width: `${Math.min(statusCounts.pending * 10, 100)}%`,
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="col-sm-4 mb-md-0 mb-3">
-            <div className="p-3 border rounded">
-              <h3 className="fs-32 text-black font-w600 mb-1">
-                {statusCounts.delivered}
-              </h3>
-              <span className="fs-18 text-primary">Delivered</span>
+
+          {/* Delivered Card */}
+          <div className="col-xl-3 col-xxl-4 col-lg-6 col-sm-6 mb-3">
+            <div className="widget-stat card bg-success">
+              <div className="card-body p-4">
+                <div className="media">
+                  <span className="me-3">
+                    <i className="la la-check-circle"></i>
+                  </span>
+                  <div className="media-body text-white">
+                    <p className="mb-1">Delivered</p>
+                    <h3 className="text-white">{statusCounts.delivered}</h3>
+                    <div className="progress mb-2 bg-primary">
+                      <div
+                        className="progress-bar progress-animated bg-light"
+                        style={{
+                          width: `${Math.min(
+                            statusCounts.delivered * 10,
+                            100
+                          )}%`,
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="col-sm-4">
-            <div className="p-3 border rounded">
-              <h3 className="fs-32 text-black font-w600 mb-1">
-                {statusCounts.cancelled}
-              </h3>
-              <span className="fs-18 text-primary">Cancelled</span>
+
+          {/* Cancelled Card */}
+          <div className="col-xl-3 col-xxl-4 col-lg-6 col-sm-6 mb-3">
+            <div className="widget-stat card bg-danger">
+              <div className="card-body p-4">
+                <div className="media">
+                  <span className="me-3">
+                    <i className="la la-times-circle"></i>
+                  </span>
+                  <div className="media-body text-white">
+                    <p className="mb-1">Cancelled</p>
+                    <h3 className="text-white">{statusCounts.cancelled}</h3>
+                    <div className="progress mb-2 bg-primary">
+                      <div
+                        className="progress-bar progress-animated bg-light"
+                        style={{
+                          width: `${Math.min(
+                            statusCounts.cancelled * 10,
+                            100
+                          )}%`,
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
