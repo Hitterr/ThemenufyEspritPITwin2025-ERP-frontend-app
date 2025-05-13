@@ -139,7 +139,7 @@ const EditForm = () => {
           <h3
             className="text-secondary mb-4"
             style={{
-              borderBottom: "2px solid #EA7B9B",
+              borderBottom: "2px solid #F47F72",
               paddingBottom: "10px",
               display: "inline-block",
             }}
@@ -183,7 +183,7 @@ const EditForm = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="p-4 rounded"
         style={{
-          border: "1px solid #EA7B9B",
+          border: "1px solid #F47F72",
           borderRadius: "10px",
         }}
       >
