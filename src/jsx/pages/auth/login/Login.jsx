@@ -32,8 +32,8 @@ function Login() {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      email: "admin@menufy.com",
-      password: "Admin@123",
+      email: "superadmin@menufy.com",
+      password: "Super@123",
     },
   });
   const [deviceId] = useState(getDeviceInfo());

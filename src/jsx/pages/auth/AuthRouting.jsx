@@ -45,6 +45,9 @@ export default function AuthRouting() {
       currentUser?.user &&
       availableRoutes.includes(location.pathname)
     ) {
+      if (currentUser?.user?.role == "superadmin") {
+        navigate("/users");
+      }
       navigate("/");
     }
     if (currentUser?.user?.isVerified == false) {

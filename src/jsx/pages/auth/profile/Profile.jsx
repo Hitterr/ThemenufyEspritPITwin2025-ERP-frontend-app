@@ -55,7 +55,12 @@ const Profile = () => {
         <div className="card-body">
           <Tab.Container activeKey={profile.tab}>
             <Nav variant="tabs" className="mb-3">
-              {["About", "Settings", "Password", "Restaurant"].map((tab) => (
+              {[
+                "About",
+                "Settings",
+                "Password",
+                currentUser.user.restaurant ? "Restaurant" : "",
+              ].map((tab) => (
                 <Nav.Item key={tab}>
                   <Nav.Link
                     eventKey={tab}

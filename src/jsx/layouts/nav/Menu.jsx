@@ -90,6 +90,35 @@ export const MenuList = [
     ],
   },
 ];
+export const superAdminMenuList = [
+  //Dashboard
+  {
+    title: "Dashboard",
+    classsChange: "mm-collapse",
+    iconStyle: <i className="flaticon-381-networking" />,
+    content: [
+      {
+        title: "Accounts",
+        classsChange: "mm-collapse",
+        hasMenu: true,
+        content: [
+          {
+            title: "Users",
+            to: "users",
+          },
+          {
+            title: "Archived",
+            to: "Archived",
+          },
+          {
+            title: "Restaurants",
+            to: "restaurants",
+          },
+        ],
+      },
+    ],
+  },
+];
 const TemplateMenu = [
   //Apps
   {
