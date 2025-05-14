@@ -23,3 +23,15 @@ npm run dev
 ## Notes
 
 - Don't forget to run the backend first
+
+## accounts
+
+### super admin
+
+    email: `superadmin@menufy.com`
+    password: `Super@123`
+
+### admin
+
+    email: `admin@menufy.com`
+    password: `Admin@123`
