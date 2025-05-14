@@ -7,10 +7,12 @@ import { MoveLeft } from "lucide-react";
 import EditStock from "./EditStock";
 import PriceForecasting from "./PriceForecasting";
 import StockVolatility from "./StockVolatility";
+import { authStore } from "../../store/authStore";
 
 const ShowStock = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { currentUser } = authStore();
   const {
     getStockById,
     stocks,
@@ -130,13 +132,13 @@ const ShowStock = () => {
           <Col lg={3} sm={4} xs={6}>
             <PriceForecasting
               stockId={stock._id}
-              restaurantId="68125850927f1a9b436e3444"
+              restaurantId={currentUser?.user?.restaurant._id}
             />
           </Col>
           <Col lg={3} sm={4} xs={6}>
             <StockVolatility
               stockId={stock._id}
-              restaurantId="68125850927f1a9b436e3444"
+              restaurantId={currentUser?.user?.restaurant._id}
             />
           </Col>
         </Row>
