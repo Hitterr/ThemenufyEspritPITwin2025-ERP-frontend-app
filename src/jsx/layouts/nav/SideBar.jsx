@@ -80,7 +80,7 @@ const SideBar = () => {
     <div className="deznav">
       <div className="deznav-scroll dz-scroll">
         <ul className="metismenu" id="menu">
-          {currentUser.user.role != "superadmin"
+          {currentUser?.user?.role != "superadmin"
             ? MenuList.map((data, index) => {
                 let menuClass = data.classsChange;
                 if (menuClass === "menu-title") {
