@@ -89,6 +89,8 @@ export const MenuList = [
       },
     ],
   },
+];
+const TemplateMenu = [
   //Apps
   {
     title: "Apps",
