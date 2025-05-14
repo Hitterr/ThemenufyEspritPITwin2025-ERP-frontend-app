@@ -10,8 +10,8 @@ class InvoiceStats extends Component {
 
     this.state = {
       period: "month",
-      startDate: new Date(new Date().getFullYear(), 0, 1),
-      endDate: new Date(),
+      startDate: new Date("01-01-2000"),
+      endDate: new Date("01-01-2030"),
       statusCounts: {
         pending: 0,
         delivered: 0,

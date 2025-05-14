@@ -120,7 +120,7 @@ const Waste = () => {
         </div>
         <div className="card-body">
           <form onSubmit={handleSubmit}>
-            <div className="row g-3 align-items-end">
+            <div className="row g-3 row-cols-1 row-cols-xl-2  align-items-end">
               <Form.Group className="col-md-3">
                 <Form.Label htmlFor="restaurantName" className="form-label">
                   Restaurant Name
@@ -237,9 +237,9 @@ const Waste = () => {
         </div>
       )}
 
-      <Row className="">
+      <Row className=" justify-content-around">
         {cards.map((card, index) => (
-          <Col key={index} xs={10} sm={5} lg={4}>
+          <Col key={index} xs={10} lg={6}>
             <div
               className="card"
               style={{
