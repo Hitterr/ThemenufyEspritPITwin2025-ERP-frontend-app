@@ -14,7 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { apiRequest } from "../../utils/apiRequest";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useRestaurantQuery, useStocksQuery } from "../storage/utils/queries";
-
+import { authStore } from "./../../store/authStore";
 const Waste = () => {
   const {
     wasteSummary,
@@ -29,16 +29,14 @@ const Waste = () => {
   } = wasteStore();
   const { data: restaurants, isLoading: loadingRestaurants } =
     useRestaurantQuery();
-
+  const { currentUser } = authStore();
   const { data: stocks, isLoading: loadingStocks } = useStocksQuery();
   const [restaurantName, setRestaurantName] = useState("");
 
   // Fetch both summary and percentage data when restaurantId changes
   useEffect(() => {
-    if (filterCriteria.restaurantId) {
-      fetchWasteSummary();
-      fetchWastePercentage();
-    }
+    fetchWasteSummary();
+    fetchWastePercentage();
   }, [filterCriteria, fetchWasteSummary, fetchWastePercentage]);
 
   const handleRestaurantChange = (e) => {
@@ -144,14 +142,15 @@ const Waste = () => {
                     name="restaurantName"
                     className="form-select"
                     value={restaurantName}
+                    defaultValue={currentUser.user.restaurant._id}
                     onChange={handleRestaurantChange}
                   >
-                    <option value="">Select a restaurant</option>
-                    {restaurants.map((restaurant) => (
-                      <option key={restaurant._id} value={restaurant.nameRes}>
-                        {restaurant.nameRes}
-                      </option>
-                    ))}
+                    <option
+                      key={currentUser.user.restaurant._id}
+                      value={currentUser.user.restaurant.nameRes}
+                    >
+                      {currentUser.user.restaurant.nameRes}
+                    </option>
                   </Form.Control>
                 )}
               </Form.Group>
@@ -164,7 +163,8 @@ const Waste = () => {
                   id="startDate"
                   name="startDate"
                   className="form-control"
-                  value={filterCriteria.startDate || ""}
+                  value={filterCriteria.startDate || "01/01/2000"}
+                  defaultValue={"01/01/2000"}
                   onChange={handleFilterChange}
                 />
               </Form.Group>

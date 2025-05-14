@@ -3,7 +3,7 @@ import "chart.js/auto";
 import { useConsumptionsQuery } from "../utils/queries";
 import { format } from "date-fns";
 export const ConsumptionLineChart = () => {
-  const { data: consumptions } = useConsumptionsQuery({ ee: "ee" });
+  const { data: consumptions } = useConsumptionsQuery({});
   console.log(consumptions);
   const groupedData = consumptions?.reduce((acc, entry) => {
     const stockId = entry?.stockId?._id;

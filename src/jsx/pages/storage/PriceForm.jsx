@@ -5,14 +5,15 @@ import { FaUtensils, FaCarrot, FaDollarSign, FaBoxes } from "react-icons/fa";
 import Swal from "sweetalert2";
 import usePriceHistoryStore from "../../store/usePriceHistoryStore";
 import { useRestaurantQuery, useStocksQuery } from "./utils/queries";
+import { useQueryClient } from "@tanstack/react-query";
 const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { createPriceHistory } = usePriceHistoryStore();
   const { data: restaurants, isLoading: loadingRestaurants } =
     useRestaurantQuery();
   const { data: stocks, isLoading: loadingStocks } = useStocksQuery();
   const [formData, setFormData] = useState({
-    restaurantId: restaurantId,
     stockId: "",
     invoiceId: "",
     supplierId: "",
@@ -44,7 +45,7 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Validate required fields
-    const requiredFields = ["restaurantId", "stockId", "invoiceId", "price"];
+    const requiredFields = ["stockId", "invoiceId", "price"];
     const newErrors = {};
     requiredFields.forEach((field) => {
       if (!formData[field].toString().trim()) {
@@ -60,7 +61,6 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
     try {
       const { success, error } = await createPriceHistory({
         stockId: formData.stockId,
-        restaurantId: formData.restaurantId,
         price: parseFloat(formData.price),
         invoiceId: formData.invoiceId,
         supplierId: formData.supplierId || null,
@@ -73,8 +73,8 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
           text: "Price history recorded successfully",
           timer: 2000,
         });
+        queryClient.invalidateQueries("consumptions");
         setFormData({
-          restaurantId: restaurantId,
           stockId: "",
           invoiceId: "",
           supplierId: "",
@@ -121,25 +121,6 @@ const PriceHistoryForm = ({ restaurantId = "", onSuccess, onCancel }) => {
           </Alert>
         )}
         <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-4">
-            <Form.Label className="font-semibold flex items-center">
-              <FaUtensils className="mr-2 text-blue-500" /> Restaurant
-            </Form.Label>
-            <Form.Control
-              as="select"
-              name="restaurantId"
-              value={formData.restaurantId}
-              onChange={handleChange}
-              disabled={!!restaurantId}
-            >
-              <option value="">-- Select Restaurant --</option>
-              {restaurants?.map((restaurant) => (
-                <option key={restaurant._id} value={restaurant._id}>
-                  {restaurant.nameRes}
-                </option>
-              ))}
-            </Form.Control>
-          </Form.Group>
           <Form.Group className="mb-4">
             <Form.Label className="font-semibold flex items-center">
               <FaCarrot className="mr-2 text-blue-500" /> Stock

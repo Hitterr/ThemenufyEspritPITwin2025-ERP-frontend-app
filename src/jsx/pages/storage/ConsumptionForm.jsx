@@ -5,13 +5,14 @@ import { FaUtensils, FaCarrot, FaSortNumericUp } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { useRestaurantQuery, useStocksQuery } from "./utils/queries";
 import { apiRequest } from "../../utils/apiRequest";
+import { useQueryClient } from "@tanstack/react-query";
 const ConsumptionForm = ({ onCancel }) => {
   const navigate = useNavigate();
   const { data: restaurants, isLoading: loadingRestaurants } =
     useRestaurantQuery();
   const { data: stocks, isLoading: loadingStocks } = useStocksQuery();
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
-    restaurantId: "",
     stockId: "",
     ordreId: "680c09fb195cebecf6b71273",
     qty: "",
@@ -60,6 +61,8 @@ const ConsumptionForm = ({ onCancel }) => {
         text: "Consumption recorded successfully",
         timer: 2000,
       });
+      queryClient.invalidateQueries("consumptions");
+
       setFormData({
         restaurantId: "",
         stockId: "",
@@ -96,34 +99,6 @@ const ConsumptionForm = ({ onCancel }) => {
           </Alert>
         )}
         <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-4">
-            <Form.Label className="font-semibold flex items-center">
-              <FaUtensils className="mr-2 text-blue-500" /> Restaurant ID
-            </Form.Label>
-            <Form.Control
-              as="select"
-              name="restaurantId"
-              value={formData.restaurantId}
-              onChange={handleChange}
-              placeholder="Enter restaurant ID"
-              className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
-              isInvalid={!!errors.restaurantId}
-              required
-            >
-              <option value="">-- Select a restaurant --</option>
-              {restaurants &&
-                restaurants.map((each) => {
-                  return (
-                    <option key={each._id} value={each._id}>
-                      {each.nameRes}
-                    </option>
-                  );
-                })}
-            </Form.Control>
-            <Form.Control.Feedback type="invalid">
-              {errors.restaurantId}
-            </Form.Control.Feedback>
-          </Form.Group>
           <Form.Group className="mb-4">
             <Form.Label className="font-semibold flex items-center">
               <FaUtensils className="mr-2 text-blue-500" /> Stock ID
