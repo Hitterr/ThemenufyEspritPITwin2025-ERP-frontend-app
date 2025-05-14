@@ -53,7 +53,7 @@ const ShowSupplier = () => {
         title: "Error!",
         text: error.response?.data?.message || "Failed to load supplier data.",
       });
-      navigate("/suppliers");
+      // navigate("/suppliers");
     } finally {
       setLoading(false);
     }

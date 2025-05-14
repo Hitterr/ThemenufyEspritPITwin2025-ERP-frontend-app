@@ -186,11 +186,11 @@ const useInvoiceStore = create(
         });
         set((state) => ({
           invoices: state.invoices.map((inv) =>
-            inv._id === id ? { ...inv, status: response.data.status } : inv
+            inv._id === id ? { ...inv, status } : inv
           ),
           currentInvoice:
             state.currentInvoice?._id === id
-              ? { ...state.currentInvoice, status: response.data.status }
+              ? { ...state.currentInvoice, status }
               : state.currentInvoice,
           loading: false,
         }));
@@ -211,15 +211,13 @@ const useInvoiceStore = create(
 
         set((state) => ({
           invoices: state.invoices.map((inv) =>
-            inv._id === id
-              ? { ...inv, paidStatus: response.data.paidStatus }
-              : inv
+            inv._id === id ? { ...inv, paidStatus } : inv
           ),
           currentInvoice:
             state.currentInvoice?._id === id
               ? {
                   ...state.currentInvoice,
-                  paidStatus: response.data.paidStatus,
+                  paidStatus,
                 }
               : state.currentInvoice,
           loading: false,
@@ -243,6 +241,11 @@ const useInvoiceStore = create(
 
         set({ loading: true, error: null });
         set((state) => {
+          if (
+            state.currentInvoice.items.find((each) => each.stock == item.stock)
+          ) {
+            return state;
+          }
           const updatedInvoice = {
             ...state.currentInvoice,
             items: [...(state.currentInvoice.items || []), item],

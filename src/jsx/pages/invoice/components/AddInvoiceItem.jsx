@@ -45,10 +45,14 @@ const AddInvoiceItem = () => {
           price: data.price,
         }
       );
-      console.log(detectionResult);
       if (detectionResult && detectionResult.isSpike == true) {
         addSpike(data.stock);
       }
+      console.log(detectionResult);
+    } catch (error) {
+      console.error(error);
+    }
+    try {
       addInvoiceItem(data);
       Swal.fire({
         icon: "success",

@@ -47,6 +47,7 @@ export const ShowInvoice = () => {
       setStatus(currentInvoice.status);
       setPaidStatus(currentInvoice.paidStatus);
     }
+    console.log(currentInvoice);
   }, [currentInvoice]);
 
   const handleStatusChange = (e) => {
