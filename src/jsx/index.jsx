@@ -124,11 +124,12 @@ import InvoiceTimeline from "./pages/invoice/components/InvoiceTimeline";
 import AIIngredientForecast from "./pages/forecastedSalesIA/AIIngredientForecast";
 import WeeklyPurchaseForecast from "./pages/WeeklyPurchaseForecast/WeeklyPurchaseForecast";
 import ReorderDashboard from "./pages/Dashbord/reorder/ReorderDashboard";
+import Users from "./pages/users/Users";
 const Markup = () => {
   const allroutes = [
     /// Dashboard
-    { url: "", component: <Home /> },
-    { url: "dashboard", component: <Home /> },
+    { url: "", component: <StockAnalysis /> },
+    { url: "dashboard", component: <StockAnalysis /> },
     { url: "orders", component: <Orders /> },
     { url: "Order-id", component: <OrderId /> },
     { url: "general-customers", component: <GeneralCustomers /> },
@@ -237,6 +238,7 @@ const Markup = () => {
     { url: "reorder", component: <ReorderDashboard /> },
     { url: "IAForecastChart", component: <AIIngredientForecast /> },
     { url: "WeeklyPurchaseForecast", component: <WeeklyPurchaseForecast /> },
+    { url: "users", component: <Users /> },
   ];
   return (
     <>

@@ -6,28 +6,40 @@ import StepTwo from "./StepTwo";
 import StepThree from "./StepThree";
 import StepFour from "./StepFour";
 import { signupStore } from "../../../../store/signupStore";
+import StepFive from "./StepFive";
 export const SignupForm = () => {
-	const { step } = signupStore();
-	const StepsAvailable = [<StepOne />, <StepTwo />, <StepThree />, <StepFour />];
-	return (
-		<Fragment>
-			<div className="row">
-				<div className="col-xl-12 col-xxl-12">
-					<div className="">
-						<div className="card-body">
-							<div className="form-wizard ">
-								<Stepper className="nav-wizard" activeStep={step - 1} label={false}>
-									<Step className="nav-link" />
-									<Step className="nav-link" />
-									<Step className="nav-link" />
-									<Step className="nav-link" />
-								</Stepper>
-								{StepsAvailable[step - 1]}
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</Fragment>
-	);
+  const { step } = signupStore();
+  const StepsAvailable = [
+    <StepOne />,
+    <StepTwo />,
+    <StepThree />,
+    <StepFive />,
+    <StepFour />,
+  ];
+  return (
+    <Fragment>
+      <div className="row">
+        <div className="col-xl-12 col-xxl-12">
+          <div className="">
+            <div className="card-body">
+              <div className="form-wizard ">
+                <Stepper
+                  className="nav-wizard p-0"
+                  activeStep={step - 1}
+                  label={false}
+                >
+                  <Step className="nav-link" />
+                  <Step className="nav-link" />
+                  <Step className="nav-link" />
+                  <Step className="nav-link" />
+                  <Step className="nav-link" />
+                </Stepper>
+                {StepsAvailable[step - 1]}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Fragment>
+  );
 };

@@ -28,7 +28,7 @@ const Stocks = () => {
       fetchStocks(page);
     });
     socket.on("stock-alert", (data) => {
-      toast.warning(
+      toast.error(
         <div>
           <strong>{data.stock.libelle}</strong>
           <br />
@@ -36,7 +36,6 @@ const Stocks = () => {
           <br />
           Min Quantity: {data.stock.minQty} {data.stock.unit}
           <br />
-          {data.message}
         </div>,
         {
           position: "top-right",

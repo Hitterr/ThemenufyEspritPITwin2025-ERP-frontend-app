@@ -97,6 +97,9 @@ const ShowStock = () => {
                 <strong>Current Quantity:</strong> {stock.quantity} {stock.unit}
               </div>
               <div className="mb-3">
+                <strong>Inventory:</strong> {stock.inventory} {stock.unit}
+              </div>
+              <div className="mb-3">
                 <strong>Minimum Quantity:</strong> {stock.minQty} {stock.unit}
               </div>
               <div className="mb-3">

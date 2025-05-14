@@ -53,7 +53,7 @@ export const StockAnalysis = () => {
   return (
     <Card className="stock-analysis p-5">
       <Card.Header className="d-flex align-items-center mb-4">
-        <h1 className="mb-0">Stock Analysis</h1>
+        <h1 className="mb-0">Inventory</h1>
         <div className="ms-auto">
           <Link to="/stock" className="btn btn-secondary">
             <Boxes />

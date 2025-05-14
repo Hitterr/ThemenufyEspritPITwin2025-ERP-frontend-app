@@ -34,6 +34,7 @@ const AddStock = () => {
       disponibility: true,
       maxQty: 0,
       minQty: 0,
+      inventory: 0,
     },
   });
   useEffect(() => {
@@ -113,6 +114,17 @@ const AddStock = () => {
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.quantity?.message}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group xs={12} sm={6} as={Col} className="mb-3">
+                <Form.Label>Inventory</Form.Label>
+                <Form.Control
+                  {...register("inventory")}
+                  type="number"
+                  isInvalid={!!errors.inventory}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.inventory?.message}
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group xs={12} sm={6} as={Col} className="mb-3">

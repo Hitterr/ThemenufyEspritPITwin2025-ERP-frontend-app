@@ -13,6 +13,17 @@ export const editStockSchema = yup.object().shape({
     .number()
     .required("Quantity is required")
     .min(0, "Quantity cannot be negative"),
+  inventory: yup
+    .number()
+    .required("Quantity is required")
+    .min(0, "Quantity cannot be negative")
+    .test(
+      "min-max",
+      "Minimum quantity must be greater than maximum quantity",
+      function (value) {
+        return value > this.parent.quantity;
+      }
+    ),
   unit: yup
     .string()
     .oneOf(["g", "kg", "mg", "l", "ml", "cl", "pcs"])

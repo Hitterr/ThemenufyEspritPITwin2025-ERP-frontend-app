@@ -4,8 +4,15 @@ import swal from "sweetalert";
 import useAdminStore from "../../../store/AdminStore";
 import useRestaurantStore from "../../../store/RestaurantStore";
 
-export default function AdminTable({ admins, tableState, setTableState, openModal, type = "admin" }) {
-  const { updateAdmin, deleteAdmin, archiveAdmin, fetchAdminsArchived } = useAdminStore();
+export default function AdminTable({
+  admins,
+  tableState,
+  setTableState,
+  openModal,
+  type = "admin",
+}) {
+  const { updateAdmin, deleteAdmin, archiveAdmin, fetchAdminsArchived } =
+    useAdminStore();
   const { updateRestaurant, deleteRestaurant } = useRestaurantStore();
   const rowsPerPage = 5;
 
@@ -42,7 +49,10 @@ export default function AdminTable({ admins, tableState, setTableState, openModa
   const togglePassword = (id) => {
     setTableState((prev) => ({
       ...prev,
-      visiblePasswords: { ...prev.visiblePasswords, [id]: !prev.visiblePasswords?.[id] },
+      visiblePasswords: {
+        ...prev.visiblePasswords,
+        [id]: !prev.visiblePasswords?.[id],
+      },
     }));
   };
 
@@ -66,70 +76,103 @@ export default function AdminTable({ admins, tableState, setTableState, openModa
 
   return (
     <Table className="display w-100">
-     <thead>
-  <tr>
-    {type === "restaurant" ? (
-      <>
-        <th onClick={() => sortByKey("name")} style={{ cursor: "pointer" }}>
-          Name {tableState.sortOrder === "asc" ? "↑" : "↓"}
-        </th>
-        <th onClick={() => sortByKey("address")} style={{ cursor: "pointer" }}>
-          Address {tableState.sortOrder === "asc" ? "↑" : "↓"}
-        </th>
-        <th onClick={() => sortByKey("phone")} style={{ cursor: "pointer" }}>
-          Phone {tableState.sortOrder === "asc" ? "↑" : "↓"}
-        </th>
-      </>
-    ) : (
-      <>
-        <th onClick={() => sortByKey("email")} style={{ cursor: "pointer" }}>
-          Email {tableState.sortOrder === "asc" ? "↑" : "↓"}
-        </th>
-        <th>
-          Password
-        </th>
-        <th onClick={() => sortByKey("isEmailVerified")} style={{ cursor: "pointer" }}>
-          Verified {tableState.sortOrder === "asc" ? "↑" : "↓"}
-        </th>
-        <th onClick={() => sortByKey("blocked")} style={{ cursor: "pointer" }}>
-          Blocked {tableState.sortOrder === "asc" ? "↑" : "↓"}
-        </th>
-      </>
-    )}
-    <th>Actions</th>
-  </tr>
-</thead>
+      <thead>
+        <tr>
+          {type === "restaurant" ? (
+            <>
+              <th
+                onClick={() => sortByKey("name")}
+                style={{ cursor: "pointer" }}
+              >
+                Name {tableState.sortOrder === "asc" ? "↑" : "↓"}
+              </th>
+              <th
+                onClick={() => sortByKey("address")}
+                style={{ cursor: "pointer" }}
+              >
+                Address {tableState.sortOrder === "asc" ? "↑" : "↓"}
+              </th>
+              <th
+                onClick={() => sortByKey("phone")}
+                style={{ cursor: "pointer" }}
+              >
+                Phone {tableState.sortOrder === "asc" ? "↑" : "↓"}
+              </th>
+            </>
+          ) : (
+            <>
+              <th
+                onClick={() => sortByKey("email")}
+                style={{ cursor: "pointer" }}
+              >
+                Email {tableState.sortOrder === "asc" ? "↑" : "↓"}
+              </th>
+              <th>Password</th>
+              <th
+                onClick={() => sortByKey("isEmailVerified")}
+                style={{ cursor: "pointer" }}
+              >
+                Verified {tableState.sortOrder === "asc" ? "↑" : "↓"}
+              </th>
+              <th
+                onClick={() => sortByKey("blocked")}
+                style={{ cursor: "pointer" }}
+              >
+                Blocked {tableState.sortOrder === "asc" ? "↑" : "↓"}
+              </th>
+            </>
+          )}
+          <th>Actions</th>
+        </tr>
+      </thead>
 
       <tbody>
         {paginatedItems.map((item) => (
           <tr key={item._id}>
             {type === "restaurant" ? (
               <>
-                <td>{item.name}</td>
+                <td>{item.nameRes}</td>
                 <td>{item.address}</td>
                 <td>{item.phone}</td>
               </>
             ) : (
               <>
                 <td>{item.email}</td>
-                <td onClick={() => togglePassword(item._id)} style={{ cursor: "pointer" }}>
-                  {tableState.visiblePasswords?.[item._id] ? item.password : "•••••••••"}
+                <td
+                  onClick={() => togglePassword(item._id)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {tableState.visiblePasswords?.[item._id]
+                    ? item.password
+                    : "•••••••••"}
                 </td>
                 <td>{item.isEmailVerified ? "Yes" : "No"}</td>
                 <td>{item.blocked ? "Yes" : "No"}</td>
               </>
             )}
             <td>
-              <Button className="btn btn-google btn-xs me-1" onClick={() => openModal(item, false, true)}>
+              <Button
+                className="btn btn-google btn-xs me-1"
+                onClick={() => openModal(item, false, true)}
+              >
                 <i className="fa fa-eye" />
               </Button>
-              <Button className="btn btn-reddit btn-xs me-1" onClick={() => openModal(item, true)}>
+              <Button
+                className="btn btn-reddit btn-xs me-1"
+                onClick={() => openModal(item, true)}
+              >
                 <i className="fa fa-pencil" />
               </Button>
               <Button
                 className="btn btn-danger btn-xs"
                 onClick={() =>
-                  handleAction(archiveAdmin, item._id, `${type === "restaurant" ? "Restaurant" : "Super Admin"} archived`)
+                  handleAction(
+                    archiveAdmin,
+                    item._id,
+                    `${
+                      type === "restaurant" ? "Restaurant" : "Super Admin"
+                    } archived`
+                  )
                 }
               >
                 <i className="fa fa-trash" />

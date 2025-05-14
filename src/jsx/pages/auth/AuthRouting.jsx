@@ -47,7 +47,11 @@ export default function AuthRouting() {
     ) {
       navigate("/");
     }
+    if (currentUser?.user?.isVerified == false) {
+      navigate("/profile");
+    }
   }, [currentUser?.token, location.pathname, availableRoutes]);
+
   return (
     <Routes>
       <Route path="login" element={<Login />}></Route>

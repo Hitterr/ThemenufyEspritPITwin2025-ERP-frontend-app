@@ -53,6 +53,7 @@ const EditStock = ({ idIng }) => {
     const formData = {
       ...data,
       quantity: Number(data.quantity),
+      inventory: Number(data.inventory),
       price: Number(data.price),
       maxQty: Number(data.maxQty),
       minQty: Number(data.minQty),
@@ -134,6 +135,17 @@ const EditStock = ({ idIng }) => {
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.quantity?.message}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group xs={12} sm={6} as={Col} className="mb-3">
+                <Form.Label>Inventory</Form.Label>
+                <Form.Control
+                  {...register("inventory")}
+                  type="number"
+                  isInvalid={!!errors.inventory}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.inventory?.message}
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group xs={12} sm={6} as={Col} className="mb-3">

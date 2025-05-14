@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 import UpdatePassword from "./components/UpdatePassword";
 import RegisterFaceButton from "../face-recognition/RegisterFaceButton";
 import "react-toastify/dist/ReactToastify.css";
+import EditRestaurant from "./components/EditRestaurant";
 
 const Profile = () => {
   const { currentUser, profile, setActiveTab } = authStore();
@@ -54,7 +55,7 @@ const Profile = () => {
         <div className="card-body">
           <Tab.Container activeKey={profile.tab}>
             <Nav variant="tabs" className="mb-3">
-              {["About", "Settings", "Password"].map((tab) => (
+              {["About", "Settings", "Password", "Restaurant"].map((tab) => (
                 <Nav.Item key={tab}>
                   <Nav.Link
                     eventKey={tab}
@@ -212,6 +213,9 @@ const Profile = () => {
               </Tab.Pane>
               <Tab.Pane eventKey="Password">
                 <UpdatePassword />
+              </Tab.Pane>
+              <Tab.Pane eventKey="Restaurant">
+                <EditRestaurant />
               </Tab.Pane>
             </Tab.Content>
           </Tab.Container>

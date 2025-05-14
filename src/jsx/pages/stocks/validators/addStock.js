@@ -13,6 +13,10 @@ export const addStockSchema = yup.object().shape({
     .number()
     .required("Quantity is required")
     .min(0, "Quantity cannot be negative"),
+  inventory: yup
+    .number()
+    .required("Quantity is required")
+    .min(0, "Quantity cannot be negative"),
   unit: yup
     .string()
     .oneOf(["g", "kg", "mg", "l", "ml", "cl", "pcs"])
