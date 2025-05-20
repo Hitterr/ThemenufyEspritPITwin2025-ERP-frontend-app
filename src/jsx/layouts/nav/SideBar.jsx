@@ -49,7 +49,7 @@ const SideBar = () => {
   path = path[path.length - 1];
   const { currentUser } = authStore();
   useEffect(() => {
-    if (currentUser.user.role == "admin")
+    if (currentUser?.user?.role == "admin")
       MenuList.forEach((data) => {
         data.content?.forEach((item) => {
           if (path === item.to) {
@@ -62,7 +62,7 @@ const SideBar = () => {
           });
         });
       });
-    else if (currentUser.user.role == "superadmin")
+    else if (currentUser?.user?.role == "superadmin")
       superAdminMenuList.forEach((data) => {
         data.content?.forEach((item) => {
           if (path === item.to) {

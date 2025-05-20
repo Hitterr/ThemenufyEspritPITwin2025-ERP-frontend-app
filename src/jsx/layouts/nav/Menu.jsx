@@ -63,7 +63,7 @@ export const MenuList = [
           },
           {
             title: "Stock Forecast",
-            to: "stock-forecast",
+            to: "IAForecastChart",
           },
           {
             title: "Purchase Forecast",

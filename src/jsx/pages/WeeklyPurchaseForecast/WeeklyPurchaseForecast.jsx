@@ -7,7 +7,9 @@ import ForecastHeatmap from "./ForecastHeatmap";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
-  return `${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
+  return `${String(date.getDate()).padStart(2, "0")}/${String(
+    date.getMonth() + 1
+  ).padStart(2, "0")}/${date.getFullYear()}`;
 };
 
 const aggregateByWeek = (predictions, stock, fetchedPrice) => {
@@ -63,9 +65,12 @@ const WeeklyPurchaseForecast = () => {
     const loadStocks = async () => {
       try {
         const token = localStorage.getItem("token");
-        const { data } = await axios.get("http://localhost:5000/api/stock/getStocksInConsumptionHistory", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const { data } = await axios.get(
+          "http://localhost:5000/api/stock/getStocksInConsumptionHistory",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         const stockData = data.data || [];
         setStocks(stockData);
         if (stockData.length > 0) setStockId(stockData[0]._id);
@@ -85,7 +90,7 @@ const WeeklyPurchaseForecast = () => {
       const days = weeks * 7;
       const startDate = new Date().toISOString().split("T")[0];
       const { data } = await axios.post(
-        "http://localhost:5001/predict",
+        import.meta.env.VITE_FLASK_BACKEND_URL + "/predict/consumption",
         { stockId, days, startDate },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -130,29 +135,28 @@ const WeeklyPurchaseForecast = () => {
         fetchPredictions={fetchPredictions}
         viewMode={viewMode}
         setViewMode={setViewMode}
-        className="mb-4" 
+        className="mb-4"
       />
 
-{loading ? (
-  <div className="text-center">
-    <Spinner animation="border" />
-  </div>
-) : weeklyData.length === 0 ? (
-  <p className="mt-4 text-center text-muted">No data available.</p>
-) : (
-  <div className="mt-4">
-    {viewMode === "table" ? (
-      <ForecastTable weeklyData={weeklyData} unit={unit} />
-    ) : (
-      <ForecastHeatmap
-        weeklyData={weeklyData}
-        currentStock={currentStock}
-        formatDate={formatDate}
-      />
-    )}
-  </div>
-)}
-
+      {loading ? (
+        <div className="text-center">
+          <Spinner animation="border" />
+        </div>
+      ) : weeklyData.length === 0 ? (
+        <p className="mt-4 text-center text-muted">No data available.</p>
+      ) : (
+        <div className="mt-4">
+          {viewMode === "table" ? (
+            <ForecastTable weeklyData={weeklyData} unit={unit} />
+          ) : (
+            <ForecastHeatmap
+              weeklyData={weeklyData}
+              currentStock={currentStock}
+              formatDate={formatDate}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 };

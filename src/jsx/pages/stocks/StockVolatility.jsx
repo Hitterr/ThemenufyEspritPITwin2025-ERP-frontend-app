@@ -12,7 +12,9 @@ export default function StockVolatility({ stockId, restaurantId }) {
       setLoading(true);
       setError("");
       const response = await fetch(
-        `http://localhost:5002/volatility?stockId=${stockId}&restaurantId=${restaurantId}`
+        `${
+          import.meta.env.VITE_FLASK_BACKEND_URL
+        }/stock/volatility?stockId=${stockId}&restaurantId=${restaurantId}`
       );
 
       if (!response.ok) throw new Error("Volatility check failed");

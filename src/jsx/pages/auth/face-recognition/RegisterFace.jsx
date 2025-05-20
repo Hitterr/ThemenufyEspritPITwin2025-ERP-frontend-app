@@ -46,7 +46,7 @@ const RegisterFace = ({ show, onHide }) => {
 
     try {
       const response = await fetch(
-        import.meta.env.VITE_FACE_BACKEND_URL + "/register",
+        import.meta.env.VITE_FLASK_BACKEND_URL + "/face/register",
         {
           method: "POST",
           body: formData,

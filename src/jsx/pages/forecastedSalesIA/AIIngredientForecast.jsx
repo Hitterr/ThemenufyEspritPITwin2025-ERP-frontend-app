@@ -20,9 +20,12 @@ const AIIngredientForecast = () => {
     const loadStocks = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5000/api/stock/getStocksInConsumptionHistory", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          "http://localhost:5000/api/stock/getStocksInConsumptionHistory",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setStocks(res.data.data || []);
         if (res.data.data.length > 0) setStockId(res.data.data[0]._id);
       } catch (error) {
@@ -39,7 +42,7 @@ const AIIngredientForecast = () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.post(
-        "http://localhost:5001/predict",
+        import.meta.env.VITE_FLASK_BACKEND_URL + "/predict/consumption",
         { stockId, days },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -87,7 +90,9 @@ const AIIngredientForecast = () => {
       toolbar: { show: true },
     },
     xaxis: {
-      categories: paginatedPredictions.map((p) => new Date(p.ds).toLocaleDateString()),
+      categories: paginatedPredictions.map((p) =>
+        new Date(p.ds).toLocaleDateString()
+      ),
       labels: {
         rotate: -45,
         style: { fontSize: "10px" },
@@ -124,8 +129,14 @@ const AIIngredientForecast = () => {
   };
 
   const chartSeries = [
-    { name: "Predicted Quantity", data: paginatedPredictions.map((p) => p.yhat) },
-    { name: "Missing Quantity", data: paginatedPredictions.map((p) => p.missingQty) },
+    {
+      name: "Predicted Quantity",
+      data: paginatedPredictions.map((p) => p.yhat),
+    },
+    {
+      name: "Missing Quantity",
+      data: paginatedPredictions.map((p) => p.missingQty),
+    },
   ];
 
   // Fonctions pour naviguer entre les pages
@@ -144,8 +155,9 @@ const AIIngredientForecast = () => {
       <Card className="p-3 mb-4 bg-light border-0 shadow-sm">
         <h5 className="mb-2">🧾 What does this chart show?</h5>
         <p className="text-muted mb-2">
-          This forecast estimates how much of the selected stock you'll need over the next{" "}
-          <strong>{days}</strong> days based on historical consumption.
+          This forecast estimates how much of the selected stock you'll need
+          over the next <strong>{days}</strong> days based on historical
+          consumption.
         </p>
         <div className="d-flex align-items-center gap-3">
           <span
@@ -176,7 +188,10 @@ const AIIngredientForecast = () => {
       <Card className="p-4 mb-4 shadow-sm">
         <Row className="align-items-center g-3">
           <Col md={6}>
-            <Form.Select value={stockId} onChange={(e) => setStockId(e.target.value)}>
+            <Form.Select
+              value={stockId}
+              onChange={(e) => setStockId(e.target.value)}
+            >
               {stocks.map((stock) => (
                 <option key={stock._id} value={stock._id}>
                   {stock.libelle}
@@ -209,9 +224,15 @@ const AIIngredientForecast = () => {
             <Form.Check
               type="switch"
               id="chart-type-switch"
-              label={chartType === "bar" ? "Switch to Line Chart" : "Switch to Bar Chart"}
+              label={
+                chartType === "bar"
+                  ? "Switch to Line Chart"
+                  : "Switch to Bar Chart"
+              }
               checked={chartType === "line"}
-              onChange={() => setChartType(chartType === "bar" ? "line" : "bar")}
+              onChange={() =>
+                setChartType(chartType === "bar" ? "line" : "bar")
+              }
             />
           </Col>
         </Row>
@@ -228,14 +249,14 @@ const AIIngredientForecast = () => {
           {stock >= totalForecasted ? (
             <div className="alert alert-success text-center fw-semibold">
               ✅ Stock is sufficient! You have{" "}
-              <strong>{(stock - totalForecasted).toFixed(2)} units</strong> more than
-              needed.
+              <strong>{(stock - totalForecasted).toFixed(2)} units</strong> more
+              than needed.
             </div>
           ) : (
             <div className="alert alert-warning text-center fw-semibold">
               ⚠️ Low Stock Alert: You’re missing{" "}
-              <strong>{totalMissing.toFixed(2)} units</strong> to meet the forecasted
-              demand.
+              <strong>{totalMissing.toFixed(2)} units</strong> to meet the
+              forecasted demand.
             </div>
           )}
 

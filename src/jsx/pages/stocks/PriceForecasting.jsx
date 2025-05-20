@@ -14,7 +14,9 @@ export default function PriceForecasting({ stockId, restaurantId }) {
       setLoading(true);
       setError("");
       const response = await fetch(
-        `http://localhost:5002/predict?stockId=${stockId}&restaurantId=${restaurantId}&days=${days}`
+        `${
+          import.meta.env.VITE_FLASK_BACKEND_URL
+        }/stock/predict?stockId=${stockId}&restaurantId=${restaurantId}&days=${days}`
       );
 
       if (!response.ok) throw new Error("Prediction failed");

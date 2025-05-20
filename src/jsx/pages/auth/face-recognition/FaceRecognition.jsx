@@ -44,7 +44,7 @@ const FaceRecognition = ({ show, onHide }) => {
 
     try {
       const response = await fetch(
-        import.meta.env.VITE_FACE_BACKEND_URL + "/recognize",
+        import.meta.env.VITE_FLASK_BACKEND_URL + "/face/recognize",
         {
           method: "POST",
           body: formData,
