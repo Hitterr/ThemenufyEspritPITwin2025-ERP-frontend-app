@@ -118,7 +118,7 @@ import ShowCategory from "./pages/categories/ShowCategory";
 import InvoiceStats from "./pages/invoice/components/InvoiceStats";
 import TurnoverTable from "./pages/Turnover/TurnoverTable";
 import ApexForecast from "./pages/forecastedSales/ApexForecast";
-import Waste from "./pages/waste/waste";
+//import Waste from "./pages/waste/waste";
 import RecipeCostDashboard from "./pages/Dashbord/recipe/RecipeCostDashboard";
 import InvoiceTimeline from "./pages/invoice/components/InvoiceTimeline";
 import AIIngredientForecast from "./pages/forecastedSalesIA/AIIngredientForecast";
@@ -233,7 +233,7 @@ const Markup = () => {
     { url: "invoices/:id/timeline", component: <InvoiceTimeline /> },
     { url: "turnover", component: <TurnoverTable /> },
     { url: "stock-forecast", component: <ApexForecast /> },
-    { url: "waste", component: <Waste /> },
+   // { url: "waste", component: <Waste /> },
     { url: "storage", component: <StorageApp /> },
     { url: "reorder", component: <ReorderDashboard /> },
     { url: "IAForecastChart", component: <AIIngredientForecast /> },
