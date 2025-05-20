@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Card, Form, Button, Row, Col } from "react-bootstrap";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import useSupplierStore from "../../store/supplierStore";
-import useRestaurantStore from "../../store/restaurantStore";
+import useRestaurantStore from "../../store/RestaurantStore";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -12,9 +12,10 @@ const EditSupplier = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
-  const { updateSupplier, getSupplierById, fetchSuppliers } = useSupplierStore();
+  const { updateSupplier, getSupplierById, fetchSuppliers } =
+    useSupplierStore();
   const { restaurants, fetchRestaurants } = useRestaurantStore();
-  
+
   const redirectTo = location.state?.redirectTo || "/suppliers";
 
   const {
@@ -394,15 +395,11 @@ const EditSupplier = () => {
           </Row>
 
           <div className="d-flex gap-2">
-            <Button
-              variant="secondary"
-              type="button"
-              onClick={handleCancel}
-            >
+            <Button variant="secondary" type="button" onClick={handleCancel}>
               &lt; {/* Unicode for < */}
             </Button>
             <Button variant="primary" type="submit">
-             Update Supplier {/* Unicode for pen icon */}
+              Update Supplier {/* Unicode for pen icon */}
             </Button>
           </div>
         </Form>

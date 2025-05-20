@@ -1,7 +1,7 @@
 import { Card, Form, Button, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import useSupplierStore from "../../store/supplierStore";
-import useRestaurantStore from "../../store/restaurantStore"; 
+import useRestaurantStore from "../../store/RestaurantStore";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -11,7 +11,7 @@ import { useEffect } from "react";
 const AddSupplier = () => {
   const navigate = useNavigate();
   const { addSupplier, fetchSuppliers } = useSupplierStore();
-  const { restaurants, fetchRestaurants } = useRestaurantStore(); 
+  const { restaurants, fetchRestaurants } = useRestaurantStore();
 
   const {
     register,
@@ -23,8 +23,20 @@ const AddSupplier = () => {
     defaultValues: {
       name: "",
       contact: { email: "", phone: "", representative: "" },
-      address: { street: "", city: "", state: "", postalCode: "", country: "Canada" },
-      contract: { startDate: "", endDate: null, terms: "NET_30", minimumOrder: 0, specialConditions: "" },
+      address: {
+        street: "",
+        city: "",
+        state: "",
+        postalCode: "",
+        country: "Canada",
+      },
+      contract: {
+        startDate: "",
+        endDate: null,
+        terms: "NET_30",
+        minimumOrder: 0,
+        specialConditions: "",
+      },
       status: "active",
       payment: { currency: "CAD", preferredMethod: "bank", accountDetails: "" },
       restaurantId: "",
@@ -378,7 +390,11 @@ const AddSupplier = () => {
           </Row>
 
           <div className="d-flex gap-2">
-            <Button variant="secondary" type="button" onClick={() => navigate("/suppliers")}>
+            <Button
+              variant="secondary"
+              type="button"
+              onClick={() => navigate("/suppliers")}
+            >
               &lt; {/* Unicode for < */}
             </Button>
             <Button variant="primary" type="submit">
