@@ -21,6 +21,7 @@ export default function StockVolatility({ stockId, restaurantId }) {
       const data = await response.json();
       setVolatilityData(data);
     } catch (err) {
+      console.error(err);
       setError(err.message || "Failed to get volatility data");
     } finally {
       setLoading(false);

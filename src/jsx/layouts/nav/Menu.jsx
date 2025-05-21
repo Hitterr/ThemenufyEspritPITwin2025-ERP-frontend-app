@@ -23,27 +23,12 @@ export const MenuList = [
             to: "suppliers-performance",
           },
           {
+            title: "Invoices",
+            to: "invoices",
+          },
+          {
             title: "Reorder",
             to: "reorder",
-          },
-        ],
-      },
-      {
-        title: "Accounts",
-        classsChange: "mm-collapse",
-        hasMenu: true,
-        content: [
-          {
-            title: "Users",
-            to: "users",
-          },
-          {
-            title: "Archived",
-            to: "Archived",
-          },
-          {
-            title: "Restaurants",
-            to: "restaurants",
           },
         ],
       },
@@ -73,10 +58,7 @@ export const MenuList = [
             title: "Categories",
             to: "categories",
           },
-          {
-            title: "Invoices",
-            to: "invoices",
-          },
+
           {
             title: "Waste",
             to: "waste",

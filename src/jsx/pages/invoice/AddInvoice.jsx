@@ -26,12 +26,18 @@ export const AddInvoice = () => {
     deleteInvoiceItem,
     updateInvoiceStatus,
     setInvoiceStatus,
+    setCurrentInvoice,
     spikes,
   } = useInvoiceStore();
   const navigate = useNavigate();
   console.log(spikes);
   useEffect(() => {
     if (currentUser?.user?.restaurant?._id) {
+      setCurrentInvoice({
+        restaurant: "",
+        supplier: "",
+        items: [],
+      });
       setInvoiceRestaurant(currentUser?.user?.restaurant?._id);
     }
     fetchSuppliers();

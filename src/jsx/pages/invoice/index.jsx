@@ -18,6 +18,7 @@ export const InvoicesPage = () => {
     loading,
     error,
     removeSpike,
+    setCurrentInvoice,
   } = useInvoiceStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false); // State to toggle filters
@@ -68,7 +69,7 @@ export const InvoicesPage = () => {
         <Card.Header>
           <Row className="w-100 gap-2 justify-content-between align-items-center ">
             <Col md={2}>
-              <Link to="/invoices/add">
+              <Link to="/invoices/add" reloadDocument>
                 <Button variant="success" className="w-100">
                   <ReceiptText size={20} />
                 </Button>

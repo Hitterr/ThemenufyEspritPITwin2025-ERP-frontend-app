@@ -12,7 +12,8 @@ import { useEffect, useState } from "react";
 import { Carrot, Plus } from "lucide-react";
 import useStockStore from "../../../store/stockStore";
 import { apiRequest } from "../../../utils/apiRequest";
-const SMART_INVOICE_API = "http://127.0.0.1:5000/api/detect_spike";
+const SMART_INVOICE_API =
+  import.meta.env.VITE_FLASK_BACKEND_URL + "/invoice/detect-spike";
 const AddInvoiceItem = () => {
   const [show, setShow] = useState(false);
   const { fetchStocks, stocks } = useStockStore();
