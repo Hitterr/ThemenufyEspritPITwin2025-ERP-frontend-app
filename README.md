@@ -35,3 +35,11 @@ npm run dev
 
     email: `admin@menufy.com`
     password: `Admin@123`
+
+---
+
+## Docker
+
+```
+docker compose up -d --build
+```
